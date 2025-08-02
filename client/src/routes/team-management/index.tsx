@@ -125,38 +125,6 @@ function TeamManagementPage() {
     </div>
   )
 }
-// <Dialog
-//     open={!!selectedCompetition}
-//     onOpenChange={() => setSelectedCompetition(null)}
-//   >
-//     <DialogContent>
-//       <DialogHeader>
-//         <DialogTitle>
-//           {selectedCompetition?.itemname} -{' '}
-//           {selectedCompetition?.categoryname}
-//         </DialogTitle>
-//       </DialogHeader>
-
-//       <div className="grid gap-3 mt-4">
-//         {selectedCompetition &&
-//           parseParticipants(selectedCompetition.participants).map(
-//             (participant, idx) => (
-//               <Card key={idx} className="p-3">
-//                 <div className="font-medium">{participant.participant}</div>
-//                 <div className="text-sm text-gray-600">
-//                   Chest #: {participant.chestno}
-//                 </div>
-//                 {participant.status && (
-//                   <div className="text-sm text-gray-600">
-//                     Status: {participant.status}
-//                   </div>
-//                 )}
-//               </Card>
-//             ),
-//           )}
-//       </div>
-//     </DialogContent>
-//   </Dialog>
 
 //   {/* Participant Competitions Modal */}
 //   <Dialog

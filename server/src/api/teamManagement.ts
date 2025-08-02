@@ -91,7 +91,7 @@ router.get('/competitions', async (req, res, next) => {
       (
         SELECT
           pa.participant,
-          pa.chestno as chestNo,
+          pa.chestno as chestNumber,
           ai.status
         FROM
           ofm_assignitem AS ai
@@ -128,7 +128,12 @@ router.get('/competitions', async (req, res, next) => {
 
     const data = await executeQuery(query);
 
-    return next(new AppResponse('', data));
+    const parsedData = data.map((row: any) => ({
+      ...row,
+      participants: row.participants ? JSON.parse(row.participants) : [],
+    }));
+
+    return next(new AppResponse('', parsedData));
   } catch (err) {
     return next(err);
   }

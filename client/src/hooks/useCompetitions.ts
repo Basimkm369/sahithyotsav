@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { Route } from '@/routes/team-management'
 
-type Competition = {
+export type Competition = {
   id: number
   name: string
   stageName: string
   categoryName: string
   status: string
-  participants: { name: string; chestNumber: string }[]
+  participants: { name: string; chestNumber: string; status: string }[]
   totalCount: number
 }
 
