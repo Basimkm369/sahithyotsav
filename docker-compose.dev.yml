@@ -1,0 +1,98 @@
+services:
+  db:
+    image: mysql
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
+      - MYSQL_DATABASE=$DB_NAME
+    ports:
+      - $DB_LOCAL_PORT:$DB_DOCKER_PORT
+    volumes:
+      - db:/var/lib/mysql
+
+  server:
+    build:
+      target: 'server'
+      dockerfile: Dockerfile.dev
+    env_file: ./.env
+    restart: unless-stopped
+    ports:
+      - $SERVER_LOCAL_PORT:$SERVER_DOCKER_PORT
+    environment:
+      - ENV=$ENV
+      - PORT=$SERVER_LOCAL_PORT
+      - DB_URL=$SERVER_DB_URL
+      - CORS_ENABLED_URLS=$SERVER_CORS_ENABLED_URLS
+      - SMS_BASE_URL=$SERVER_SMS_BASE_URL
+      - OAUTH2_CLIENT_ID=$SERVER_OAUTH2_CLIENT_ID
+      - OAUTH2_CLIENT_SECRET=$SERVER_OAUTH2_CLIENT_SECRET
+      - OAUTH2_REFRESH_TOKEN=$SERVER_OAUTH2_REFRESH_TOKEN
+      - FROM_EMAIL=$SERVER_FROM_EMAIL
+      - TG_BOT_API_KEY=$SERVER_TG_BOT_API_KEY
+      - TG_CHANNEL_ID=$SERVER_TG_CHANNEL_ID
+      - ACCESS_TOKEN_SECRET=$SERVER_ACCESS_TOKEN_SECRET
+      - REFRESH_TOKEN_SECRET=$SERVER_REFRESH_TOKEN_SECRET
+      - WARN_RESPONSE_TIME=$SERVER_WARN_RESPONSE_TIME
+      - CHECKIN_COUNTER_AUTH_TOKEN=$SERVER_CHECKIN_COUNTER_AUTH_TOKEN
+      - GROUP_A_SEAT_COUNT=$SERVER_GROUP_A_SEAT_COUNT
+      - GROUP_B_SEAT_COUNT=$SERVER_GROUP_B_SEAT_COUNT
+      - GROUP_C_SEAT_COUNT=$SERVER_GROUP_C_SEAT_COUNT
+      - GROUP_D_SEAT_COUNT=$SERVER_GROUP_D_SEAT_COUNT
+      - GROUP_E_SEAT_COUNT=$SERVER_GROUP_E_SEAT_COUNT
+      - GROUP_F_SEAT_COUNT=$SERVER_GROUP_F_SEAT_COUNT
+
+    depends_on:
+      - db
+    volumes:
+      - ./server:/usr/src/profsummit/server
+    stdin_open: true
+    tty: true
+
+  website:
+    build:
+      target: 'website'
+      dockerfile: Dockerfile.dev
+      args:
+        - HIDE_REGISTER=$WEBSITE_HIDE_REGISTER
+        - HIDE_LOGIN=$WEBSITE_HIDE_LOGIN
+        - WHATSAPP_LINK_MALE=$WEBSITE_WHATSAPP_LINK_MALE
+        - WHATSAPP_LINK_FEMALE=$WEBSITE_WHATSAPP_LINK_FEMALE
+        - CONTACT_REDIRECT_LINK=$WEBSITE_CONTACT_REDIRECT_LINK
+    env_file: ./.env
+    ports:
+      - $WEBSITE_LOCAL_PORT:$WEBSITE_DOCKER_PORT
+    volumes:
+      - ./website:/usr/src/profsummit/website
+
+  webapp:
+    build:
+      target: 'webapp'
+      dockerfile: Dockerfile.dev
+      args:
+        - API_URL=$WEBAPP_API_URL
+        - FIREBASE_API_KEY=$WEBAPP_FIREBASE_API_KEY
+        - AUTH_DOMAIN=$WEBAPP_AUTH_DOMAIN
+        - DATABASE_URL=$WEBAPP_DATABASE_URL
+        - PROJECT_ID=$WEBAPP_PROJECT_ID
+        - STORAGE_BUCKET=$WEBAPP_STORAGE_BUCKET
+        - MESSAGING_SENDER_ID=$WEBAPP_MESSAGING_SENDER_ID
+        - APP_ID=$WEBAPP_APP_ID
+        - GROUP_AVAILABLE_SEATS_DISPLAY_THRESHOLD=$WEBAPP_GROUP_AVAILABLE_SEATS_DISPLAY_THRESHOLD
+    env_file: ./.env
+    ports:
+      - $WEBAPP_LOCAL_PORT:$WEBAPP_DOCKER_PORT
+    volumes:
+      - ./webapp:/usr/src/profsummit/webapp
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes: 
+      - ./nginx:/etc/nginx/conf.d/
+
+volumes:
+  db:
