@@ -18,13 +18,16 @@ export default ({ mode }: any) => {
       tailwindcss(),
     ],
     resolve: {
-alias:{
-  "@": path.resolve(__dirname,"/src")
-}
+      alias: {
+        '@': path.resolve(__dirname, '/src'),
+      },
     },
     server: {
       port: +(process.env.VITE_PORT || 3001),
       host: true,
+    },
+    build: {
+      outDir: 'build',
     },
   })
 }
