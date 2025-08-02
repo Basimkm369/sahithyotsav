@@ -7,12 +7,14 @@ COPY ./server/package.json .
 COPY ./server/package-lock.json .
 RUN npm ci --force
 COPY ./server .
-EXPOSE 5011
+EXPOSE 5000
 CMD ["npm", "run", "start"]
 
 FROM base AS client
 RUN mkdir -p /sahityotsav_management/client
 WORKDIR /sahityotsav_management/client
+COPY ./client/package.json .
+COPY ./client/package-lock.json .
 RUN npm ci --force
 COPY ./client .
 ARG API_URL
