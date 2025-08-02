@@ -23,7 +23,7 @@ services:
       context: ../
       dockerfile: ./ops/Dockerfile
       args:
-        - API_URL=$API_URL
+        - VITE_API_URL=$VITE_API_URL
     volumes:
       - /var/www/html/sahityotsav_management/client:/var/www/html
 
