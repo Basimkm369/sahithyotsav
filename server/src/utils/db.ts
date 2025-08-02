@@ -63,6 +63,15 @@ export async function executeStoredProcedure(
   }
 }
 
+export async function decryptId(text: string): Promise<string> {
+  const idRes = await executeStoredProcedure('Usp_DecryptIdKey', {
+    EncryptedTxt: text.replaceAll(' ', '+'),
+  });
+  const id = idRes?.[0]?.ID;
+  if (!id) throw new Error(`Invalid ID, Encr:${text} Decr:${id}`);
+  return id;
+}
+
 export async function closePool() {
   if (!!pool) {
     await pool.close();
