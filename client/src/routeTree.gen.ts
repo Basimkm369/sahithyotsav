@@ -10,43 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TeamManagerIndexRouteImport } from './routes/team-manager/index'
+import { Route as TeamManagementIndexRouteImport } from './routes/team-management/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TeamManagerIndexRoute = TeamManagerIndexRouteImport.update({
-  id: '/team-manager/',
-  path: '/team-manager/',
+const TeamManagementIndexRoute = TeamManagementIndexRouteImport.update({
+  id: '/team-management/',
+  path: '/team-management/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/team-manager': typeof TeamManagerIndexRoute
+  '/team-management': typeof TeamManagementIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/team-manager': typeof TeamManagerIndexRoute
+  '/team-management': typeof TeamManagementIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/team-manager/': typeof TeamManagerIndexRoute
+  '/team-management/': typeof TeamManagementIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/team-manager'
+  fullPaths: '/' | '/team-management'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/team-manager'
-  id: '__root__' | '/' | '/team-manager/'
+  to: '/' | '/team-management'
+  id: '__root__' | '/' | '/team-management/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  TeamManagerIndexRoute: typeof TeamManagerIndexRoute
+  TeamManagementIndexRoute: typeof TeamManagementIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,11 +58,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/team-manager/': {
-      id: '/team-manager/'
-      path: '/team-manager'
-      fullPath: '/team-manager'
-      preLoaderRoute: typeof TeamManagerIndexRouteImport
+    '/team-management/': {
+      id: '/team-management/'
+      path: '/team-management'
+      fullPath: '/team-management'
+      preLoaderRoute: typeof TeamManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -70,7 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  TeamManagerIndexRoute: TeamManagerIndexRoute,
+  TeamManagementIndexRoute: TeamManagementIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

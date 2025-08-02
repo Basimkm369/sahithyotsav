@@ -20,21 +20,29 @@ router.get('/', async (req, res, next) => {
     kvStore.set(`encId:${eventIdEnc}`, eventId);
   }
 
-  const data = await executeQuery(
-    `select count(cp.id) as count, stage,
-         MAX(tm.teamname) AS teamName
+  const stages = await executeQuery(
+    `select count(cp.id) as competitionsCount,
+        st.stage as name,
+        st.pid as number
     from ofm_stages as st 
     left join ofm_competitions as cp 
       on cp.stageno = st.pid
-    left join ofm_team as tm 
-      on tm.teamno = ${teamId}
     where cp.eventid = ${eventId}
-    group by stage`,
+    group by st.stage, st.pid`,
   );
+
+  let teamName = kvStore.get(`team:${teamId}:name`);
+  if (!teamName) {
+    const teamNameRes = await executeQuery(
+      `select teamname as name from ofm_team where teamno = ${teamId}`,
+    );
+    teamName = teamNameRes?.[0].name;
+    kvStore.set(`team:${teamId}:name`, teamName);
+  }
 
   let categories = kvStore.get(`categories`);
   if (!categories) {
-    const categories = await executeQuery(
+    categories = await executeQuery(
       `select categoryno as no, categoryname as name from ofm_category`,
     );
     kvStore.set('categories', categories);
@@ -42,8 +50,8 @@ router.get('/', async (req, res, next) => {
 
   return next(
     new AppResponse('', {
-      teamName: data[0]?.teamname,
-      competitionSummary: data,
+      teamName,
+      stages,
       categories,
     }),
   );
@@ -75,14 +83,15 @@ router.get('/competitions', async (req, res, next) => {
 
     let query = `select
       COUNT(*) OVER () AS totalCount,
-      im.itemname as itemName,
+      cp.id as id,
+      im.itemname as name,
       ca.categoryname as categoryName,
-      st.stage,
+      st.stage as stageName,
       cp.status,
       (
         SELECT
           pa.participant,
-          pa.chestno as chestNo,
+          pa.chestno as chestNumber,
           ai.status
         FROM
           ofm_assignitem AS ai
@@ -110,7 +119,8 @@ router.get('/competitions', async (req, res, next) => {
       ca.categoryname,
       st.stage,
       cp.status,
-      cp.itemcode
+      cp.itemcode,
+      cp.id
     order by
       im.itemname, ca.categoryname, st.stage
     offset (${page} - 1) * ${limit} rows
@@ -118,7 +128,12 @@ router.get('/competitions', async (req, res, next) => {
 
     const data = await executeQuery(query);
 
-    return next(new AppResponse('', data));
+    const parsedData = data.map((row: any) => ({
+      ...row,
+      participants: row.participants ? JSON.parse(row.participants) : [],
+    }));
+
+    return next(new AppResponse('', parsedData));
   } catch (err) {
     return next(err);
   }
