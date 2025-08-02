@@ -7,7 +7,12 @@ import api from './api';
 import responseHandler from './middlewares/responseHandler';
 import AppError from './models/AppError';
 import logger from './utils/logger';
-import { CORS_ENABLED_URLS, PORT, verifyEnvVars, WARN_RESPONSE_TIME } from './config/env';
+import {
+  CORS_ENABLED_URLS,
+  PORT,
+  verifyEnvVars,
+  WARN_RESPONSE_TIME,
+} from './config/env';
 import rateLimiter from './middlewares/rateLimiter';
 import { connectToDatabase } from './utils/db';
 
@@ -51,18 +56,31 @@ app.use(
         userAgent: tokens['user-agent'](req, res),
         referrer: tokens.referrer(req, res),
         status: Number.parseFloat(tokens.status(req, res) || ''),
-        responseTime: Number.parseFloat(tokens['response-time'](req, res) || ''),
+        responseTime: Number.parseFloat(
+          tokens['response-time'](req, res) || '',
+        ),
       }),
     {
       stream: {
         write: (str) => {
-          const { method, url, remoteAddr, remoteUser, userAgent, referrer, status, responseTime } =
-            JSON.parse(str);
+          const {
+            method,
+            url,
+            remoteAddr,
+            remoteUser,
+            userAgent,
+            referrer,
+            status,
+            responseTime,
+          } = JSON.parse(str);
           const message = `${method} -- ${url} ${status} ${remoteAddr} - ${remoteUser} "${referrer}" "${userAgent}" ${responseTime}ms`;
           logger.http(message.trim());
           if (WARN_RESPONSE_TIME && responseTime >= WARN_RESPONSE_TIME) {
             logger.warn(
-              `An API took ${parseInt(responseTime, 10)}ms to respond \n\n${method} ${url}`,
+              `An API took ${parseInt(
+                responseTime,
+                10,
+              )}ms to respond \n\n${method} ${url}`,
             );
           }
         },

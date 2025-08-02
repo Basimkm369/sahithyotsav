@@ -43,6 +43,26 @@ export async function executeQuery(queryText: string) {
   }
 }
 
+export async function executeStoredProcedure(
+  procedureName: string,
+  params: { [key: string]: any },
+) {
+  try {
+    if (!pool) {
+      throw new Error('Database pool not initialized.');
+    }
+    const request = pool.request();
+    for (const key in params) {
+      request.input(key, params[key]);
+    }
+    const result = await request.execute(procedureName);
+    return result.recordset;
+  } catch (err) {
+    console.error('Error executing stored procedure:', err);
+    throw err;
+  }
+}
+
 export async function closePool() {
   if (!!pool) {
     await pool.close();

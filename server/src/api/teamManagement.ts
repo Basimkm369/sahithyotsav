@@ -1,35 +1,25 @@
-export const getTeamManagementMeta = () => {
-  // mandatory filter: teamId
+import express from 'express';
+import AppResponse from 'src/models/AppResponse';
+import { executeQuery } from 'src/utils/db';
 
-  // [
-  //     {
-  //         All
-  //         count
-  //         statusus: [
-  //             {
-  //                 Not started
-  //                 count
-  //             }
-  //         ]
-  //     }
-  //     {
-  //         stage
-  //         Count
-  //     }
-  // ]
+const router = express.Router();
 
-  return {
-    // stageCount,
-  };
-};
+router.get('/', async (req, res, next) => {
+  // const { teamId: teamIdEnc } = req.params;
 
-export const getCompetitionsForTeam = () => {
-  // mandatory filter: teamId
-  // optional filters: stage, status
+  // const teamId = await executeStoredProcedure('Usp_DecryptIdKey', {
+  //   EncryptedTxt: teamIdEnc,
+  // });
 
-  return [
-    {
-        
-    }
-  ];
-};
+  const data = await executeQuery(
+    `select count(cp.id) as count, stage 
+    from ofm_stages as st 
+    left join ofm_competitions as cp 
+      on cp.stageno = st.pid
+    group by stage`,
+  );
+
+  return next(new AppResponse('', data));
+});
+
+export default router;

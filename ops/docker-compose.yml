@@ -1,0 +1,35 @@
+services:
+  server:
+    build:
+      target: 'server'
+      context: ../
+      dockerfile: ./ops/Dockerfile
+    restart: unless-stopped
+    pull_policy: build
+    environment:
+      - ENV=$ENV
+      - DB_HOST=$DB_HOST
+      - DB_NAME=$DB_NAME
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - CORS_ENABLED_URLS=$CORS_ENABLED_URLS
+    networks:
+      - nginx-proxy
+
+  # webapp:
+  #   pull_policy: build
+  #   build:
+  #     target: 'webapp'
+  #     context: ../
+  #     dockerfile: ./ops/Dockerfile
+  #     args:
+  #       - API_URL=$WEBAPP_API_URL
+  #   volumes:
+  #     - /var/www/html/profsummit/webapp:/var/www/html
+
+volumes:
+  builds:
+
+networks:
+  nginx-proxy:
+    external: true
