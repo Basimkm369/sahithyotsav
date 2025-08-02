@@ -28,6 +28,10 @@ import {
 import { Label } from '@/components/ui/label'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import { IoEyeOutline } from "react-icons/io5";
+
+// import { useCompetitions } from '@/hooks/useCompetitions'
+// import { useCompetitionsSummary } from '@/hooks/useCompetitionsSummary'
 
 export const Route = createFileRoute('/team-manager/')({
     component: TeamManagerPage,
@@ -45,6 +49,11 @@ function TeamManagerPage() {
 
     const [selectedParticipant, setSelectedParticipant] = useState<any | null>(null)
 
+
+    // const { data: competitions = [], isLoading } = useCompetitions(status, stage)
+
+
+    // const { data: summary = [], isLoading } = useCompetitionsSummary()
 
     const competitions = [
         {
@@ -136,6 +145,21 @@ function TeamManagerPage() {
 
                                 </div>
 
+                                {/* {isLoading ? (
+                                    <div className="text-center py-4">Loading summary...</div>
+                                ) : (
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                                        {summary.map((item) => (
+                                            <div
+                                                key={item.stage}
+                                                className="p-4 rounded-xl shadow border bg-white text-center"
+                                            >
+                                                <div className="text-lg font-semibold">{item.stage}</div>
+                                                <div className="text-2xl font-bold text-primary">{item.count}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )} */}
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {filtered.map((comp) => (
@@ -182,7 +206,7 @@ function TeamManagerPage() {
                                                     <TableCell>{p.name}</TableCell>
                                                     <TableCell className="text-right">
                                                         <Button size="icon" variant="ghost" onClick={() => setSelectedParticipant(p)}>
-                                                            👁
+                                                            <IoEyeOutline />
                                                         </Button>
                                                     </TableCell>
                                                 </TableRow>
