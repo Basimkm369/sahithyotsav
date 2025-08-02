@@ -1,14 +1,24 @@
 import express from 'express';
 import AppResponse from 'src/models/AppResponse';
 import { decryptId, executeQuery, executeStoredProcedure } from 'src/utils/db';
+import kvStore from 'src/utils/kvStore';
 
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
   const { eventId: eventIdEnc, teamId: teamIdEnc } = req.query;
 
-  const teamId = await decryptId(teamIdEnc as string);
-  const eventId = await decryptId(eventIdEnc as string);
+  let teamId = kvStore.get(`encId:${teamIdEnc}`);
+  if (!teamId) {
+    teamId = await decryptId(teamIdEnc as string);
+    kvStore.set(`encId:${teamIdEnc}`, teamId);
+  }
+
+  let eventId = kvStore.get(`encId:${eventIdEnc}`);
+  if (!eventId) {
+    eventId = await decryptId(eventIdEnc as string);
+    kvStore.set(`encId:${eventIdEnc}`, eventId);
+  }
 
   const data = await executeQuery(
     `select count(cp.id) as count, stage,
@@ -42,8 +52,17 @@ router.get('/competitions', async (req, res, next) => {
       page = 1,
     } = req.query;
 
-    const teamId = await decryptId(teamIdEnc as string);
-    const eventId = await decryptId(eventIdEnc as string);
+    let teamId = kvStore.get(`encId:${teamIdEnc}`);
+    if (!teamId) {
+      teamId = await decryptId(teamIdEnc as string);
+      kvStore.set(`encId:${teamIdEnc}`, teamId);
+    }
+
+    let eventId = kvStore.get(`encId:${eventIdEnc}`);
+    if (!eventId) {
+      eventId = await decryptId(eventIdEnc as string);
+      kvStore.set(`encId:${eventIdEnc}`, eventId);
+    }
 
     let query = `select
       im.itemname,
