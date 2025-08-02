@@ -22,7 +22,7 @@ router.get('/', async (req, res, next) => {
 
   const data = await executeQuery(
     `select count(cp.id) as count, stage,
-         MAX(tm.teamname) AS 'teamName'
+         MAX(tm.teamname) AS teamName
     from ofm_stages as st 
     left join ofm_competitions as cp 
       on cp.stageno = st.pid
@@ -75,14 +75,14 @@ router.get('/competitions', async (req, res, next) => {
 
     let query = `select
       COUNT(*) OVER () AS totalCount,
-      im.itemname,
-      ca.categoryname,
+      im.itemname as itemName,
+      ca.categoryname as categoryName,
       st.stage,
       cp.status,
       (
         SELECT
           pa.participant,
-          pa.chestno,
+          pa.chestno as chestNo,
           ai.status
         FROM
           ofm_assignitem AS ai
@@ -149,7 +149,7 @@ router.get('/participants', async (req, res, next) => {
     let query = `select
       COUNT(*) OVER () AS totalCount,
       im.itemname,
-      ca.categoryname,
+      ca.categoryname as categoryName,
       st.stage,
       cp.status,
       (
