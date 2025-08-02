@@ -16,16 +16,16 @@ services:
     networks:
       - nginx-proxy
 
-  # webapp:
-  #   pull_policy: build
-  #   build:
-  #     target: 'webapp'
-  #     context: ../
-  #     dockerfile: ./ops/Dockerfile
-  #     args:
-  #       - API_URL=$WEBAPP_API_URL
-  #   volumes:
-  #     - /var/www/html/profsummit/webapp:/var/www/html
+  webapp:
+    pull_policy: build
+    build:
+      target: 'webapp'
+      context: ../
+      dockerfile: ./ops/Dockerfile
+      args:
+        - API_URL=$WEBAPP_API_URL
+    volumes:
+      - /var/www/html/profsummit/webapp:/var/www/html
 
 volumes:
   builds:
