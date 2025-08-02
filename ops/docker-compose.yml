@@ -16,16 +16,16 @@ services:
     networks:
       - nginx-proxy
 
-  webapp:
+  client:
     pull_policy: build
     build:
-      target: 'webapp'
+      target: 'client'
       context: ../
       dockerfile: ./ops/Dockerfile
       args:
-        - API_URL=$WEBAPP_API_URL
+        - API_URL=$API_URL
     volumes:
-      - /var/www/html/profsummit/webapp:/var/www/html
+      - /var/www/html/sahityotsav_management/client:/var/www/html
 
 volumes:
   builds:
