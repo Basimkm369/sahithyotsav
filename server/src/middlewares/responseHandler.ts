@@ -13,8 +13,6 @@ const responseHandler = async (
   if (result instanceof Error) {
     logger.error((result as Error).message, {
       stack: (result as Error).stack,
-      userId: req.auth?.userId,
-      sessionId: req.auth?.sessionId,
       params: req.params,
       body: req.body,
       url: req.url,

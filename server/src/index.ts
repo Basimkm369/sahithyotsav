@@ -9,6 +9,7 @@ import AppError from './models/AppError';
 import logger from './utils/logger';
 import { CORS_ENABLED_URLS, PORT, verifyEnvVars, WARN_RESPONSE_TIME } from './config/env';
 import rateLimiter from './middlewares/rateLimiter';
+import { connectToDatabase } from './utils/db';
 
 dotenv.config();
 verifyEnvVars();
@@ -79,6 +80,8 @@ app.use((_, __, next) => {
 
 // Handle api response and errors
 app.use(responseHandler);
+
+connectToDatabase();
 
 // Start server
 app.listen(PORT, () => {

@@ -9,7 +9,7 @@ export const ENV: 'development' | 'production' = (process.env.ENV as any) ?? 'de
 export const CORS_ENABLED_URLS = process.env.CORS_ENABLED_URLS;
 
 // Database
-export const { DB_URL } = process.env;
+export const { DB_NAME, DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
 // Rate Limit
 export const MAX_REQUEST_LIMIT = +process.env.MAX_REQUEST_LIMIT! || 10000;
@@ -29,7 +29,10 @@ export const verifyEnvVars = () => {
   if (!CORS_ENABLED_URLS) missingVars.push('CORS_ENABLED_URLS');
   if (!MAX_REQUEST_LIMIT) missingVars.push('MAX_REQUEST_LIMIT');
   if (!MAX_REQUEST_WINDOW) missingVars.push('MAX_REQUEST_WINDOW');
-  if (!DB_URL) missingVars.push('DB_URL');
+  if (!DB_NAME) missingVars.push('DB_NAME');
+  if (!DB_USER) missingVars.push('DB_USER');
+  if (!DB_PASSWORD) missingVars.push('DB_PASSWORD');
+  if (!DB_HOST) missingVars.push('DB_HOST');
 
   if (missingVars.length) {
     console.log(
