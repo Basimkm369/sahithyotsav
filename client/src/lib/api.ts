@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 export const api = axios.create({
-  baseURL: 'https://sahityotsav.ssfkerala.org/api',
-  timeout: 10000,
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },

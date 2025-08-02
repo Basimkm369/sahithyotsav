@@ -1,31 +1,39 @@
-// src/hooks/useCompetitions.ts
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
-import { Route } from '@/routes/team-manager' 
+import { Route } from '@/routes/team-management'
 
 type Competition = {
   id: number
   name: string
-  stage: string
-  category: string
+  stageName: string
+  categoryName: string
   status: string
   participants: { name: string; chestNumber: string }[]
+  totalCount: number
 }
 
-// hooks/useCompetitions.ts
-export function useCompetitions(
-  status: string,
-  stageId: string,
-  categoryId: string,
-  page: string,
-  limit: string,
-) {
-  const { eventId, teamId } = Route.useSearch() // ✅ useSearch instead of useSearchParams
+export function useCompetitions({
+  status,
+  stageId,
+  categoryId,
+  page,
+  limit = 10,
+}: {
+  status: string
+  stageId: string
+  categoryId: string
+  page: number
+  limit?: number
+}) {
+  const { eventId, teamId } = Route.useSearch()
 
   return useQuery({
-    queryKey: ['teamManagement/competitions', { status, stageId, categoryId,page,limit, eventId, teamId }],
+    queryKey: [
+      'teamManagement/competitions',
+      { status, stageId, categoryId, page, limit, eventId, teamId },
+    ],
     queryFn: async () => {
-      const params: Record<string, string> = {}
+      const params: Record<string, any> = {}
       if (status !== 'all') params.status = status
       if (stageId !== 'all') params.stageId = stageId
       if (categoryId !== 'all') params.categoryId = categoryId
@@ -34,10 +42,14 @@ export function useCompetitions(
       params.page = page
       params.limit = limit
 
-      const res = await api.get<Competition[]>('/teamManagement/competitions', { params })
-      return res.data
+      const res = await api.get<{ data: Competition[] }>(
+        '/teamManagement/competitions',
+        {
+          params,
+        },
+      )
+      return res.data?.data ?? null
     },
-    keepPreviousData: true,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 5 * 1000,
   })
 }
