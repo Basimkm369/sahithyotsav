@@ -98,20 +98,22 @@ router.get('/competitions', async (req, res, next) => {
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
       inner join ofm_stages as st on st.pid = cp.stageno
-    group by
+    where 1=1
+    `;
+
+    if (stageId) query += ` and cp.stageno = '${stageId}'`;
+    if (status) query += ` and cp.status = '${status}'`;
+    if (categoryId) query += ` and im.categoryno = '${categoryId}'`;
+
+    query += ` group by
       im.itemname,
       ca.categoryname,
       st.stage,
       cp.status,
       cp.itemcode
     order by
-      im.itemname, ca.categoryname, st.stage`;
-
-    if (stageId) query += ` and cp.stageno = ${stageId}`;
-    if (status) query += ` and cp.status = ${status}`;
-    if (categoryId) query += ` and im.categoryno = ${categoryId}`;
-
-    query += ` offset (${page} - 1) * ${limit} rows
+      im.itemname, ca.categoryname, st.stage
+    offset (${page} - 1) * ${limit} rows
     fetch next ${limit} rows only;`;
 
     const data = await executeQuery(query);
@@ -178,7 +180,7 @@ router.get('/participants', async (req, res, next) => {
     order by
       im.itemname, ca.categoryname, st.stage`;
 
-    if (categoryId) query += ` and im.categoryno = ${categoryId}`;
+    if (categoryId) query += ` and im.categoryno = '${categoryId}'`;
 
     query += ` offset (${page} - 1) * ${limit} rows
     fetch next ${limit} rows only;`;
