@@ -17,7 +17,7 @@ COPY ./client/package.json .
 COPY ./client/package-lock.json .
 RUN npm ci --force
 COPY ./client .
-ARG API_URL
-ENV API_URL=${API_URL}
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
 RUN npm run build
 CMD ["sh", "-c", "rm -rf /var/www/html/* && cp -R ./build/* /var/www/html/"]
