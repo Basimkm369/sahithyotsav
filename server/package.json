@@ -299,7 +299,8 @@
   "scripts": {
     "dev": "tsnd -r tsconfig-paths/register --clear --watch 'src/**' src/index.ts",
     "start": "tsc -p tsconfig.json && tsc-alias && node build/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json && tsc-alias"
   },
   "author": "",
   "license": "ISC",
