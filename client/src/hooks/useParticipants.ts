@@ -45,6 +45,6 @@ export function useParticipants({
       )
       return res.data?.data ?? null
     },
-    staleTime: 5 * 1000,
+    refetchInterval: 5 * 1000,
   })
 }

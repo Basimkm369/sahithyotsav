@@ -44,7 +44,7 @@ export default function ParticipantsTab({
 
   const [page, setPage] = useState(1)
 
-  const { data, isFetching, error } = useParticipants({
+  const { data, isLoading, error } = useParticipants({
     categoryId,
     page,
     limit: ITEMS_PER_PAGE,
@@ -52,7 +52,7 @@ export default function ParticipantsTab({
 
   const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
 
-  if (!isFetching && !data) return 'No data found'
+  if (!isLoading && !data) return 'No data found'
   if (error) return `Error: ${error}`
   const totalPages = data?.[0]?.totalCount
     ? Math.ceil(data[0].totalCount / ITEMS_PER_PAGE)
@@ -97,7 +97,7 @@ export default function ParticipantsTab({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isFetching
+              {isLoading
                 ? Array.from({ length: 30 }).map((_, idx) => (
                     <TableRow key={idx}>
                       <TableCell>

@@ -34,7 +34,7 @@ export default function CompetitionsTab({
 
   const [page, setPage] = useState(1)
 
-  const { data, isFetching, error } = useCompetitions({
+  const { data, isLoading, error } = useCompetitions({
     status,
     stageId,
     categoryId,
@@ -42,7 +42,7 @@ export default function CompetitionsTab({
     limit: ITEMS_PER_PAGE,
   })
 
-  if (!isFetching && !data) return 'No data found'
+  if (!isLoading && !data) return 'No data found'
   if (error) return `Error: ${error}`
 
   const totalPages = data?.[0]?.totalCount
@@ -123,7 +123,7 @@ export default function CompetitionsTab({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {isFetching
+          {isLoading
             ? Array.from({ length: 24 }, () => 0).map((_, i) => (
                 <CompetitionCardSkeleton key={i} />
               ))
