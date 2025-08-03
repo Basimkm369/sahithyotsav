@@ -19,6 +19,13 @@ import {
 } from '@/components/ui/dialog'
 import { parseJSON } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export default function CompetitionsTab({
   categories,
@@ -45,7 +52,9 @@ export default function CompetitionsTab({
   if (isFetching) return 'Loading...'
   if (!data) return 'No data found'
   if (error) return `Error: ${error}`
-
+  const ITEMS_PER_PAGE = 12;
+  const totalPages = data?.[0]?.totalCount ? Math.ceil(data[0].totalCount / ITEMS_PER_PAGE) : 1;
+  
   return (
     <>
       <div className="grid gap-4 my-4">
@@ -152,6 +161,33 @@ export default function CompetitionsTab({
             </Card>
           ))}
         </div>
+
+        <div>
+           {/* Pagination */}
+          {totalPages > 1 && (
+            <Pagination className="mt-4 justify-end">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={page === 1}
+                  />
+                </PaginationItem>
+
+                <PaginationItem className="px-4 flex items-center">
+                  Page {page} of {totalPages}
+                </PaginationItem>
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={page === totalPages}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </div>
       </div>
       <Dialog
         open={!!selectedCompetition}
@@ -173,11 +209,20 @@ export default function CompetitionsTab({
                   <div className="text-sm text-gray-600">
                     Chest #: {participant.chestNumber}
                   </div>
+                  <div className="text-sm text-gray-600">
+                    Name: {participant.name}
+                  </div>
                   {participant.status && (
                     <div className="text-sm text-gray-600">
-                      Status: {participant.status}
+                      Status:{" "}
+                      {{
+                        E: "Enrolled",
+                        I: "In Progress",
+                        C: "Completed"
+                      }[participant.status] || participant.status}
                     </div>
                   )}
+
                 </Card>
               ))}
             </div>
