@@ -27,20 +27,24 @@ export default function CompetitionCard({ data }: { data: Competition }) {
         </div>
         <div className="mt-1">{getCompetitionStatusBadge(data.status)}</div>
       </CardHeader>
-      <CardContent>
-        <div className="flex flex-col gap-1">
-          <div className="flex gap-2">
-            <LucideMapPin className="w-5 opacity-40" />
+      <CardContent className="flex flex-col h-full justify-between">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          <div className="flex gap-1 items-center flex-nowrap">
+            <LucideMapPin className="w-4 opacity-40" />
             {data.stageName}
           </div>
-          <div className="flex gap-2">
-            <LucideCalendar className="w-5 opacity-40" />
-            {dayjs(data.date).format('D MMMM')}
-          </div>
-          <div className="flex gap-2">
-            <LucideClock className="w-5 opacity-40" />
-            {formatTime(data.startTime)} - {formatTime(data.startTime)}
-          </div>
+          {dayjs(data.date).isValid() && (
+            <div className="flex gap-1 items-center flex-nowrap">
+              <LucideCalendar className="w-4 opacity-40" />
+              {dayjs(data.date).format('D MMM')}
+            </div>
+          )}
+          {formatTime(data.startTime) && formatTime(data.startTime) && (
+            <div className="flex gap-1 items-center flex-nowrap">
+              <LucideClock className="w-4 opacity-40" />
+              {formatTime(data.startTime)} - {formatTime(data.startTime)}
+            </div>
+          )}
         </div>
         <div className="border-t mt-3 pt-3 space-y-2">
           {data.participants.map((participant) => (

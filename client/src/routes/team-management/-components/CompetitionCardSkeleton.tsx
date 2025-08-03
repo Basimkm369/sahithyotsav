@@ -25,19 +25,19 @@ export default function CompetitionCardSkeleton() {
         </div>
       </CardHeader>
 
-      <CardContent>
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2 items-center">
-            <LucideMapPin className="w-5 opacity-30" />
-            <Skeleton className="h-4 w-32" />
+      <CardContent className="flex flex-col h-full justify-between">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          <div className="flex gap-1 items-center flex-nowrap">
+            <LucideMapPin className="w-4 opacity-40" />
+            <Skeleton className="h-4 w-20" />
           </div>
-          <div className="flex gap-2 items-center">
-            <LucideCalendar className="w-5 opacity-30" />
+          <div className="flex gap-1 items-center flex-nowrap">
+            <LucideCalendar className="w-4 opacity-40" />
+            <Skeleton className="h-4 w-12" />
+          </div>
+          <div className="flex gap-1 items-center flex-nowrap">
+            <LucideClock className="w-4 opacity-40" />
             <Skeleton className="h-4 w-24" />
-          </div>
-          <div className="flex gap-2 items-center">
-            <LucideClock className="w-5 opacity-30" />
-            <Skeleton className="h-4 w-28" />
           </div>
         </div>
 
