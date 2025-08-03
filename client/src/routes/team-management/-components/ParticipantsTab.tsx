@@ -24,7 +24,10 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { IoEyeOutline } from "react-icons/io5";
 
+const ITEMS_PER_PAGE = 30;
 export default function ParticipantsTab({
     categories
 }: {
@@ -38,6 +41,7 @@ export default function ParticipantsTab({
     const { data, isFetching, error } = useParticipants({
         categoryId,
         page,
+        limit: ITEMS_PER_PAGE,
     })
 
     const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
@@ -45,7 +49,6 @@ export default function ParticipantsTab({
     if (isFetching) return 'Loading...'
     if (!data) return 'No data found'
     if (error) return `Error: ${error}`
-    const ITEMS_PER_PAGE = 12;
     const totalPages = data?.[0]?.totalCount ? Math.ceil(data[0].totalCount / ITEMS_PER_PAGE) : 1;
 
     return (
@@ -80,33 +83,41 @@ export default function ParticipantsTab({
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {data.map((partic) => (
-                        <Card
-                            key={partic.id}
-                            onClick={() => setSelectedParticipant(partic)}
-                            className="cursor-pointer"
-                        >
-                            <CardHeader>
-                                <CardTitle>{partic.name}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-sm text-gray-600">
-                                    Chest #: {partic.chestNumber}
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                    Category: {partic.categoryName}
-                                </div>
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Chest #</TableHead>
+                                <TableHead>Category</TableHead>
+                                <TableHead className="text-center">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {data.map((partic) => (
+                                <TableRow key={partic.id}>
+                                    <TableCell>{partic.name}</TableCell>
+                                    <TableCell>{partic.chestNumber}</TableCell>
+                                    <TableCell>{partic.categoryName}</TableCell>
+                                    <TableCell className="text-center">
+                                        <button
+                                            onClick={() => setSelectedParticipant(partic)}
+                                            className="text-blue-600 hover:text-blue-800"
+                                            title="View Details"
+                                        >
+                                            <IoEyeOutline />
+                                        </button>
 
-                            </CardContent>
-                        </Card>
-                    ))}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                 </div>
-
-                <div>
+                <div className="w-full flex justify-center mt-4">
                     {/* Pagination */}
                     {totalPages > 1 && (
-                        <Pagination className="mt-4 justify-end">
+                        <Pagination className="mt-4">
                             <PaginationContent>
                                 <PaginationItem>
                                     <PaginationPrevious

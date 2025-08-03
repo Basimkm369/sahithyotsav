@@ -181,10 +181,10 @@ export default function CompetitionsTab({
             ))}
         </div>
 
-        <div>
+        <div className="w-full flex justify-center mt-4">
           {/* Pagination */}
           {totalPages > 1 && (
-            <Pagination className="mt-4 justify-end">
+            <Pagination className="mt-4">
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
