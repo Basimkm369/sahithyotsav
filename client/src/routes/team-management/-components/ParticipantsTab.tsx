@@ -61,29 +61,25 @@ export default function ParticipantsTab({
   return (
     <>
       <div className="grid gap-4 my-4">
-        <div className="flex flex-col md:flex-row flex-wrap gap-4 justify-center items-center">
+        <div className="flex flex-wrap gap-4 justify-center items-center">
           {/* Category Filter */}
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Select
-              value={categoryId}
-              onValueChange={(value) => {
-                setCategoryId(value)
-                setPage(1)
-              }}
-            >
-              <SelectTrigger className="w-[160px] sm:w-[200px]">
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem value={category.number}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Select
+            value={categoryId}
+            onValueChange={(value) => {
+              setCategoryId(value)
+              setPage(1)
+            }}
+          >
+            <SelectTrigger className="w-[160px] sm:w-[200px]">
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories.map((category) => (
+                <SelectItem value={category.number}>{category.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <Card className="py-0 overflow-hidden">

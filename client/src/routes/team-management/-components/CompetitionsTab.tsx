@@ -52,74 +52,66 @@ export default function CompetitionsTab({
   return (
     <>
       <div className="grid gap-4 my-4">
-        <div className="flex flex-col md:flex-row flex-wrap gap-4 justify-center items-center">
+        <div className="flex flex-wrap gap-4 justify-center items-center">
           {/* Stage Filter */}
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Select
-              value={stageId}
-              onValueChange={(value) => {
-                setStageId(value)
-                setPage(1)
-              }}
-            >
-              <SelectTrigger className="w-[160px] sm:w-[200px]">
-                <SelectValue placeholder="Select stage" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Stages</SelectItem>
-                {stages.map((stage) => (
-                  <SelectItem value={stage.number}>{stage.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Select
+            value={stageId}
+            onValueChange={(value) => {
+              setStageId(value)
+              setPage(1)
+            }}
+          >
+            <SelectTrigger className="w-[160px] sm:w-[200px]">
+              <SelectValue placeholder="Select stage" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Stages</SelectItem>
+              {stages.map((stage) => (
+                <SelectItem value={stage.number}>{stage.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           {/* Status Filter */}
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Select
-              value={status}
-              onValueChange={(value) => {
-                setStatus(value)
-                setPage(1)
-              }}
-            >
-              <SelectTrigger className="w-[160px] sm:w-[200px]">
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="N">Not Started</SelectItem>
-                <SelectItem value="S">Started</SelectItem>
-                <SelectItem value="P">In Progress</SelectItem>
-                <SelectItem value="C">Completed</SelectItem>
-                <SelectItem value="A">Announced</SelectItem>
-                <SelectItem value="D">Prize Distributed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <Select
+            value={status}
+            onValueChange={(value) => {
+              setStatus(value)
+              setPage(1)
+            }}
+          >
+            <SelectTrigger className="w-[160px] sm:w-[200px]">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="N">Not Started</SelectItem>
+              <SelectItem value="S">Started</SelectItem>
+              <SelectItem value="P">In Progress</SelectItem>
+              <SelectItem value="C">Completed</SelectItem>
+              <SelectItem value="A">Announced</SelectItem>
+              <SelectItem value="D">Prize Distributed</SelectItem>
+            </SelectContent>
+          </Select>
 
           {/* Category Filter */}
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Select
-              value={categoryId}
-              onValueChange={(value) => {
-                setCategoryId(value)
-                setPage(1)
-              }}
-            >
-              <SelectTrigger className="w-[160px] sm:w-[200px]">
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem value={category.number}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Select
+            value={categoryId}
+            onValueChange={(value) => {
+              setCategoryId(value)
+              setPage(1)
+            }}
+          >
+            <SelectTrigger className="w-[160px] sm:w-[200px]">
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories.map((category) => (
+                <SelectItem value={category.number}>{category.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
