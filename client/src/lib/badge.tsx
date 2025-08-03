@@ -24,6 +24,7 @@ export const getCompetitionStatusBadge = (status: string, count?: number) => {
   }
 
   const label = count !== undefined ? `${count} ${getLabel()}` : getLabel()
+  if (!label) return <></>
 
   switch (status) {
     case 'N':
@@ -93,6 +94,8 @@ export const getCompetitionStatusBadge = (status: string, count?: number) => {
 }
 
 export const getParticipantStatusBadge = (status: string) => {
+  if (!status) return <></>
+
   switch (status) {
     case 'E': // Enrolled
       return (
