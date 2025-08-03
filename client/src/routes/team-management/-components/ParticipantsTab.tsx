@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card'
-import { Participant, useParticipants } from '@/hooks/useParticipants'
-import { TeamManagementSummary } from '@/hooks/useTeamManagementSummary'
+import { Participant, useParticipants } from '@/routes/team-management/-hooks/useParticipants'
+import { TeamManagementSummary } from '@/routes/team-management/-hooks/useTeamManagementSummary'
 import {
   Select,
   SelectTrigger,

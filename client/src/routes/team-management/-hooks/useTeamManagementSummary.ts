@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
-import { Route } from '@/routes/team-management'
 
 export type TeamManagementSummary = {
   teamName: string
@@ -11,9 +10,13 @@ export type TeamManagementSummary = {
   }[]
 }
 
-export function useTeamManagementSummary() {
-  const { eventId, teamId } = Route.useSearch()
-
+export function useTeamManagementSummary({
+  eventId,
+  teamId,
+}: {
+  eventId: string
+  teamId: string
+}) {
   return useQuery({
     queryKey: ['teamManagement', { eventId, teamId }],
     queryFn: async () => {

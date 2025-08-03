@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TeamManagementIndexRouteImport } from './routes/team-management/index'
+import { Route as StageManagementIndexRouteImport } from './routes/stage-management/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,30 +23,39 @@ const TeamManagementIndexRoute = TeamManagementIndexRouteImport.update({
   path: '/team-management/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StageManagementIndexRoute = StageManagementIndexRouteImport.update({
+  id: '/stage-management/',
+  path: '/stage-management/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/stage-management': typeof StageManagementIndexRoute
   '/team-management': typeof TeamManagementIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/stage-management': typeof StageManagementIndexRoute
   '/team-management': typeof TeamManagementIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/stage-management/': typeof StageManagementIndexRoute
   '/team-management/': typeof TeamManagementIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/team-management'
+  fullPaths: '/' | '/stage-management' | '/team-management'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/team-management'
-  id: '__root__' | '/' | '/team-management/'
+  to: '/' | '/stage-management' | '/team-management'
+  id: '__root__' | '/' | '/stage-management/' | '/team-management/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  StageManagementIndexRoute: typeof StageManagementIndexRoute
   TeamManagementIndexRoute: typeof TeamManagementIndexRoute
 }
 
@@ -65,11 +75,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeamManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stage-management/': {
+      id: '/stage-management/'
+      path: '/stage-management'
+      fullPath: '/stage-management'
+      preLoaderRoute: typeof StageManagementIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  StageManagementIndexRoute: StageManagementIndexRoute,
   TeamManagementIndexRoute: TeamManagementIndexRoute,
 }
 export const routeTree = rootRouteImport

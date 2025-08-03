@@ -5,7 +5,7 @@ import {
   CardContent,
   CardDescription,
 } from '@/components/ui/card'
-import { Competition } from '@/hooks/useCompetitions'
+import { Competition } from '@/routes/team-management/-hooks/useCompetitions'
 import { LucideCalendar, LucideClock, LucideMapPin } from 'lucide-react'
 import dayjs from 'dayjs'
 import { formatTime } from '@/lib/datetime'

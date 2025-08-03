@@ -1,5 +1,5 @@
-import { Competition, useCompetitions } from '@/hooks/useCompetitions'
-import { TeamManagementSummary } from '@/hooks/useTeamManagementSummary'
+import { Competition, useCompetitions } from '@/routes/team-management/-hooks/useCompetitions'
+import { TeamManagementSummary } from '@/routes/team-management/-hooks/useTeamManagementSummary'
 import {
   Select,
   SelectTrigger,

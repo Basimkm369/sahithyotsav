@@ -31,13 +31,13 @@ router.get('/', async (req, res, next) => {
     group by st.stage, st.pid`,
   );
 
-  let teamName = kvStore.get(`team:${teamId}:name`);
+  let teamName = kvStore.get(`${eventId}:team:${teamId}:name`);
   if (!teamName) {
     const teamNameRes = await executeQuery(
       `select teamname as name from ofm_team where teamno = ${teamId}`,
     );
     teamName = teamNameRes?.[0].name;
-    kvStore.set(`team:${teamId}:name`, teamName);
+    kvStore.set(`${eventId}:team:${teamId}:name`, teamName);
   }
 
   let categories = kvStore.get(`categories`);

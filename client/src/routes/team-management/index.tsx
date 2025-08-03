@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { useTeamManagementSummary } from '@/hooks/useTeamManagementSummary'
+import { useTeamManagementSummary } from '@/routes/team-management/-hooks/useTeamManagementSummary'
 import CompetitionsTab from './-components/CompetitionsTab'
 import ParticipantsTab from './-components/ParticipantsTab'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -18,7 +18,8 @@ export const Route = createFileRoute('/team-management/')({
 })
 
 function TeamManagementPage() {
-  const { data, isLoading } = useTeamManagementSummary()
+  const { eventId, teamId } = Route.useSearch()
+  const { data, isLoading } = useTeamManagementSummary({ eventId, teamId })
 
   if (isLoading) {
     return (
@@ -33,9 +34,13 @@ function TeamManagementPage() {
     <div className="space-y-4 px-4 pb-8">
       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8 mb-6">
         <div className="h-30">
-          <img src="/banner.png" alt="" className='w-full h-full object-contain'/>
+          <img
+            src="/banner.png"
+            alt=""
+            className="w-full h-full object-contain"
+          />
         </div>
-        <div className='text-center sm:text-left'>
+        <div className="text-center sm:text-left">
           <div className="text-2xl font-semibold">Team Management</div>
           <div className="text-4xl font-bold"> {data.teamName}</div>
         </div>
