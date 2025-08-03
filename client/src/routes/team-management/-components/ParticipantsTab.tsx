@@ -30,7 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { getCompetitionStatusBadge } from '@/lib/badge'
+import { getCompetitionStatusBadge, getParticipantStatusBadge } from '@/lib/badge'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -211,17 +211,33 @@ export default function ParticipantsTab({
         {!!selectedParticipant && (
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{selectedParticipant!.name} - </DialogTitle>
+              <DialogTitle>
+                {selectedParticipant.name} - {selectedParticipant.categoryName}
+              </DialogTitle>
             </DialogHeader>
-
             <div className="grid gap-3 mt-4">
-              {selectedParticipant!.competitions.map((competition, idx) => (
-                <Card key={idx} className="p-3">
-                  <div className="font-medium">{competition.itemName}</div>
-                  <div className="text-sm text-gray-600">
-                    Status: {getCompetitionStatusBadge(competition.status)}
+              {selectedParticipant.competitions.map((competition, idx) => (
+                <div
+                  key={idx}
+                  className={cn(
+                    'pb-3',
+                    idx < selectedParticipant.competitions.length - 1 &&
+                      'border-b border-gray-200',
+                  )}
+                >
+                  <div className="font-medium flex gap-2">
+                    {competition.itemName}
+                    {getCompetitionStatusBadge(competition.status)}
+                    {getParticipantStatusBadge(competition.participantStatus)}
+                    {competition.rank === 1
+                      ? '🥇'
+                      : competition.rank === 2
+                        ? '🥈'
+                        : competition.rank === 3
+                          ? '🥉'
+                          : ''}
                   </div>
-                </Card>
+                </div>
               ))}
             </div>
           </DialogContent>

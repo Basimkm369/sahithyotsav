@@ -32,7 +32,9 @@ function TeamManagementPage() {
   return (
     <div className="space-y-4 px-4 pb-8">
       <div className="flex gap-4 justify-center items-center mt-8 mb-6">
-        <div className="w-80 h-30 bg-gray-300">Logo here</div>
+        <div className="h-30">
+          <img src="/banner.png" alt="" className='w-full h-full object-contain'/>
+        </div>
         <div>
           <div className="text-2xl font-semibold">Team Management</div>
           <div className="text-4xl font-bold"> {data.teamName}</div>
