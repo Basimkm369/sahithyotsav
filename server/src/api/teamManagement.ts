@@ -90,7 +90,7 @@ router.get('/competitions', async (req, res, next) => {
       cp.status,
       (
         SELECT
-          pa.participant,
+          pa.participant as name,
           pa.chestno as chestNumber,
           ai.status
         FROM

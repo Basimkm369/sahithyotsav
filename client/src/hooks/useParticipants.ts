@@ -17,7 +17,7 @@ export type Participant = {
 export function useParticipants({
   categoryId,
   page,
-  limit = 10,
+  limit = 30,
 }: {
   categoryId: string
   page: number

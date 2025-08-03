@@ -17,7 +17,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { parseJSON } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import {
   Pagination,
@@ -25,7 +24,11 @@ import {
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from '@/components/ui/pagination'
+import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+
+const ITEMS_PER_PAGE = 24
 
 export default function CompetitionsTab({
   categories,
@@ -45,23 +48,25 @@ export default function CompetitionsTab({
     stageId,
     categoryId,
     page,
+    limit: ITEMS_PER_PAGE,
   })
 
   const [selectedCompetition, setSelectedCompetition] = useState<Competition>()
 
-  if (isFetching) return 'Loading...'
-  if (!data) return 'No data found'
+  if (!isFetching && !data) return 'No data found'
   if (error) return `Error: ${error}`
-  const ITEMS_PER_PAGE = 12;
-  const totalPages = data?.[0]?.totalCount ? Math.ceil(data[0].totalCount / ITEMS_PER_PAGE) : 1;
-  
+
+  const totalPages = data?.[0]?.totalCount
+    ? Math.ceil(data[0].totalCount / ITEMS_PER_PAGE)
+    : 1
+
   return (
     <>
       <div className="grid gap-4 my-4">
         <div className="flex flex-col md:flex-row flex-wrap gap-4 justify-center items-center">
           {/* Stage Filter */}
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Label htmlFor="stageId" className="w-[60px] text-right">
+            <Label htmlFor="stageId" className="text-right">
               Stage
             </Label>
             <Select
@@ -85,7 +90,7 @@ export default function CompetitionsTab({
 
           {/* Status Filter */}
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Label htmlFor="status" className="w-[60px] text-right">
+            <Label htmlFor="status" className="text-right">
               Status
             </Label>
             <Select
@@ -112,7 +117,7 @@ export default function CompetitionsTab({
 
           {/* Category Filter */}
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Label htmlFor="categoryId" className="w-[60px] text-right">
+            <Label htmlFor="categoryId" className="text-right">
               Category
             </Label>
             <Select
@@ -138,39 +143,57 @@ export default function CompetitionsTab({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {data.map((comp) => (
-            <Card
-              key={comp.id}
-              onClick={() => setSelectedCompetition(comp)}
-              className="cursor-pointer"
-            >
-              <CardHeader>
-                <CardTitle>{comp.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm text-gray-600">
-                  Stage: {comp.stageName}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Category: {comp.categoryName}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Status: {getCompetitionStatusBadge(comp.status)}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          {!isFetching &&
+            data?.map((comp) => (
+              <Card
+                key={comp.id}
+                onClick={() => setSelectedCompetition(comp)}
+                className="cursor-pointer gap-0"
+              >
+                <CardHeader>
+                  <CardTitle>{comp.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-1">
+                  <div className="text-sm text-gray-600">
+                    Stage: {comp.stageName}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Category: {comp.categoryName}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Status: {getCompetitionStatusBadge(comp.status)}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          {isFetching &&
+            Array.from({ length: 24 }, () => 0).map((_, i) => (
+              <Card key={i} className="gap-0">
+                <CardHeader>
+                  <Skeleton className="h-7 w-50" />
+                </CardHeader>
+                <CardContent className="flex flex-col gap-1">
+                  <Skeleton className="h-4 w-60" />
+                  <Skeleton className="h-4 w-60" />
+                  <Skeleton className="h-4 w-60" />
+                </CardContent>
+              </Card>
+            ))}
         </div>
 
         <div>
-           {/* Pagination */}
+          {/* Pagination */}
           {totalPages > 1 && (
             <Pagination className="mt-4 justify-end">
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                    disabled={page === 1}
+                    className={cn(
+                      page === 1
+                        ? 'opacity-30 cursor-not-allowed'
+                        : 'cursor-pointer',
+                    )}
                   />
                 </PaginationItem>
 
@@ -180,8 +203,14 @@ export default function CompetitionsTab({
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                    disabled={page === totalPages}
+                    onClick={() =>
+                      setPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    className={cn(
+                      page === totalPages
+                        ? 'opacity-30 cursor-not-allowed'
+                        : 'cursor-pointer',
+                    )}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -202,28 +231,30 @@ export default function CompetitionsTab({
               </DialogTitle>
             </DialogHeader>
 
-            <div className="grid gap-3 mt-4">
+            <div className="grid gap-2 mt-4">
               {selectedCompetition!.participants.map((participant, idx) => (
-                <Card key={idx} className="p-3">
+                <div
+                  key={participant.chestNumber}
+                  className={cn(
+                    idx < selectedCompetition!.participants.length - 1 &&
+                      'border-b pb-2',
+                  )}
+                >
                   <div className="font-medium">{participant.name}</div>
                   <div className="text-sm text-gray-600">
                     Chest #: {participant.chestNumber}
                   </div>
-                  <div className="text-sm text-gray-600">
-                    Name: {participant.name}
-                  </div>
                   {participant.status && (
                     <div className="text-sm text-gray-600">
-                      Status:{" "}
+                      Status:{' '}
                       {{
-                        E: "Enrolled",
-                        I: "In Progress",
-                        C: "Completed"
+                        E: 'Enrolled',
+                        I: 'In Progress',
+                        C: 'Completed',
                       }[participant.status] || participant.status}
                     </div>
                   )}
-
-                </Card>
+                </div>
               ))}
             </div>
           </DialogContent>
@@ -243,16 +274,16 @@ export const getCompetitionStatusBadge = (status: string) => {
         >
           Not Started
         </Badge>
-      );
+      )
     case 'S':
       return (
         <Badge
           variant="outline"
           className="bg-blue-100 text-blue-800 border-blue-200"
         >
-          Started	
+          Started
         </Badge>
-      );
+      )
     case 'P':
       return (
         <Badge
@@ -261,7 +292,7 @@ export const getCompetitionStatusBadge = (status: string) => {
         >
           In Progress
         </Badge>
-      );
+      )
     case 'C':
     case 'M': // Mark Entry Closed
     case 'F': // Finalized
@@ -273,7 +304,7 @@ export const getCompetitionStatusBadge = (status: string) => {
         >
           Completed
         </Badge>
-      );
+      )
     case 'A':
       return (
         <Badge
@@ -282,7 +313,7 @@ export const getCompetitionStatusBadge = (status: string) => {
         >
           Announced
         </Badge>
-      );
+      )
     case 'D':
       return (
         <Badge
@@ -291,13 +322,12 @@ export const getCompetitionStatusBadge = (status: string) => {
         >
           Prize Distributed
         </Badge>
-      );
+      )
     default:
       return (
         <Badge variant="outline" className="bg-muted text-muted-foreground">
           {status}
         </Badge>
-      );
+      )
   }
-};
-
+}

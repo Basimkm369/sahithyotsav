@@ -17,7 +17,7 @@ export function useCompetitions({
   stageId,
   categoryId,
   page,
-  limit = 10,
+  limit = 24,
 }: {
   status: string
   stageId: string

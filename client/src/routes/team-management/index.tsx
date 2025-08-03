@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useTeamManagementSummary } from '@/hooks/useTeamManagementSummary'
 import CompetitionsTab from './-components/CompetitionsTab'
 import ParticipantsTab from './-components/ParticipantsTab'
-
+import LoadingSpinner from '@/components/LoadingSpinner'
 
 export const Route = createFileRoute('/team-management/')({
   component: TeamManagementPage,
@@ -22,38 +22,34 @@ export const Route = createFileRoute('/team-management/')({
 function TeamManagementPage() {
   const { data, isLoading } = useTeamManagementSummary()
 
-  if (isLoading) return 'Loading...'
+  if (isLoading) {
+    return (
+      <div className="h-screen">
+        <LoadingSpinner />
+      </div>
+    )
+  }
   if (!data) return 'No data found'
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-center">Team: {data.teamName}</h2>
-
-      <Card className="shadow-xl">
-        <CardContent>
-          <Tabs defaultValue="competitions">
-            <div className="flex justify-center">
-              <TabsList>
-                <TabsTrigger value="competitions">Competitions</TabsTrigger>
-                <TabsTrigger value="participants">Participants</TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent value="competitions">
-              <CompetitionsTab
-                categories={data.categories}
-                stages={data.stages}
-              />
-            </TabsContent>
-            <TabsContent value="participants">
-              <ParticipantsTab
-                categories={data.categories}
-              />
-            </TabsContent>
-
-          </Tabs>
-        </CardContent>
-      </Card>
+    <div className="space-y-4 px-4">
+      <h2 className="text-4xl font-bold text-center mt-8 mb-6">
+        Team Management: {data.teamName}
+      </h2>
+      <Tabs defaultValue="competitions">
+        <div className="flex justify-center mb-2">
+          <TabsList>
+            <TabsTrigger value="competitions">Competitions</TabsTrigger>
+            <TabsTrigger value="participants">Participants</TabsTrigger>
+          </TabsList>
+        </div>
+        <TabsContent value="competitions">
+          <CompetitionsTab categories={data.categories} stages={data.stages} />
+        </TabsContent>
+        <TabsContent value="participants">
+          <ParticipantsTab categories={data.categories} />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
