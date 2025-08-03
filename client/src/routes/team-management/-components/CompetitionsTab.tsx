@@ -91,10 +91,12 @@ export default function CompetitionsTab({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="S">S</SelectItem>
-                <SelectItem value="F">F</SelectItem>
-                <SelectItem value="N">N</SelectItem>
-                <SelectItem value="M">M</SelectItem>
+                <SelectItem value="N">Not Started</SelectItem>
+                <SelectItem value="S">Started</SelectItem>
+                <SelectItem value="P">In Progress</SelectItem>
+                <SelectItem value="C">Completed</SelectItem>
+                <SelectItem value="A">Announced</SelectItem>
+                <SelectItem value="D">Prize Distributed</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -188,24 +190,6 @@ export default function CompetitionsTab({
 
 export const getCompetitionStatusBadge = (status: string) => {
   switch (status) {
-    case 'S':
-      return (
-        <Badge
-          variant="outline"
-          className="bg-blue-100 text-blue-800 border-blue-200"
-        >
-          Scheduled
-        </Badge>
-      )
-    case 'F':
-      return (
-        <Badge
-          variant="outline"
-          className="bg-green-100 text-green-800 border-green-200"
-        >
-          Finished
-        </Badge>
-      )
     case 'N':
       return (
         <Badge
@@ -214,8 +198,17 @@ export const getCompetitionStatusBadge = (status: string) => {
         >
           Not Started
         </Badge>
-      )
-    case 'M':
+      );
+    case 'S':
+      return (
+        <Badge
+          variant="outline"
+          className="bg-blue-100 text-blue-800 border-blue-200"
+        >
+          Started	
+        </Badge>
+      );
+    case 'P':
       return (
         <Badge
           variant="outline"
@@ -223,12 +216,43 @@ export const getCompetitionStatusBadge = (status: string) => {
         >
           In Progress
         </Badge>
-      )
+      );
+    case 'C':
+    case 'M': // Mark Entry Closed
+    case 'F': // Finalized
+    case 'O': // Media Completed
+      return (
+        <Badge
+          variant="outline"
+          className="bg-green-100 text-green-800 border-green-200"
+        >
+          Completed
+        </Badge>
+      );
+    case 'A':
+      return (
+        <Badge
+          variant="outline"
+          className="bg-purple-100 text-purple-800 border-purple-200"
+        >
+          Announced
+        </Badge>
+      );
+    case 'D':
+      return (
+        <Badge
+          variant="outline"
+          className="bg-teal-100 text-teal-800 border-teal-200"
+        >
+          Prize Distributed
+        </Badge>
+      );
     default:
       return (
         <Badge variant="outline" className="bg-muted text-muted-foreground">
           {status}
         </Badge>
-      )
+      );
   }
-}
+};
+
