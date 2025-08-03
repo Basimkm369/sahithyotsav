@@ -8,8 +8,16 @@ export type Competition = {
   stageName: string
   categoryName: string
   status: string
-  participants: { name: string; chestNumber: string; status: string }[]
+  participants: {
+    name: string
+    chestNumber: string
+    status: string
+    rank: number
+  }[]
   totalCount: number
+  date: string
+  startTime: string
+  endTime: string
 }
 
 export function useCompetitions({

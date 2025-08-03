@@ -88,11 +88,15 @@ router.get('/competitions', async (req, res, next) => {
       ca.categoryname as categoryName,
       st.stage as stageName,
       cp.status,
+      cp.programdate as date,
+      cp.scheduledstart as startTime,
+      cp.scheduledend as endTime,
       (
         SELECT
           pa.participant as name,
           pa.chestno as chestNumber,
-          ai.status
+          ai.status,
+          ai.rank
         FROM
           ofm_assignitem AS ai
           LEFT JOIN ofm_participant AS pa ON pa.chestno = ai.chestno
@@ -124,7 +128,10 @@ router.get('/competitions', async (req, res, next) => {
       st.stage,
       cp.status,
       cp.itemcode,
-      cp.id
+      cp.id,
+      cp.programdate,
+      cp.scheduledstart,
+      cp.scheduledend
     order by
       im.itemname, ca.categoryname, st.stage
     offset (${page} - 1) * ${limit} rows
@@ -134,7 +141,15 @@ router.get('/competitions', async (req, res, next) => {
 
     const parsedData = data.map((row: any) => ({
       ...row,
-      participants: row.participants ? JSON.parse(row.participants) : [],
+      participants: row.participants
+        ? JSON.parse(row.participants).map((p: any) => ({
+            ...p,
+            rank:
+              p.rank <= 3 && ['A', 'D', 'C', 'F'].includes(row.status)
+                ? p.rank
+                : 0,
+          }))
+        : [],
     }));
 
     return next(new AppResponse('', parsedData));
@@ -173,7 +188,8 @@ router.get('/participants', async (req, res, next) => {
           SELECT
             it.itemname as itemName,
             ai.status as participantStatus,
-            ca.status as competitionStatus
+            ai.rank as rank,
+            ca.status as status
           FROM
             ofm_assignitem AS ai
             LEFT JOIN ofm_competitions AS ca ON ca.itemcode = ai.itemcode
@@ -191,7 +207,7 @@ router.get('/participants', async (req, res, next) => {
 
     if (categoryId) query += ` and pa.categoryno = '${categoryId}'`;
 
-    query += `order by pa.chestno, ca.categoryname, pa.participant
+    query += ` order by pa.chestno, ca.categoryname, pa.participant
       offset (${page} - 1) * ${limit} rows
       fetch next ${limit} rows only;`;
 
@@ -199,7 +215,15 @@ router.get('/participants', async (req, res, next) => {
 
     const parsedData = data.map((row: any) => ({
       ...row,
-      competitions: row.competitions ? JSON.parse(row.competitions) : [],
+      competitions: row.competitions
+        ? JSON.parse(row.competitions).map((c: any) => ({
+            ...c,
+            rank:
+              c.rank <= 3 && ['A', 'D', 'C', 'F'].includes(c.status)
+                ? c.rank
+                : 0,
+          }))
+        : [],
     }));
 
     return next(new AppResponse('', parsedData));

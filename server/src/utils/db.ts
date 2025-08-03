@@ -17,7 +17,7 @@ const config = {
   },
 };
 
-let pool: any;
+let pool: sql.ConnectionPool;
 export async function connectToDatabase() {
   try {
     pool = new sql.ConnectionPool(config);

@@ -1,6 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useTeamManagementSummary } from '@/hooks/useTeamManagementSummary'
 import CompetitionsTab from './-components/CompetitionsTab'
@@ -32,10 +30,14 @@ function TeamManagementPage() {
   if (!data) return 'No data found'
 
   return (
-    <div className="space-y-4 px-4">
-      <h2 className="text-4xl font-bold text-center mt-8 mb-6">
-        Team Management: {data.teamName}
-      </h2>
+    <div className="space-y-4 px-4 pb-8">
+      <div className="flex gap-4 justify-center items-center mt-8 mb-6">
+        <div className="w-80 h-30 bg-gray-300">Logo here</div>
+        <div>
+          <div className="text-2xl font-semibold">Team Management</div>
+          <div className="text-4xl font-bold"> {data.teamName}</div>
+        </div>
+      </div>
       <Tabs defaultValue="competitions">
         <div className="flex justify-center mb-2">
           <TabsList>
