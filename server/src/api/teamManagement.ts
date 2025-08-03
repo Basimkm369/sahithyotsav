@@ -43,7 +43,7 @@ router.get('/', async (req, res, next) => {
   let categories = kvStore.get(`categories`);
   if (!categories) {
     categories = await executeQuery(
-      `select categoryno as no, categoryname as name from ofm_category`,
+      `select categoryno as number, categoryname as name from ofm_category`,
     );
     kvStore.set('categories', categories);
   }
@@ -111,7 +111,11 @@ router.get('/competitions', async (req, res, next) => {
     `;
 
     if (stageId) query += ` and cp.stageno = '${stageId}'`;
-    if (status) query += ` and cp.status = '${status}'`;
+    if (status === 'C') {
+      query += ` and cp.status in ('C', 'M', 'O', 'F')`;
+    } else if (status) {
+      query += ` and cp.status = '${status}'`;
+    }
     if (categoryId) query += ` and im.categoryno = '${categoryId}'`;
 
     query += ` group by
@@ -161,48 +165,44 @@ router.get('/participants', async (req, res, next) => {
       kvStore.set(`encId:${eventIdEnc}`, eventId);
     }
 
-    let query = `select
-      COUNT(*) OVER () AS totalCount,
-      im.itemname,
-      ca.categoryname as categoryName,
-      st.stage,
-      cp.status,
-      (
-        SELECT
-          pa.participant,
-          pa.chestno,
-          ai.status
-        FROM
-          ofm_assignitem AS ai
-          LEFT JOIN ofm_participant AS pa ON pa.chestno = ai.chestno
-        WHERE
-          ai.itemcode = cp.itemcode
-          and ai.teamnumber = ${teamId}
-          and pa.eventid = ${eventId}
-        FOR JSON PATH
-      ) AS participants
-    from
-      ofm_competitions as cp
-      inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
-      inner join ofm_category as ca on ca.categoryno = im.categoryno
-      inner join ofm_stages as st on st.pid = cp.stageno
-    group by
-      im.itemname,
-      ca.categoryname,
-      st.stage,
-      cp.status,
-      cp.itemcode
-    order by
-      im.itemname, ca.categoryname, st.stage`;
+    let query = `select COUNT(*) OVER () AS totalCount,
+        pa.chestno as chestNumber,
+        pa.participant as name,
+        ca.categoryname as categoryName,
+        (
+          SELECT
+            it.itemname as itemName,
+            ai.status as participantStatus,
+            ca.status as competitionStatus
+          FROM
+            ofm_assignitem AS ai
+            LEFT JOIN ofm_competitions AS ca ON ca.itemcode = ai.itemcode
+            left join ofm_itemmaster as it on it.itemcode = ca.itemcode
+          WHERE
+            ai.chestno = pa.chestno
+            and ai.teamnumber = ${teamId}
+            and ca.eventid = ${eventId}
+          FOR JSON PATH
+        ) AS competitions
+        from ofm_participant pa
+        inner join ofm_category ca on ca.categoryno = pa.categoryno
+        where pa.teamno = ${teamId} and pa.eventid = ${eventId}
+      `;
 
-    if (categoryId) query += ` and im.categoryno = '${categoryId}'`;
+    if (categoryId) query += ` and pa.categoryno = '${categoryId}'`;
 
-    query += ` offset (${page} - 1) * ${limit} rows
-    fetch next ${limit} rows only;`;
+    query += `order by pa.chestno, ca.categoryname, pa.participant
+      offset (${page} - 1) * ${limit} rows
+      fetch next ${limit} rows only;`;
 
     const data = await executeQuery(query);
 
-    return next(new AppResponse('', data));
+    const parsedData = data.map((row: any) => ({
+      ...row,
+      competitions: row.competitions ? JSON.parse(row.competitions) : [],
+    }));
+
+    return next(new AppResponse('', parsedData));
   } catch (err) {
     return next(err);
   }
