@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { useTeamManagementSummary } from '@/routes/team-management/-hooks/useTeamManagementSummary'
-import CompetitionsTab from './-components/CompetitionsTab'
-import ParticipantsTab from './-components/ParticipantsTab'
+import useTeamManagementSummary from '@/routes/team-management/-hooks/useTeamManagementSummary'
+import TeamCompetitionsTab from './-components/TeamCompetitionsTab'
+import TeamParticipantsTab from './-components/TeamParticipantsTab'
 import LoadingSpinner from '@/components/LoadingSpinner'
 
 export const Route = createFileRoute('/team-management/')({
@@ -53,10 +53,13 @@ function TeamManagementPage() {
           </TabsList>
         </div>
         <TabsContent value="competitions">
-          <CompetitionsTab categories={data.categories} stages={data.stages} />
+          <TeamCompetitionsTab
+            categories={data.categories}
+            stages={data.stages}
+          />
         </TabsContent>
         <TabsContent value="participants">
-          <ParticipantsTab categories={data.categories} />
+          <TeamParticipantsTab categories={data.categories} />
         </TabsContent>
       </Tabs>
     </div>

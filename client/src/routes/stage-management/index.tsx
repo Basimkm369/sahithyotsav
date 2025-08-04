@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { useStageManagementSummary } from '@/routes/stage-management/-hooks/useStageManagementSummary'
+import useStageManagementSummary from '@/routes/stage-management/-hooks/useStageManagementSummary'
+import StageCompetitions from './-components/StageCompetitions'
 
 export const Route = createFileRoute('/stage-management/')({
   component: StageManagementPage,
@@ -42,6 +43,7 @@ function StageManagementPage() {
           <div className="text-4xl font-bold"> {data.stageName}</div>
         </div>
       </div>
+      <StageCompetitions categories={data.categories} />
     </div>
   )
 }

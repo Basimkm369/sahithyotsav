@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card'
-import { Participant, useParticipants } from '@/routes/team-management/-hooks/useParticipants'
+import useTeamParticipants, { Participant } from '../-hooks/useTeamParticipants'
 import { TeamManagementSummary } from '@/routes/team-management/-hooks/useTeamManagementSummary'
 import {
   Select,
@@ -16,13 +16,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
-import {
   Table,
   TableBody,
   TableCell,
@@ -30,12 +23,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { getCompetitionStatusBadge, getParticipantStatusBadge } from '@/lib/badge'
+import {
+  getCompetitionStatusBadge,
+  getParticipantStatusBadge,
+} from '@/lib/badge'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
+import PaginationControls from '@/components/PaginationControls'
+import { Route } from '..'
 
 const ITEMS_PER_PAGE = 30
-export default function ParticipantsTab({
+export default function TeamParticipantsTab({
   categories,
 }: {
   categories: TeamManagementSummary['categories']
@@ -44,7 +42,10 @@ export default function ParticipantsTab({
 
   const [page, setPage] = useState(1)
 
-  const { data, isLoading, error } = useParticipants({
+  const { eventId, teamId } = Route.useSearch()
+  const { data, isLoading, error } = useTeamParticipants({
+    eventId,
+    teamId,
     categoryId,
     page,
     limit: ITEMS_PER_PAGE,
@@ -52,8 +53,9 @@ export default function ParticipantsTab({
 
   const [selectedParticipant, setSelectedParticipant] = useState<Participant>()
 
+  if (!isLoading && error) return `Error: ${error}`
   if (!isLoading && !data) return 'No data found'
-  if (error) return `Error: ${error}`
+
   const totalPages = data?.[0]?.totalCount
     ? Math.ceil(data[0].totalCount / ITEMS_PER_PAGE)
     : 1
@@ -169,39 +171,12 @@ export default function ParticipantsTab({
         </Card>
         <div className="w-full flex justify-center mt-4">
           {/* Pagination */}
-          {totalPages > 1 && (
-            <Pagination className="mt-4">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                    className={cn(
-                      page === 1
-                        ? 'opacity-30 cursor-not-allowed'
-                        : 'cursor-pointer',
-                    )}
-                  />
-                </PaginationItem>
-
-                <PaginationItem className="px-4 flex items-center">
-                  Page {page} of {totalPages}
-                </PaginationItem>
-
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() =>
-                      setPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    className={cn(
-                      page === totalPages
-                        ? 'opacity-30 cursor-not-allowed'
-                        : 'cursor-pointer',
-                    )}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
+          <PaginationControls
+            totalPages={totalPages}
+            page={page}
+            onChange={setPage}
+            className="mt-4"
+          />
         </div>
       </div>
       <Dialog

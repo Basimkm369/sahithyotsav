@@ -15,17 +15,19 @@ export type Participant = {
   totalCount: number
 }
 
-export function useParticipants({
+export default function useTeamParticipants({
+  eventId,
+  teamId,
   categoryId,
   page,
   limit = 30,
 }: {
+  eventId: string
+  teamId: string
   categoryId: string
   page: number
   limit?: number
 }) {
-  const { eventId, teamId } = Route.useSearch()
-
   return useQuery({
     queryKey: [
       'teamManagement/participants',

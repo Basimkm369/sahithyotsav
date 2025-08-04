@@ -45,4 +45,74 @@ router.get('/', async (req, res, next) => {
   );
 });
 
+router.get('/competitions', async (req, res, next) => {
+  try {
+    const {
+      stageId: stageIdEnc,
+      status,
+      categoryId,
+      eventId: eventIdEnc,
+      limit = 10,
+      page = 1,
+    } = req.query;
+
+    let stageId = kvStore.get(`encId:${stageIdEnc}`);
+    if (!stageId) {
+      stageId = await decryptId(stageIdEnc as string);
+      kvStore.set(`encId:${stageIdEnc}`, stageId);
+    }
+
+    let eventId = kvStore.get(`encId:${eventIdEnc}`);
+    if (!eventId) {
+      eventId = await decryptId(eventIdEnc as string);
+      kvStore.set(`encId:${eventIdEnc}`, eventId);
+    }
+
+    let query = `select
+      COUNT(*) OVER () AS totalCount,
+      cp.id as id,
+      im.itemname as name,
+      ca.categoryname as categoryName,
+      st.stage as stageName,
+      cp.status,
+      cp.programdate as date,
+      cp.scheduledstart as startTime,
+      cp.scheduledend as endTime
+    from
+      ofm_competitions as cp
+      inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
+      inner join ofm_category as ca on ca.categoryno = im.categoryno
+      inner join ofm_stages as st on st.pid = cp.stageno
+    where cp.stageno = ${stageId}`;
+
+    if (status === 'C') {
+      query += ` and cp.status in ('C', 'M', 'O', 'F')`;
+    } else if (status) {
+      query += ` and cp.status = '${status}'`;
+    }
+    if (categoryId) query += ` and im.categoryno = '${categoryId}'`;
+
+    query += ` group by
+      im.itemname,
+      ca.categoryname,
+      st.stage,
+      cp.status,
+      cp.itemcode,
+      cp.id,
+      cp.programdate,
+      cp.scheduledstart,
+      cp.scheduledend
+    order by
+      im.itemname, ca.categoryname, st.stage
+    offset (${page} - 1) * ${limit} rows
+    fetch next ${limit} rows only;`;
+
+    const data = await executeQuery(query);
+
+    return next(new AppResponse('', data));
+  } catch (err) {
+    return next(err);
+  }
+});
+
 export default router;

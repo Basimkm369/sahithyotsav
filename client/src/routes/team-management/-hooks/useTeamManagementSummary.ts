@@ -10,7 +10,7 @@ export type TeamManagementSummary = {
   }[]
 }
 
-export function useTeamManagementSummary({
+export default function useTeamManagementSummary({
   eventId,
   teamId,
 }: {

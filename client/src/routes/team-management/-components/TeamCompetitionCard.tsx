@@ -5,7 +5,6 @@ import {
   CardContent,
   CardDescription,
 } from '@/components/ui/card'
-import { Competition } from '@/routes/team-management/-hooks/useCompetitions'
 import { LucideCalendar, LucideClock, LucideMapPin } from 'lucide-react'
 import dayjs from 'dayjs'
 import { formatTime } from '@/lib/datetime'
@@ -14,8 +13,9 @@ import {
   getCompetitionStatusBadge,
   getParticipantStatusBadge,
 } from '@/lib/badge'
+import { Competition } from '../-hooks/useTeamCompetitions'
 
-export default function CompetitionCard({ data }: { data: Competition }) {
+export default function TeamCompetitionCard({ data }: { data: Competition }) {
   return (
     <Card className="gap-3 py-4 pt-5">
       <CardHeader className="flex flex-nowrap justify-between">

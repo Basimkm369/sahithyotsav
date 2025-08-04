@@ -9,7 +9,7 @@ export type StageManagementSummary = {
   }[]
 }
 
-export function useStageManagementSummary({
+export default function useStageManagementSummary({
   eventId,
   stageId,
 }: {
