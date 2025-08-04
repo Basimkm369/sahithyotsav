@@ -23,7 +23,7 @@ router.get('/', async (req, res, next) => {
   let stageName = kvStore.get(`${eventId}:stage:${stageId}:name`);
   if (!stageName) {
     const stageNameRes = await executeQuery(
-      `select stage as name from ofm_stages where pid = ${stageId}`,
+      `select stage as name from ofm_stages where pid = ${stageId} and eventid = ${eventId}`,
     );
     stageName = stageNameRes?.[0].name;
     kvStore.set(`${eventId}:stage:${stageId}:name`, stageName);
@@ -70,7 +70,7 @@ router.get('/competitions', async (req, res, next) => {
 
     let query = `select
       COUNT(*) OVER () AS totalCount,
-      cp.id as id,
+      cp.itemcode as itemCode,
       im.itemname as name,
       ca.categoryname as categoryName,
       st.stage as stageName,
@@ -83,7 +83,7 @@ router.get('/competitions', async (req, res, next) => {
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
       inner join ofm_stages as st on st.pid = cp.stageno
-    where cp.stageno = ${stageId}`;
+    where cp.stageno = ${stageId} and cp.eventid = ${eventId}`;
 
     if (status === 'C') {
       query += ` and cp.status in ('C', 'M', 'O', 'F')`;
@@ -98,7 +98,6 @@ router.get('/competitions', async (req, res, next) => {
       st.stage,
       cp.status,
       cp.itemcode,
-      cp.id,
       cp.programdate,
       cp.scheduledstart,
       cp.scheduledend
@@ -113,6 +112,44 @@ router.get('/competitions', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
+});
+
+router.get('/competitions/:itemCode', async (req, res, next) => {
+  const { itemCode } = req.params;
+  const { eventId: eventIdEnc, stageId: stageIdEnc } = req.query;
+
+  let stageId = kvStore.get(`encId:${stageIdEnc}`);
+  if (!stageId) {
+    stageId = await decryptId(stageIdEnc as string);
+    kvStore.set(`encId:${stageIdEnc}`, stageId);
+  }
+
+  let eventId = kvStore.get(`encId:${eventIdEnc}`);
+  if (!eventId) {
+    eventId = await decryptId(eventIdEnc as string);
+    kvStore.set(`encId:${eventIdEnc}`, eventId);
+  }
+
+  let query = `select pa.chestno as chestNumber,
+    pa.participant as name,
+    ai.status,
+    ai.codeletter as codeLetter
+    from ofm_participant pa
+    inner join ofm_assignitem ai on ai.chestno = pa.chestno
+    inner join ofm_competitions co on co.itemcode = ai.itemcode
+    where ai.itemcode = ${itemCode}
+      and co.stageno = ${stageId}
+      and pa.eventid = ${eventId}`;
+
+  query += ` order by pa.chestno`;
+
+  const data = await executeQuery(query);
+
+  return next(
+    new AppResponse('', {
+      participants: data,
+    }),
+  );
 });
 
 export default router;

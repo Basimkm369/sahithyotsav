@@ -34,7 +34,7 @@ router.get('/', async (req, res, next) => {
   let teamName = kvStore.get(`${eventId}:team:${teamId}:name`);
   if (!teamName) {
     const teamNameRes = await executeQuery(
-      `select teamname as name from ofm_team where teamno = ${teamId}`,
+      `select teamname as name from ofm_team where teamno = ${teamId} and eventid = ${eventId}`,
     );
     teamName = teamNameRes?.[0].name;
     kvStore.set(`${eventId}:team:${teamId}:name`, teamName);
@@ -111,7 +111,7 @@ router.get('/competitions', async (req, res, next) => {
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
       inner join ofm_stages as st on st.pid = cp.stageno
-    where 1=1
+    where cp.eventid = ${eventId}
     `;
 
     if (stageId) query += ` and cp.stageno = '${stageId}'`;

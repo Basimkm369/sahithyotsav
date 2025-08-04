@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 
 export type Competition = {
-  id: number
+  itemCode: number
   name: string
   categoryName: string
   status: string

@@ -1,4 +1,6 @@
-import useStageCompetitions from '../-hooks/useStageCompetitions'
+import useStageCompetitions, {
+  Competition,
+} from '../-hooks/useStageCompetitions'
 import { StageManagementSummary } from '@/routes/stage-management/-hooks/useStageManagementSummary'
 import {
   Select,
@@ -12,6 +14,7 @@ import StageCompetitionCard from './StageCompetitionCard'
 import StageCompetitionCardSkeleton from './StageCompetitionCardSkeleton'
 import PaginationControls from '@/components/PaginationControls'
 import { Route } from '..'
+import StageCompetitionModal from './StageCompetitionModal'
 
 const ITEMS_PER_PAGE = 24
 
@@ -34,6 +37,8 @@ export default function StageCompetitions({
     page,
     limit: ITEMS_PER_PAGE,
   })
+
+  const [selectedCompetition, setSelectedCompetition] = useState<Competition>()
 
   if (!isLoading && error) return `Error: ${error}`
   if (!isLoading && !data) return 'No data found'
@@ -94,7 +99,11 @@ export default function StageCompetitions({
                 <StageCompetitionCardSkeleton key={i} />
               ))
             : data?.map((comp) => (
-                <StageCompetitionCard data={comp} key={comp.id} />
+                <StageCompetitionCard
+                  data={comp}
+                  key={comp.itemCode}
+                  onClick={() => setSelectedCompetition(comp)}
+                />
               ))}
         </div>
 
@@ -107,6 +116,11 @@ export default function StageCompetitions({
           />
         </div>
       </div>
+      <StageCompetitionModal
+        data={selectedCompetition}
+        open={!!selectedCompetition}
+        onClose={() => setSelectedCompetition(undefined)}
+      />
     </>
   )
 }

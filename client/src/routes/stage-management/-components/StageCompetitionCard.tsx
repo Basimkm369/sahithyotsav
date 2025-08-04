@@ -6,14 +6,20 @@ import {
   CardDescription,
 } from '@/components/ui/card'
 import { Competition } from '../-hooks/useStageCompetitions'
-import { LucideCalendar, LucideClock, LucideMapPin } from 'lucide-react'
+import { LucideCalendar, LucideClock } from 'lucide-react'
 import dayjs from 'dayjs'
 import { formatTime } from '@/lib/datetime'
 import { getCompetitionStatusBadge } from '@/lib/badge'
 
-export default function StageCompetitionCard({ data }: { data: Competition }) {
+export default function StageCompetitionCard({
+  data,
+  onClick,
+}: {
+  data: Competition
+  onClick: () => void
+}) {
   return (
-    <Card className="gap-3 py-4 pt-5">
+    <Card className="gap-3 py-4 pt-5" onClick={onClick}>
       <CardHeader className="flex flex-nowrap justify-between">
         <div>
           <CardTitle className="text-lg uppercase">{data.name}</CardTitle>
