@@ -99,11 +99,13 @@ router.get('/competitions', async (req, res, next) => {
           ai.rank
         FROM
           ofm_assignitem AS ai
-          LEFT JOIN ofm_participant AS pa ON pa.chestno = ai.chestno
+          INNER JOIN ofm_participant AS pa ON pa.chestno = ai.chestno
         WHERE
           ai.itemcode = cp.itemcode
           and ai.teamnumber = ${teamId}
+          and pa.teamno = ${teamId}
           and pa.eventid = ${eventId}
+          and ai.eventid = ${eventId}
         FOR JSON PATH
       ) AS participants
     from

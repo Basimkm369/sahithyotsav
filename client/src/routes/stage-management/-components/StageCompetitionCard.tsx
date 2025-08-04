@@ -19,7 +19,7 @@ export default function StageCompetitionCard({
   onClick: () => void
 }) {
   return (
-    <Card className="gap-3 py-4 pt-5" onClick={onClick}>
+    <Card className="gap-3 py-4 pt-5 cursor-pointer" onClick={onClick}>
       <CardHeader className="flex flex-nowrap justify-between">
         <div>
           <CardTitle className="text-lg uppercase">{data.name}</CardTitle>

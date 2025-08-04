@@ -141,13 +141,11 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
       and co.stageno = ${stageId}
       and pa.eventid = ${eventId}`;
 
-  query += ` order by pa.chestno`;
-
   const data = await executeQuery(query);
 
   return next(
     new AppResponse('', {
-      participants: data,
+      participants: data.sort((a, b) => a.chestNumber - b.chestNumber),
     }),
   );
 });
