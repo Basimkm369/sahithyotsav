@@ -8,6 +8,7 @@ import { Competition } from '../-hooks/useStageCompetitions'
 import useStageCompetitionDetails from '../-hooks/useStageCompetitionDetails'
 import { Route } from '..'
 import LoadingSpinner from '@/components/LoadingSpinner'
+import StageCompetitionParticipantCard from './StageCompetitionParticipantCard'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -28,7 +29,7 @@ export default function StageCompetitionModal({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       {!!competition && (
-        <DialogContent>
+         <DialogContent className="!max-w-4xl w-full max-h-[80vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle>
               {competition.name} - {competition.categoryName}
@@ -39,7 +40,15 @@ export default function StageCompetitionModal({
               <LoadingSpinner />
             </div>
           ) : (
-            <div className="grid gap-3 mt-4">{JSON.stringify(data)}</div>
+            <div className="mt-4 overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
+            <div className="grid gap-3">
+              {data?.participants?.map((participant) => (
+                <StageCompetitionParticipantCard
+                  data={participant}
+                />
+              ))}
+            </div>
+          </div>
           )}
         </DialogContent>
       )}
