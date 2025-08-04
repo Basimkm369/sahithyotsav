@@ -4,10 +4,11 @@ export const Route = createFileRoute('/judgement/')({
   component: RouteComponent,
   validateSearch: (
     search: Record<string, unknown>,
-  ): { eventId: string; teamId: string } => {
+  ): { eventId: string; itemId: string; judgeId: string } => {
     return {
       eventId: search.eventId as string,
-      teamId: search.teamId as string,
+      itemId: search.itemId as string,
+      judgeId: search.teamId as string,
     }
   },
 })
