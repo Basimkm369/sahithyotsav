@@ -1,4 +1,5 @@
 import { Badge } from '@/components/ui/badge'
+import ParticipantStatus from '@/constants/ParticipantStatus'
 
 export const getCompetitionStatusBadge = (status: string, count?: number) => {
   const getLabel = () => {
@@ -133,5 +134,37 @@ export const getParticipantStatusBadge = (status: string) => {
           {status}
         </Badge>
       )
+  }
+}
+
+export const getParticipantStatusBadgeV2 = ({
+  status,
+  codeLetter,
+}: {
+  status: string
+  codeLetter: string
+}) => {
+  if (!status) return <></>
+
+  if (status === ParticipantStatus.Enrolled && !codeLetter) {
+    return (
+      <Badge
+        variant="outline"
+        className="bg-gray-100 text-gray-800 border-gray-200"
+      >
+        Reported
+      </Badge>
+    )
+  }
+
+  if (status === ParticipantStatus.Enrolled && codeLetter) {
+    return (
+      <Badge
+        variant="outline"
+        className="bg-blue-100 text-blue-800 border-blue-200"
+      >
+        Enrolled
+      </Badge>
+    )
   }
 }

@@ -73,6 +73,7 @@ export async function executeStoredProcedure(
 }
 
 export async function decryptId(text: string): Promise<string> {
+  if (!text) throw new Error(`Empty ID`);
   const idRes = await executeStoredProcedure('Usp_DecryptIdKey', {
     EncryptedTxt: text.replaceAll(' ', '+'),
   });

@@ -134,7 +134,7 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
     pa.participant as name,
     te.teamname as teamName,
     ai.status,
-    ai.codeletter as codeLetter
+    ISNULL(ai.codeletter, '') as codeLetter
     from ofm_participant pa
     inner join ofm_assignitem ai on ai.chestno = pa.chestno
     inner join ofm_competitions co on co.itemcode = ai.itemcode

@@ -21,7 +21,11 @@ export default function useUrlState<T = string>(
   const setValue = useCallback(
     (newValue: T | undefined) => {
       const params = new URLSearchParams(window.location.search)
-      if (!newValue || newValue === defaultValue || !toUrl?.(newValue)) {
+      if (
+        !newValue ||
+        newValue === defaultValue ||
+        (toUrl && !toUrl?.(newValue))
+      ) {
         params.delete(key)
       } else {
         params.set(key, toUrl ? toUrl(newValue)! : String(newValue))

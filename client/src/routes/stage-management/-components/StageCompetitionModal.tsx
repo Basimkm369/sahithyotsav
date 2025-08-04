@@ -9,12 +9,15 @@ import useStageCompetitionDetails, {
   CompetitionDetails,
 } from '../-hooks/useStageCompetitionDetails'
 import { Route } from '..'
-import LoadingSpinner from '@/components/LoadingSpinner'
 import StageCompetitionParticipant from './StageCompetitionParticipant'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useState } from 'react'
 import CodeLetterSelectModal from './CodeLetterSelectModal'
 import ParticipantStatus from '@/constants/ParticipantStatus'
+import Button from '@/components/Button'
+import { getCompetitionStatusBadge } from '@/lib/badge'
+import CompetitionStatus from '@/constants/CompetitionStatus'
+import useConfirmation from '@/components/Confirmation'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -35,52 +38,117 @@ export default function StageCompetitionModal({
   const [modalParticipant, setModalParticipant] =
     useState<CompetitionDetails['participants'][0]>()
 
+  const [component, promptComfirmation] = useConfirmation({
+    description: 'Are you sure you want to change the competition status?',
+    onConfirm: async (status) => {
+      //
+    },
+  })
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      {!!competition && (
-        <DialogContent className="!max-w-4xl w-full">
-          <DialogHeader>
-            <DialogTitle>
-              {competition.name} - {competition.categoryName}
-            </DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="max-h-[calc(100vh-200px)] overflow-y-auto -mr-4 pr-4">
-            {isLoading ? (
-              <div className="h-40">
-                <LoadingSpinner />
-              </div>
-            ) : (
-              <div className="mt-4 pr-2">
-                {data?.participants?.map((participant) => (
-                  <div
-                    key={participant.chestNumber}
-                    className="border-b last:border-b-0 pb-3 mb-3"
+    <>
+      <Dialog open={open} onOpenChange={onClose}>
+        {!!competition && (
+          <DialogContent className="!max-w-4xl w-full">
+            <DialogHeader className="flex-row gap-2 items-center">
+              <DialogTitle>
+                {competition.name} - {competition.categoryName}
+              </DialogTitle>
+              {getCompetitionStatusBadge(competition.status)}
+            </DialogHeader>
+            <ScrollArea className="max-h-[calc(100vh-200px)] overflow-y-auto -mr-4 pr-4">
+              <div className="mt-4 pr-2 space-y-8">
+                {competition.status === CompetitionStatus.NotStarted && (
+                  <Button
+                    onClick={() =>
+                      promptComfirmation(CompetitionStatus.Started)
+                    }
                   >
-                    <StageCompetitionParticipant
-                      data={participant}
-                      onManualEnroll={() => {
-                        setModalParticipant(participant)
-                      }}
-                    />
-                  </div>
-                ))}
+                    Start Reporting
+                  </Button>
+                )}
+                {competition.status === CompetitionStatus.Started && (
+                  <Button
+                    onClick={() =>
+                      promptComfirmation(CompetitionStatus.InProgress)
+                    }
+                  >
+                    Start Program
+                  </Button>
+                )}
+                {competition.status === CompetitionStatus.InProgress && (
+                  <Button
+                    onClick={() =>
+                      promptComfirmation(CompetitionStatus.Completed)
+                    }
+                  >
+                    End Program
+                  </Button>
+                )}
+                {competition.status === CompetitionStatus.Completed && (
+                  <Button
+                    onClick={() =>
+                      promptComfirmation(CompetitionStatus.MarkEntryClosed)
+                    }
+                  >
+                    Close Mark Entry
+                  </Button>
+                )}
+                <div>
+                  {isLoading
+                    ? [...Array(10)].map((_, i) => (
+                        <div
+                          key={i}
+                          className="border-b last:border-b-0 pb-3 mb-3 animate-pulse grid grid-cols-10 items-center gap-2"
+                        >
+                          <div className="col-span-7 flex gap-4">
+                            <div className="rounded bg-gray-200 h-10 w-10" />
+                            <div className="w-full">
+                              <div className="h-4 bg-gray-200 rounded w-1/3 mb-2" />
+                              <div className="h-3 bg-gray-100 rounded w-1/4" />
+                            </div>
+                          </div>
+                          <div className="col-span-1">
+                            <div className="h-6 w-16 bg-gray-200 rounded" />
+                          </div>
+                          <div className="col-span-2 flex justify-end">
+                            <div className="h-8 w-24 bg-gray-100 rounded" />
+                          </div>
+                        </div>
+                      ))
+                    : data?.participants?.map((participant) => (
+                        <div
+                          key={participant.chestNumber}
+                          className="border-b last:border-b-0 pb-3 mb-3"
+                        >
+                          <StageCompetitionParticipant
+                            competitionStatus={competition.status}
+                            data={participant}
+                            onManualEnroll={() => {
+                              setModalParticipant(participant)
+                            }}
+                          />
+                        </div>
+                      ))}
+                </div>
               </div>
-            )}
-          </ScrollArea>
-        </DialogContent>
-      )}
-      <CodeLetterSelectModal
-        open={!!modalParticipant}
-        onClose={() => setModalParticipant(undefined)}
-        chestNumber={modalParticipant?.chestNumber ?? 0}
-        maxCount={
-          data?.participants.filter(
-            (p) => p.status === ParticipantStatus.Enrolled,
-          ).length ?? 0
-        }
-        usedLetters={data?.participants.map((p) => p.codeLetter) ?? []}
-        isLoading={isLoading}
-      />
-    </Dialog>
+            </ScrollArea>
+          </DialogContent>
+        )}
+        <CodeLetterSelectModal
+          open={!!modalParticipant}
+          onClose={() => setModalParticipant(undefined)}
+          chestNumber={modalParticipant?.chestNumber ?? 0}
+          maxCount={
+            data?.participants.filter(
+              (p) => p.status === ParticipantStatus.Enrolled,
+            ).length ?? 0
+          }
+          usedLetters={data?.participants.map((p) => p.codeLetter) ?? []}
+          isLoading={isLoading}
+        />
+      </Dialog>
+      {component}
+    </>
   )
 }

@@ -15,6 +15,7 @@ import PaginationControls from '@/components/PaginationControls'
 import { Route } from '..'
 import StageCompetitionModal from './StageCompetitionModal'
 import useUrlState from '@/hooks/useUrlState'
+import CompetitionStatus from '@/constants/CompetitionStatus'
 
 const ITEMS_PER_PAGE = 24
 
@@ -25,7 +26,6 @@ export default function StageCompetitions({
 }) {
   const [status, setStatus] = useUrlState('status', 'all')
   const [categoryId, setCategoryId] = useUrlState('categoryId', 'all')
-
   const [page, setPage] = useUrlState('page', 1, (v) => (v ? parseInt(v) : 1))
 
   const { stageId, eventId } = Route.useSearch()
@@ -70,12 +70,22 @@ export default function StageCompetitions({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="N">Not Started</SelectItem>
-              <SelectItem value="S">Started</SelectItem>
-              <SelectItem value="P">In Progress</SelectItem>
-              <SelectItem value="C">Completed</SelectItem>
-              <SelectItem value="A">Announced</SelectItem>
-              <SelectItem value="D">Prize Distributed</SelectItem>
+              <SelectItem value={CompetitionStatus.NotStarted}>
+                Not Started
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Started}>Started</SelectItem>
+              <SelectItem value={CompetitionStatus.InProgress}>
+                In Progress
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Completed}>
+                Completed
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Announced}>
+                Announced
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.PrizeDistributed}>
+                Prize Distributed
+              </SelectItem>
             </SelectContent>
           </Select>
 

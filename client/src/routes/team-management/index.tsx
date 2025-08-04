@@ -4,6 +4,8 @@ import useTeamManagementSummary from '@/routes/team-management/-hooks/useTeamMan
 import TeamCompetitionsTab from './-components/TeamCompetitionsTab'
 import TeamParticipantsTab from './-components/TeamParticipantsTab'
 import LoadingSpinner from '@/components/LoadingSpinner'
+import { useState } from 'react'
+import useUrlState from '@/hooks/useUrlState'
 
 export const Route = createFileRoute('/team-management/')({
   component: TeamManagementPage,
@@ -20,6 +22,10 @@ export const Route = createFileRoute('/team-management/')({
 function TeamManagementPage() {
   const { eventId, teamId } = Route.useSearch()
   const { data, isLoading } = useTeamManagementSummary({ eventId, teamId })
+  const [tab, setTab] = useUrlState<'competitions' | 'participants'>(
+    'tab',
+    'competitions',
+  )
 
   if (isLoading) {
     return (
@@ -45,11 +51,21 @@ function TeamManagementPage() {
           <div className="text-4xl font-bold"> {data.teamName}</div>
         </div>
       </div>
-      <Tabs defaultValue="competitions">
+      <Tabs value={tab}>
         <div className="flex justify-center mb-2">
           <TabsList>
-            <TabsTrigger value="competitions">Competitions</TabsTrigger>
-            <TabsTrigger value="participants">Participants</TabsTrigger>
+            <TabsTrigger
+              value="competitions"
+              onClick={() => setTab('competitions')}
+            >
+              Competitions
+            </TabsTrigger>
+            <TabsTrigger
+              value="participants"
+              onClick={() => setTab('participants')}
+            >
+              Participants
+            </TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="competitions">

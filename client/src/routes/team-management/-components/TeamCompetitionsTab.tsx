@@ -6,12 +6,14 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
+import useUrlState from '@/hooks/useUrlState'
 import { useState } from 'react'
 import TeamCompetitionCard from './TeamCompetitionCard'
 import TeamCompetitionCardSkeleton from './TeamCompetitionCardSkeleton'
 import PaginationControls from '@/components/PaginationControls'
 import useTeamCompetitions from '../-hooks/useTeamCompetitions'
 import { Route } from '..'
+import CompetitionStatus from '@/constants/CompetitionStatus'
 
 const ITEMS_PER_PAGE = 24
 
@@ -22,11 +24,10 @@ export default function TeamCompetitionsTab({
   categories: TeamManagementSummary['categories']
   stages: TeamManagementSummary['stages']
 }) {
-  const [status, setStatus] = useState('all')
-  const [stageId, setStageId] = useState('all')
-  const [categoryId, setCategoryId] = useState('all')
-
-  const [page, setPage] = useState(1)
+  const [status, setStatus] = useUrlState('status', 'all')
+  const [stageId, setStageId] = useUrlState('stageId', 'all')
+  const [categoryId, setCategoryId] = useUrlState('categoryId', 'all')
+  const [page, setPage] = useUrlState('page', 1, (v) => (v ? parseInt(v) : 1))
 
   const { eventId, teamId } = Route.useSearch()
   const { data, isLoading, error } = useTeamCompetitions({
@@ -64,7 +65,7 @@ export default function TeamCompetitionsTab({
             <SelectContent>
               <SelectItem value="all">All Stages</SelectItem>
               {stages.map((stage) => (
-                <SelectItem value={stage.number}>{stage.name}</SelectItem>
+                <SelectItem value={`${stage.number}`}>{stage.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -82,12 +83,22 @@ export default function TeamCompetitionsTab({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="N">Not Started</SelectItem>
-              <SelectItem value="S">Started</SelectItem>
-              <SelectItem value="P">In Progress</SelectItem>
-              <SelectItem value="C">Completed</SelectItem>
-              <SelectItem value="A">Announced</SelectItem>
-              <SelectItem value="D">Prize Distributed</SelectItem>
+              <SelectItem value={CompetitionStatus.NotStarted}>
+                Not Started
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Started}>Started</SelectItem>
+              <SelectItem value={CompetitionStatus.InProgress}>
+                In Progress
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Completed}>
+                Completed
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Announced}>
+                Announced
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.PrizeDistributed}>
+                Prize Distributed
+              </SelectItem>
             </SelectContent>
           </Select>
 
@@ -105,7 +116,9 @@ export default function TeamCompetitionsTab({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={category.number}>{category.name}</SelectItem>
+                <SelectItem value={`${category.number}`}>
+                  {category.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>

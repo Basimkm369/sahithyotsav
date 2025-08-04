@@ -1,11 +1,4 @@
 import { CompetitionDetails } from '../-hooks/useStageCompetitionDetails'
-import { LuChevronDown } from 'react-icons/lu'
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from '@/components/ui/dropdown-menu'
 import Button from '@/components/Button'
 import ParticipantStatus from '@/constants/ParticipantStatus'
 
@@ -24,10 +17,8 @@ export default function StageParticipantAction({
   if (status === ParticipantStatus.Enrolled && !codeLetter.trim()) {
     return (
       <div className="flex items-center">
-        <Button className="rounded-r-none" onClick={onManualEnroll}>
-          Enroll
-        </Button>
-        <DropdownMenu>
+        <Button onClick={onManualEnroll}>Enroll</Button>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               size="icon"
@@ -41,7 +32,7 @@ export default function StageParticipantAction({
               Enroll manually
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </div>
     )
   }
