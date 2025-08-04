@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TeamManagementIndexRouteImport } from './routes/team-management/index'
 import { Route as StageManagementIndexRouteImport } from './routes/stage-management/index'
+import { Route as JudgementIndexRouteImport } from './routes/judgement/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,33 +29,47 @@ const StageManagementIndexRoute = StageManagementIndexRouteImport.update({
   path: '/stage-management/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JudgementIndexRoute = JudgementIndexRouteImport.update({
+  id: '/judgement/',
+  path: '/judgement/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/judgement': typeof JudgementIndexRoute
   '/stage-management': typeof StageManagementIndexRoute
   '/team-management': typeof TeamManagementIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/judgement': typeof JudgementIndexRoute
   '/stage-management': typeof StageManagementIndexRoute
   '/team-management': typeof TeamManagementIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/judgement/': typeof JudgementIndexRoute
   '/stage-management/': typeof StageManagementIndexRoute
   '/team-management/': typeof TeamManagementIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/stage-management' | '/team-management'
+  fullPaths: '/' | '/judgement' | '/stage-management' | '/team-management'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/stage-management' | '/team-management'
-  id: '__root__' | '/' | '/stage-management/' | '/team-management/'
+  to: '/' | '/judgement' | '/stage-management' | '/team-management'
+  id:
+    | '__root__'
+    | '/'
+    | '/judgement/'
+    | '/stage-management/'
+    | '/team-management/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  JudgementIndexRoute: typeof JudgementIndexRoute
   StageManagementIndexRoute: typeof StageManagementIndexRoute
   TeamManagementIndexRoute: typeof TeamManagementIndexRoute
 }
@@ -82,11 +97,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StageManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/judgement/': {
+      id: '/judgement/'
+      path: '/judgement'
+      fullPath: '/judgement'
+      preLoaderRoute: typeof JudgementIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  JudgementIndexRoute: JudgementIndexRoute,
   StageManagementIndexRoute: StageManagementIndexRoute,
   TeamManagementIndexRoute: TeamManagementIndexRoute,
 }

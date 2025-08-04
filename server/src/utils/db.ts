@@ -18,22 +18,31 @@ const config = {
 };
 
 let pool: sql.ConnectionPool;
+let connectingPromise: Promise<void> | null = null;
+
 export async function connectToDatabase() {
-  try {
-    pool = new sql.ConnectionPool(config);
-    await pool.connect();
-    console.log('SQL Server connection pool established.');
-  } catch (err) {
-    console.error('Database connection failed:', err);
-    process.exit(1); // Exit if connection fails
-  }
+  if (pool && pool.connected) return;
+  if (connectingPromise) return connectingPromise;
+  connectingPromise = (async () => {
+    try {
+      pool = new sql.ConnectionPool(config);
+      await pool.connect();
+      console.log('SQL Server connection pool established.');
+    } catch (err) {
+      console.error('Database connection failed:', err);
+      process.exit(1);
+    } finally {
+      connectingPromise = null;
+    }
+  })();
+  return connectingPromise;
 }
 
 export async function executeQuery(queryText: string) {
+  if (!pool || !pool.connected) {
+    await connectToDatabase();
+  }
   try {
-    if (!pool) {
-      throw new Error('Database pool not initialized.');
-    }
     const request = pool.request();
     const result = await request.query(queryText);
     return result.recordset;
@@ -47,10 +56,10 @@ export async function executeStoredProcedure(
   procedureName: string,
   params: { [key: string]: any },
 ) {
+  if (!pool || !pool.connected) {
+    await connectToDatabase();
+  }
   try {
-    if (!pool) {
-      throw new Error('Database pool not initialized.');
-    }
     const request = pool.request();
     for (const key in params) {
       request.input(key, params[key]);
