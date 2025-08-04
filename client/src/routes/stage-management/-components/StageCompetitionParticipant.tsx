@@ -5,8 +5,10 @@ import StageParticipantAction from './StageParticipantAction'
 
 export default function StageCompetitionParticipant({
   data,
+  onManualEnroll,
 }: {
   data: CompetitionDetails['participants'][0]
+  onManualEnroll?: () => void
 }) {
   return (
     <div className="grid grid-cols-10 gap-2 items-center">
@@ -16,7 +18,7 @@ export default function StageCompetitionParticipant({
             'font-bold rounded h-10 w-10 flex items-center justify-center text-lg shadow-sm border',
             data.codeLetter.trim()
               ? 'bg-blue-100 text-blue-700 border-blue-300'
-              : 'bg-gray-100 text-gray-700 border-gray-300',
+              : 'bg-gray-100 text-gray-400 border-gray-200',
           )}
         >
           {data.codeLetter.trim() || '-'}
@@ -30,8 +32,8 @@ export default function StageCompetitionParticipant({
         </div>
       </div>
       <div className="col-span-1">{getParticipantStatusBadge(data.status)}</div>
-      <div className="col-span-2 text-right">
-        <StageParticipantAction data={data} />
+      <div className="col-span-2 flex justify-end">
+        <StageParticipantAction data={data} onManualEnroll={onManualEnroll} />
       </div>
     </div>
   )

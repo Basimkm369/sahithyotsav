@@ -6,13 +6,18 @@ import { decryptId, executeQuery } from 'src/utils/db';
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
-  const { eventId: eventIdEnc, itemId: itemIdEnc, judgeId : judgeIdEnc } = req.query;
+  const {
+    eventId: eventIdEnc,
+    itemId: itemIdEnc,
+    judgeId: judgeIdEnc,
+  } = req.query;
 
   let itemId = kvStore.get(`encId:${itemIdEnc}`);
   if (!itemId) {
     itemId = await decryptId(itemIdEnc as string);
     kvStore.set(`encId:${itemIdEnc}`, itemId);
   }
+
   let judgeId = kvStore.get(`encId:${judgeIdEnc}`);
   if (!judgeId) {
     judgeId = await decryptId(judgeIdEnc as string);
@@ -25,20 +30,21 @@ router.get('/', async (req, res, next) => {
     kvStore.set(`encId:${eventIdEnc}`, eventId);
   }
 
-  let judgeName = "Jafar Swadhique";
+  const scores = [
+    { codeLetter: 'A', mark: 89 },
+    { codeLetter: 'B', mark: null },
+    { codeLetter: 'C', mark: 92 },
+    { codeLetter: 'D', mark: null },
+  ];
 
-  let competition = {
-    itemName: "Book Test",
-    categoryName: "Senior"
-  };
-  
   return next(
     new AppResponse('', {
-      judgeName,
-      competition,
-    })
+      judgeName: 'Jafar Swadhique',
+      itemName: 'Book Test',
+      categoryName: 'Senior',
+      scores,
+    }),
   );
-  
 });
 
 router.get('/participants', async (req, res, next) => {
@@ -67,19 +73,16 @@ router.get('/participants', async (req, res, next) => {
     }
 
     let data = [
-        { codeLetter: "A", mark: 89 },
-        { codeLetter: "B", mark: null },
-        { codeLetter: "C", mark: 92 },
-        { codeLetter: "D", mark: null },
-      ];
-      
-      return next(new AppResponse('', data));
-      
+      { codeLetter: 'A', mark: 89 },
+      { codeLetter: 'B', mark: null },
+      { codeLetter: 'C', mark: 92 },
+      { codeLetter: 'D', mark: null },
+    ];
+
+    return next(new AppResponse('', data));
   } catch (err) {
     return next(err);
   }
 });
-
-
 
 export default router;

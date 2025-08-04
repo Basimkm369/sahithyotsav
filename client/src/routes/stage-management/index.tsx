@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import useStageManagementSummary from '@/routes/stage-management/-hooks/useStageManagementSummary'
 import StageCompetitions from './-components/StageCompetitions'
+import CodeLetterSpinWheelModal from './-components/CodeLetterSpinWheelModal'
 
 export const Route = createFileRoute('/stage-management/')({
   component: StageManagementPage,

@@ -1,9 +1,7 @@
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LoadingSpinner from '@/components/LoadingSpinner'
 import { createFileRoute } from '@tanstack/react-router'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-import JudgeDashboard from './-components/JudgeDashboard';
-import useJudgementSummary from './-hooks/useJudgementSummary';
+import ScoreCards from './-components/ScoreCards'
+import useJudgementSummary from './-hooks/useJudgementSummary'
 
 export const Route = createFileRoute('/judgement/')({
   component: JudgeDashboardPage,
@@ -30,6 +28,7 @@ function JudgeDashboardPage() {
     )
   }
   if (!data) return 'No data found'
+
   return (
     <div className="space-y-4 px-4 pb-8">
       <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8 mb-6">
@@ -40,34 +39,15 @@ function JudgeDashboardPage() {
             className="w-full h-full object-contain"
           />
         </div>
-      </div>
-      <div className="w-full px-4 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Welcome, Judge</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-lg">
-              {data.judgeName}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Competition</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg">
-                <p> {data.competition.categoryName} - {data.competition.itemName}</p>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="text-center sm:text-left">
+          <div className="text-2xl font-semibold">Judgement</div>
+          <div className="text-4xl font-bold">
+            {data.itemName} - {data.categoryName}
+          </div>
+          <div className="text-xl font-medium">{data.judgeName}</div>
         </div>
       </div>
-      <JudgeDashboard />
+      <ScoreCards data={data} />
     </div>
   )
 }

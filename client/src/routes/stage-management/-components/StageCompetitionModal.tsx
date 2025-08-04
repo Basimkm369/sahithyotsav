@@ -5,11 +5,16 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Competition } from '../-hooks/useStageCompetitions'
-import useStageCompetitionDetails from '../-hooks/useStageCompetitionDetails'
+import useStageCompetitionDetails, {
+  CompetitionDetails,
+} from '../-hooks/useStageCompetitionDetails'
 import { Route } from '..'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import StageCompetitionParticipant from './StageCompetitionParticipant'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useState } from 'react'
+import CodeLetterSelectModal from './CodeLetterSelectModal'
+import ParticipantStatus from '@/constants/ParticipantStatus'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -26,6 +31,9 @@ export default function StageCompetitionModal({
     eventId,
     itemId: competition?.itemCode,
   })
+
+  const [modalParticipant, setModalParticipant] =
+    useState<CompetitionDetails['participants'][0]>()
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -48,7 +56,12 @@ export default function StageCompetitionModal({
                     key={participant.chestNumber}
                     className="border-b last:border-b-0 pb-3 mb-3"
                   >
-                    <StageCompetitionParticipant data={participant} />
+                    <StageCompetitionParticipant
+                      data={participant}
+                      onManualEnroll={() => {
+                        setModalParticipant(participant)
+                      }}
+                    />
                   </div>
                 ))}
               </div>
@@ -56,6 +69,18 @@ export default function StageCompetitionModal({
           </ScrollArea>
         </DialogContent>
       )}
+      <CodeLetterSelectModal
+        open={!!modalParticipant}
+        onClose={() => setModalParticipant(undefined)}
+        chestNumber={modalParticipant?.chestNumber ?? 0}
+        maxCount={
+          data?.participants.filter(
+            (p) => p.status === ParticipantStatus.Enrolled,
+          ).length ?? 0
+        }
+        usedLetters={data?.participants.map((p) => p.codeLetter) ?? []}
+        isLoading={isLoading}
+      />
     </Dialog>
   )
 }
