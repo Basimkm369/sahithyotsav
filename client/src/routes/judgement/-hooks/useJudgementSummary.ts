@@ -9,6 +9,7 @@ export type JudgementSummary = {
     codeLetter: string
     mark: number
   }[]
+  notes: string
 }
 
 export default function useJudgementSummary({

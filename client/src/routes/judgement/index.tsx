@@ -2,6 +2,7 @@ import LoadingSpinner from '@/components/LoadingSpinner'
 import { createFileRoute } from '@tanstack/react-router'
 import ScoreCards from './-components/ScoreCards'
 import useJudgementSummary from './-hooks/useJudgementSummary'
+import JudgementNotes from './-components/JudgementNotes'
 
 export const Route = createFileRoute('/judgement/')({
   component: JudgeDashboardPage,
@@ -48,6 +49,7 @@ function JudgeDashboardPage() {
         </div>
       </div>
       <ScoreCards data={data} />
+      <JudgementNotes data={data} />
     </div>
   )
 }

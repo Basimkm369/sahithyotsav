@@ -43,6 +43,7 @@ router.get('/', async (req, res, next) => {
       itemName: 'Book Test',
       categoryName: 'Senior',
       scores,
+      notes: 'hi',
     }),
   );
 });

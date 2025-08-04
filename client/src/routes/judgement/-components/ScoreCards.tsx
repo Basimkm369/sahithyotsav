@@ -24,7 +24,7 @@ const validateMark = (value: string): string | null => {
 }
 
 export default function ScoreCards({ data }: { data: JudgementSummary }) {
-  const { eventId, itemId, judgeId } = Route.useSearch()
+  // const { eventId, itemId, judgeId } = Route.useSearch()
 
   const [selectedCode, setSelectedCode] = useState<string | null>(null)
   const [mark, setMark] = useState('')
