@@ -9,12 +9,12 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
-import { useState } from 'react'
 import StageCompetitionCard from './StageCompetitionCard'
 import StageCompetitionCardSkeleton from './StageCompetitionCardSkeleton'
 import PaginationControls from '@/components/PaginationControls'
 import { Route } from '..'
 import StageCompetitionModal from './StageCompetitionModal'
+import useUrlState from '@/hooks/useUrlState'
 
 const ITEMS_PER_PAGE = 24
 
@@ -23,10 +23,10 @@ export default function StageCompetitions({
 }: {
   categories: StageManagementSummary['categories']
 }) {
-  const [status, setStatus] = useState('all')
-  const [categoryId, setCategoryId] = useState('all')
+  const [status, setStatus] = useUrlState('status', 'all')
+  const [categoryId, setCategoryId] = useUrlState('categoryId', 'all')
 
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useUrlState('page', 1, (v) => (v ? parseInt(v) : 1))
 
   const { stageId, eventId } = Route.useSearch()
   const { data, isLoading, error } = useStageCompetitions({
@@ -38,7 +38,13 @@ export default function StageCompetitions({
     limit: ITEMS_PER_PAGE,
   })
 
-  const [selectedCompetition, setSelectedCompetition] = useState<Competition>()
+  const [selectedCompetition, setSelectedCompetition] =
+    useUrlState<Competition>(
+      'competition',
+      undefined,
+      (id) => data?.find((d) => d.itemCode.toString() === id),
+      (v) => v?.itemCode.toString(),
+    )
 
   if (!isLoading && error) return `Error: ${error}`
   if (!isLoading && !data) return 'No data found'
@@ -87,7 +93,9 @@ export default function StageCompetitions({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={category.number}>{category.name}</SelectItem>
+                <SelectItem value={`${category.number}`}>
+                  {category.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>

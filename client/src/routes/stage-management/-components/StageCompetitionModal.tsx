@@ -8,7 +8,8 @@ import { Competition } from '../-hooks/useStageCompetitions'
 import useStageCompetitionDetails from '../-hooks/useStageCompetitionDetails'
 import { Route } from '..'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import StageCompetitionParticipantCard from './StageCompetitionParticipantCard'
+import StageCompetitionParticipant from './StageCompetitionParticipant'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -29,27 +30,30 @@ export default function StageCompetitionModal({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       {!!competition && (
-         <DialogContent className="!max-w-4xl w-full max-h-[80vh] overflow-hidden">
+        <DialogContent className="!max-w-4xl w-full">
           <DialogHeader>
             <DialogTitle>
               {competition.name} - {competition.categoryName}
             </DialogTitle>
           </DialogHeader>
-          {isLoading ? (
-            <div className="h-40">
-              <LoadingSpinner />
-            </div>
-          ) : (
-            <div className="mt-4 overflow-y-auto max-h-[calc(80vh-100px)] pr-2">
-            <div className="grid gap-3">
-              {data?.participants?.map((participant) => (
-                <StageCompetitionParticipantCard
-                  data={participant}
-                />
-              ))}
-            </div>
-          </div>
-          )}
+          <ScrollArea className="max-h-[calc(100vh-200px)] overflow-y-auto -mr-4 pr-4">
+            {isLoading ? (
+              <div className="h-40">
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <div className="mt-4 pr-2">
+                {data?.participants?.map((participant) => (
+                  <div
+                    key={participant.chestNumber}
+                    className="border-b last:border-b-0 pb-3 mb-3"
+                  >
+                    <StageCompetitionParticipant data={participant} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
         </DialogContent>
       )}
     </Dialog>

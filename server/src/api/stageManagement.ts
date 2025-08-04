@@ -132,20 +132,27 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
 
   let query = `select pa.chestno as chestNumber,
     pa.participant as name,
+    te.teamname as teamName,
     ai.status,
     ai.codeletter as codeLetter
     from ofm_participant pa
     inner join ofm_assignitem ai on ai.chestno = pa.chestno
     inner join ofm_competitions co on co.itemcode = ai.itemcode
+    inner join ofm_team te on te.teamno = pa.teamno
     where ai.itemcode = ${itemCode}
       and co.stageno = ${stageId}
+      and ai.eventid = ${eventId}
+      and co.eventid = ${eventId}
+      and te.eventid = ${eventId}
       and pa.eventid = ${eventId}`;
 
   const data = await executeQuery(query);
 
   return next(
     new AppResponse('', {
-      participants: data.sort((a, b) => a.chestNumber - b.chestNumber),
+      participants: data.sort((a, b) =>
+        a.codeLetter.localeCompare(b.codeLetter),
+      ),
     }),
   );
 });

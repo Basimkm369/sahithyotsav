@@ -5,7 +5,7 @@ export type StageManagementSummary = {
   stageName: string
   categories: {
     name: string
-    number: string
+    number: number
   }[]
 }
 

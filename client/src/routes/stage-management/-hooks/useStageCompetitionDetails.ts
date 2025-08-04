@@ -2,10 +2,13 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 
 export type CompetitionDetails = {
-  chestNumber: number
-  name: string
-  codeLetter: string
-  status: string
+  participants: {
+    chestNumber: number
+    name: string
+    teamName: string
+    codeLetter: string
+    status: string
+  }[]
 }
 
 export default function useStageCompetitionDetails({

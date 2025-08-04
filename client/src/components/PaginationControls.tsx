@@ -15,7 +15,7 @@ export default function PaginationControls({
 }: {
   page: number
   totalPages: number
-  onChange: (value: React.SetStateAction<number>) => void
+  onChange: (value: number) => void
   className?: string
 }) {
   if (totalPages <= 1) return <></>
@@ -25,7 +25,7 @@ export default function PaginationControls({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            onClick={() => onChange((prev) => Math.max(prev - 1, 1))}
+            onClick={() => onChange(Math.max(page - 1, 1))}
             className={cn(
               page === 1 ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer',
             )}
@@ -38,7 +38,7 @@ export default function PaginationControls({
 
         <PaginationItem>
           <PaginationNext
-            onClick={() => onChange((prev) => Math.min(prev + 1, totalPages))}
+            onClick={() => onChange(Math.min(page + 1, totalPages))}
             className={cn(
               page === totalPages
                 ? 'opacity-30 cursor-not-allowed'
