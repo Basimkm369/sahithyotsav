@@ -49,7 +49,7 @@ export default function TeamCompetitionsTab({
 
   return (
     <>
-      <div className="grid gap-4 my-4">
+      <div className="grid gap-4">
         <div className="flex flex-wrap gap-4 justify-center items-center">
           {/* Stage Filter */}
           <Select
@@ -59,7 +59,7 @@ export default function TeamCompetitionsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px]">
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
               <SelectValue placeholder="Select stage" />
             </SelectTrigger>
             <SelectContent>
@@ -78,7 +78,7 @@ export default function TeamCompetitionsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px]">
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
@@ -110,7 +110,7 @@ export default function TeamCompetitionsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px]">
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
@@ -134,12 +134,11 @@ export default function TeamCompetitionsTab({
               ))}
         </div>
 
-        <div className="w-full flex justify-center mt-4">
+        <div className="w-full flex justify-center">
           <PaginationControls
             totalPages={totalPages}
             page={page}
             onChange={setPage}
-            className="mt-4"
           />
         </div>
       </div>

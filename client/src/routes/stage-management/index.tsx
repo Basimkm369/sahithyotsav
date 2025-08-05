@@ -39,8 +39,8 @@ function StageManagementPage() {
           />
         </div>
         <div className="text-center sm:text-left">
-          <div className="text-2xl font-semibold">Stage Management</div>
-          <div className="text-4xl font-bold"> {data.stageName}</div>
+          <div className="text-2xl font-semibold font-heading">Stage Management</div>
+          <div className="text-5xl font-bold font-heading"> {data.stageName}</div>
         </div>
       </div>
       <StageCompetitions categories={data.categories} />

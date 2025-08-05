@@ -62,7 +62,7 @@ export default function TeamParticipantsTab({
 
   return (
     <>
-      <div className="grid gap-4 my-4">
+      <div className="grid gap-4">
         <div className="flex flex-wrap gap-4 justify-center items-center">
           {/* Category Filter */}
           <Select
@@ -72,7 +72,7 @@ export default function TeamParticipantsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px]">
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
@@ -86,7 +86,7 @@ export default function TeamParticipantsTab({
 
         <Card className="py-0 overflow-hidden">
           <Table>
-            <TableHeader className="bg-gray-50">
+            <TableHeader className="bg-white">
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
@@ -169,13 +169,12 @@ export default function TeamParticipantsTab({
             </TableBody>
           </Table>
         </Card>
-        <div className="w-full flex justify-center mt-4">
+        <div className="w-full flex justify-center">
           {/* Pagination */}
           <PaginationControls
             totalPages={totalPages}
             page={page}
             onChange={setPage}
-            className="mt-4"
           />
         </div>
       </div>

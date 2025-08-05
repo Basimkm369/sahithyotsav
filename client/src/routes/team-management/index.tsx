@@ -37,22 +37,29 @@ function TeamManagementPage() {
   if (!data) return 'No data found'
 
   return (
-    <div className="space-y-4 px-4 pb-8">
-      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8 mb-6">
+    <div className="space-y-4 px-4 pb-4">
+      <div
+        className="flex flex-col gap-4 justify-center items-center pt-12 -mx-4"
+        style={{
+          background: 'linear-gradient(to bottom, #f8ebc8 0%, #fff 100%)',
+        }}
+      >
         <div className="h-30">
           <img
-            src="/banner.png"
+            src="/sahityotsav-banner.png"
             alt=""
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="text-center sm:text-left">
-          <div className="text-2xl font-semibold">Team Management</div>
-          <div className="text-4xl font-bold"> {data.teamName}</div>
+        <div className="text-center items-end flex gap-3 mt-2 border-t pt-3">
+          <div className="text-3xl font-semibold font-heading text-gray-500">
+            Team Management:{' '}
+          </div>
+          <div className="text-4xl font-bold font-heading">{data.teamName}</div>
         </div>
       </div>
       <Tabs value={tab}>
-        <div className="flex justify-center mb-2">
+        <div className="flex justify-center mb-4">
           <TabsList>
             <TabsTrigger
               value="competitions"
@@ -68,13 +75,13 @@ function TeamManagementPage() {
             </TabsTrigger>
           </TabsList>
         </div>
-        <TabsContent value="competitions">
+        <TabsContent value="competitions" className="bg-muted rounded-3xl p-4">
           <TeamCompetitionsTab
             categories={data.categories}
             stages={data.stages}
           />
         </TabsContent>
-        <TabsContent value="participants">
+        <TabsContent value="participants" className="bg-muted rounded-3xl p-4">
           <TeamParticipantsTab categories={data.categories} />
         </TabsContent>
       </Tabs>
