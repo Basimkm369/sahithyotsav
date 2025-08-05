@@ -89,9 +89,9 @@ router.get('/competitions', async (req, res, next) => {
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
       inner join ofm_stages as st on st.pid = cp.stageno
-      inner join ofm_judges as jd1 on jd1.pid = cp.judgeid1
-      inner join ofm_judges as jd2 on jd2.pid = cp.judgeid2
-      inner join ofm_judges as jd3 on jd3.pid = cp.judgeid3
+      left join ofm_judges as jd1 on jd1.pid = cp.judgeid1
+      left join ofm_judges as jd2 on jd2.pid = cp.judgeid2
+      left join ofm_judges as jd3 on jd3.pid = cp.judgeid3
     where cp.stageno = ${stageId} and cp.eventid = ${eventId}`;
 
     if (status === 'C') {

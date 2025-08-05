@@ -5,6 +5,7 @@ import useAdminSummary from './-hooks/useAdminSummary'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import AdminCompetitionsTab from './-components/AdminCompetitionsTab'
 import AdminParticipantsTab from './-components/AdminParticipantsTab'
+import AdminOverview from './-components/AdminOverviewTab'
 
 export const Route = createFileRoute('/admin/')({
   component: StageManagementPage,
@@ -71,7 +72,7 @@ function StageManagementPage() {
           </TabsList>
         </div>
         <TabsContent value="overview" className="bg-muted rounded-3xl p-4">
-          Overview
+          <AdminOverview />
         </TabsContent>
         <TabsContent value="competitions" className="bg-muted rounded-3xl p-4">
           <AdminCompetitionsTab

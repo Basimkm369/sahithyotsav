@@ -3,6 +3,7 @@ import { api } from '@/lib/api'
 
 export type Competition = {
   id: number
+  itemCode: number
   name: string
   stageName: string
   categoryName: string
@@ -17,6 +18,12 @@ export type Competition = {
   date: string
   startTime: string
   endTime: string
+  judge1Name: string
+  judge2Name: string
+  judge3Name: string
+  judge1Id: string
+  judge2Id: string
+  judge3Id: string
 }
 
 export default function useAdminCompetitions({

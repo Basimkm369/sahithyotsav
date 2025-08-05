@@ -1,4 +1,6 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import { body, validationResult } from 'express-validator';
+import AppError from 'src/models/AppError';
 import AppResponse from 'src/models/AppResponse';
 import { decryptId, executeQuery, executeStoredProcedure } from 'src/utils/db';
 import kvStore from 'src/utils/kvStore';
@@ -21,15 +23,17 @@ router.get('/', async (req, res, next) => {
     from ofm_stages as st 
     left join ofm_competitions as cp 
       on cp.stageno = st.pid
-    where cp.eventid = ${eventId}
+    where cp.eventid = @eventId
     group by st.stage, st.pid`,
+    { eventId },
   );
 
   const teams = await executeQuery(
     `select tm.teamname as name,
         tm.teamno as number
     from ofm_team as tm 
-      where tm.eventid = ${eventId}`,
+      where tm.eventid = @eventId`,
+    { eventId },
   );
 
   let categories = kvStore.get(`categories`);
@@ -45,6 +49,33 @@ router.get('/', async (req, res, next) => {
       stages,
       categories,
       teams,
+    }),
+  );
+});
+
+router.get('/overview', async (req, res, next) => {
+  const { eventId: eventIdEnc, teamId: teamIdEnc } = req.query;
+
+  let eventId = kvStore.get(`encId:${eventIdEnc}`);
+  if (!eventId) {
+    eventId = await decryptId(eventIdEnc as string);
+    kvStore.set(`encId:${eventIdEnc}`, eventId);
+  }
+
+  const data = await executeQuery(
+    `select count(cp.id) as count,
+        cp.status
+    from ofm_competitions as cp
+    where cp.eventid = @eventId
+    group by cp.status`,
+    {
+      eventId,
+    },
+  );
+
+  return next(
+    new AppResponse('', {
+      countByStatus: data,
     }),
   );
 });
@@ -69,6 +100,7 @@ router.get('/competitions', async (req, res, next) => {
     let query = `select
       COUNT(*) OVER () AS totalCount,
       cp.id as id,
+      cp.itemcode as itemCode,
       im.itemname as name,
       ca.categoryname as categoryName,
       st.stage as stageName,
@@ -76,6 +108,12 @@ router.get('/competitions', async (req, res, next) => {
       cp.programdate as date,
       cp.scheduledstart as startTime,
       cp.scheduledend as endTime,
+      jd1.pid as judge1Id,
+      jd2.pid as judge2Id,
+      jd3.pid as judge3Id,
+      ISNULL(jd1.judgename, '') as judge1Name,
+      ISNULL(jd2.judgename, '') as judge2Name,
+      ISNULL(jd3.judgename, '') as judge3Name,
       (
         SELECT
           pa.participant as name,
@@ -87,8 +125,8 @@ router.get('/competitions', async (req, res, next) => {
           INNER JOIN ofm_participant AS pa ON pa.chestno = ai.chestno
         WHERE
           ai.itemcode = cp.itemcode
-          and pa.eventid = ${eventId}
-          and ai.eventid = ${eventId}
+          and pa.eventid = @eventId
+          and ai.eventid = @eventId
         FOR JSON PATH
       ) AS participants
     from
@@ -96,7 +134,10 @@ router.get('/competitions', async (req, res, next) => {
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
       inner join ofm_stages as st on st.pid = cp.stageno
-    where cp.eventid = ${eventId}
+      left join ofm_judges as jd1 on jd1.pid = cp.judgeid1 and jd1.eventid = @eventId
+      left join ofm_judges as jd2 on jd2.pid = cp.judgeid2 and jd1.eventid = @eventId
+      left join ofm_judges as jd3 on jd3.pid = cp.judgeid3 and jd1.eventid = @eventId
+    where cp.eventid = @eventId
     `;
 
     if (stageId) query += ` and cp.stageno = '${stageId}'`;
@@ -116,13 +157,21 @@ router.get('/competitions', async (req, res, next) => {
         cp.id,
         cp.programdate,
         cp.scheduledstart,
-        cp.scheduledend
+        cp.scheduledend,
+        jd1.pid,
+        jd2.pid,
+        jd3.pid,
+        jd1.judgename,
+        jd2.judgename,
+        jd3.judgename
       order by
         im.itemname, ca.categoryname, st.stage
       offset (${page} - 1) * ${limit} rows
       fetch next ${limit} rows only;`;
 
-    const data = await executeQuery(query);
+    const data = await executeQuery(query, {
+      eventId,
+    });
 
     const parsedData = data.map((row: any) => ({
       ...row,
@@ -143,10 +192,78 @@ router.get('/competitions', async (req, res, next) => {
   }
 });
 
+router.get('/judges', async (req, res, next) => {
+  try {
+    const { eventId: eventIdEnc } = req.query;
+
+    let eventId = kvStore.get(`encId:${eventIdEnc}`);
+    if (!eventId) {
+      eventId = await decryptId(eventIdEnc as string);
+      kvStore.set(`encId:${eventIdEnc}`, eventId);
+    }
+
+    const data = await executeQuery(
+      `SELECT pid AS id, judgename AS name FROM ofm_judges where eventid = ${eventId}`,
+    );
+    return next(new AppResponse('', data));
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.post(
+  '/updateCompetition',
+  [
+    body('eventId').notEmpty(),
+    body('competitionId').notEmpty(),
+    body('judge1Id').notEmpty(),
+    body('judge2Id').notEmpty(),
+    body('judge3Id').notEmpty(),
+  ],
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(
+          new AppError('Validation Error', 400, { errors: errors.array() }),
+        );
+      }
+
+      const {
+        eventId: eventIdEnc,
+        competitionId,
+        judge1Id,
+        judge2Id,
+        judge3Id,
+      } = req.body;
+
+      let eventId = kvStore.get(`encId:${eventIdEnc}`);
+      if (!eventId) {
+        eventId = await decryptId(eventIdEnc as string);
+        kvStore.set(`encId:${eventIdEnc}`, eventId);
+      }
+
+      await executeQuery(
+        `UPDATE ofm_competitions
+         SET judgeid1 = @judge1Id,
+             judgeid2 = @judge2Id,
+             judgeid3 = @judge3Id
+         WHERE id = @competitionId`,
+        { competitionId, judge1Id, judge2Id, judge3Id },
+      );
+
+      return next(new AppResponse('Judges updated successfully'));
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
+
 router.get('/participants', async (req, res, next) => {
   try {
     const {
       categoryId,
+      teamId,
       eventId: eventIdEnc,
       limit = 10,
       page = 1,
@@ -162,6 +279,7 @@ router.get('/participants', async (req, res, next) => {
         pa.chestno as chestNumber,
         pa.participant as name,
         ca.categoryname as categoryName,
+        tm.teamname as teamName,
         (
           SELECT
             it.itemname as itemName,
@@ -170,19 +288,21 @@ router.get('/participants', async (req, res, next) => {
             ca.status as status
           FROM
             ofm_assignitem AS ai
-            LEFT JOIN ofm_competitions AS ca ON ca.itemcode = ai.itemcode
+            LEFT JOIN ofm_competitions AS ca ON ca.itemcode = ai.itemcode and ca.eventid = ${eventId}
             left join ofm_itemmaster as it on it.itemcode = ca.itemcode
           WHERE
             ai.chestno = pa.chestno
-            and ca.eventid = ${eventId}
+            and ai.eventid = ${eventId}
           FOR JSON PATH
         ) AS competitions
         from ofm_participant pa
         inner join ofm_category ca on ca.categoryno = pa.categoryno
+        inner join ofm_team tm on tm.teamno = pa.teamno and tm.eventId = ${eventId}
         where pa.eventid = ${eventId}
       `;
 
     if (categoryId) query += ` and pa.categoryno = '${categoryId}'`;
+    if (teamId) query += ` and pa.teamno = '${teamId}'`;
 
     query += ` order by pa.chestno, ca.categoryname, pa.participant
       offset (${page} - 1) * ${limit} rows
