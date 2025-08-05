@@ -19,6 +19,7 @@ import { getCompetitionStatusBadge } from '@/lib/badge'
 import CompetitionStatus from '@/constants/CompetitionStatus'
 import useConfirmation from '@/components/Confirmation'
 import { api } from '@/lib/api'
+import queryClient from '@/lib/queryClient'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -48,6 +49,9 @@ export default function StageCompetitionModal({
         eventId,
         stageId,
         status,
+      })
+      await queryClient.invalidateQueries({
+        queryKey: ['stageManagement', 'competitions'],
       })
     },
   })

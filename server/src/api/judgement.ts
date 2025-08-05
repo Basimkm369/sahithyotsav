@@ -45,13 +45,14 @@ router.get('/', async (req, res, next) => {
           tme.notes
         FROM
           ofm_assignitem AS ai
-        INNER JOIN ofm_tempmarkentry AS tme
+        LEFT JOIN ofm_tempmarkentry AS tme
           on tme.itemcode = ai.itemcode
             and tme.chestno = ai.chestno
             and tme.codeletter = ai.codeletter
+            and tme.eventid = @eventId
         WHERE
           ai.itemcode = cp.itemcode
-          and ai.eventid = ${eventId}
+          and ai.eventid = @eventId
           and ai.status = 'E'
           and ai.codeletter IS NOT NULL AND ai.codeletter <> ''
         FOR JSON PATH
@@ -61,10 +62,10 @@ router.get('/', async (req, res, next) => {
         inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
         inner join ofm_category as ca on ca.categoryno = im.categoryno
         inner join ofm_judges as jd on jd.pid = cp.judgeid${judgeId}
-      where cp.eventid = ${eventId}
-        and cp.itemcode = ${itemId}`;
+      where cp.eventid = @eventId
+        and cp.itemcode = @itemId`;
 
-    const data = await executeQuery(query);
+    const data = await executeQuery(query, { eventId, itemId });
 
     const parsedData = data.map((row: any) => ({
       ...row,
