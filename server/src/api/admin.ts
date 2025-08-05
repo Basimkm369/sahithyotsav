@@ -68,9 +68,7 @@ router.get('/overview', async (req, res, next) => {
     from ofm_competitions as cp
     where cp.eventid = @eventId
     group by cp.status`,
-    {
-      eventId,
-    },
+    { eventId },
   );
 
   return next(

@@ -203,9 +203,10 @@ router.post(
 
       const programRes = await executeQuery(
         `SELECT id FROM OFM_Competitions
-        WHERE itemcode = ${itemCode}
-        AND stageno = ${stageId}
-        AND eventid = ${eventId}`,
+          WHERE itemcode = @itemCode
+          AND stageno = @stageId
+          AND eventid = @eventId`,
+        { eventId, stageId, itemCode },
       );
       const programId = programRes?.[0]?.id;
       if (!programId) throw new Error('Program ID not found');
