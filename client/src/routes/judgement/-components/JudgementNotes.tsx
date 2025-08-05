@@ -3,7 +3,7 @@ import { JudgementSummary } from '../-hooks/useJudgementSummary'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { api } from '@/lib/api'
 import { Route } from '..'
-import { formatTime } from '@/lib/datetime'
+import dayjs from 'dayjs'
 
 export default function JudgementNotes({ data }: { data: JudgementSummary }) {
   const { eventId, itemId, judgeId } = Route.useSearch()
@@ -75,7 +75,7 @@ export default function JudgementNotes({ data }: { data: JudgementSummary }) {
         <div className="text-sm text-slate-700 mt-2">
           {isSaving && !error && 'Saving...'}
           {!isSaving && !error && lastSaved && (
-            <>Last saved at {formatTime(lastSaved.toISOString())}</>
+            <>Last saved at {dayjs(lastSaved, 'HH:mm:ss').format('h:mm A')}</>
           )}
           {!isSaving && !error && !lastSaved && 'All changes saved'}
           {error && (

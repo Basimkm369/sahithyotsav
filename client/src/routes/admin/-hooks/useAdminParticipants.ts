@@ -37,7 +37,7 @@ export default function useAdminParticipants({
     queryFn: async () => {
       const params: Record<string, any> = {}
       if (categoryId !== 'all') params.categoryId = categoryId
-      if (teamId) params.teamId = teamId
+      if (teamId !== 'all') params.teamId = teamId
       if (eventId) params.eventId = eventId
       params.page = page
       params.limit = limit

@@ -19,8 +19,8 @@ import { getCompetitionStatusBadge } from '@/lib/badge'
 import CompetitionStatus from '@/constants/CompetitionStatus'
 import useConfirmation from '@/components/Confirmation'
 import { api } from '@/lib/api'
-import { AiOutlineQrcode } from 'react-icons/ai';
-import QRScanDialog from './QRScanDialog';
+import { AiOutlineQrcode } from 'react-icons/ai'
+import QRScanDialog from './QRScanDialog'
 import useCompetitionParticipantMutation from '../-hooks/useCompetitionParticipantMutation'
 import queryClient from '@/lib/queryClient'
 
@@ -39,20 +39,19 @@ export default function StageCompetitionModal({
     eventId,
     itemId: competition?.itemCode,
   })
-  const { mutate } = useCompetitionParticipantMutation();
+  const { mutate } = useCompetitionParticipantMutation()
 
-  const handleValidScan = (participant: any) => {
-    const { chestNumber } = participant;
-
+  const handleValidScan = (participant: { chestNumber: number }) => {
+    if (!competition) return
     mutate({
-      itemId : competition?.itemCode,
+      itemId: competition.itemCode,
       eventId,
       stageId,
-      chestNumber,
+      chestNumber: participant.chestNumber,
       status: ParticipantStatus.Enrolled,
-    });
-  };
-  const [showQRDialog, setShowQRDialog] = useState(false);
+    })
+  }
+  const [showQRDialog, setShowQRDialog] = useState(false)
   const [modalParticipant, setModalParticipant] =
     useState<CompetitionDetails['participants'][0]>()
 
@@ -85,35 +84,50 @@ export default function StageCompetitionModal({
             </DialogHeader>
             <ScrollArea className="max-h-[calc(100vh-200px)] overflow-y-auto -mr-4 pr-4">
               <div className="mt-4 pr-2 space-y-8">
-       
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                     {competition.status === CompetitionStatus.NotStarted && (
-                      <Button onClick={() => promptComfirmation(CompetitionStatus.Started)}>
+                      <Button
+                        onClick={() =>
+                          promptComfirmation(CompetitionStatus.Started)
+                        }
+                      >
                         Start Reporting
                       </Button>
                     )}
                     {competition.status === CompetitionStatus.Started && (
-                      <Button onClick={() => promptComfirmation(CompetitionStatus.InProgress)}>
+                      <Button
+                        onClick={() =>
+                          promptComfirmation(CompetitionStatus.InProgress)
+                        }
+                      >
                         Start Program
                       </Button>
                     )}
                     {competition.status === CompetitionStatus.InProgress && (
-                      <Button onClick={() => promptComfirmation(CompetitionStatus.Completed)}>
+                      <Button
+                        onClick={() =>
+                          promptComfirmation(CompetitionStatus.Completed)
+                        }
+                      >
                         End Program
                       </Button>
                     )}
                     {competition.status === CompetitionStatus.Completed && (
                       <Button
-                        onClick={() => promptComfirmation(CompetitionStatus.MarkEntryClosed)}
+                        onClick={() =>
+                          promptComfirmation(CompetitionStatus.MarkEntryClosed)
+                        }
                       >
                         Close Mark Entry
                       </Button>
                     )}
                   </div>
 
-                
-                  <Button variant="outline" onClick={() => setShowQRDialog(true)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowQRDialog(true)}
+                  >
                     <AiOutlineQrcode className="mr-2 h-4 w-4" />
                     Scan QR
                   </Button>
@@ -124,7 +138,6 @@ export default function StageCompetitionModal({
                     participants={data?.participants || []}
                     onValidScan={handleValidScan}
                   />
-
                 </div>
 
                 <div>
