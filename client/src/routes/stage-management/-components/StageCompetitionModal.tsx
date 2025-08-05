@@ -18,6 +18,7 @@ import Button from '@/components/Button'
 import { getCompetitionStatusBadge } from '@/lib/badge'
 import CompetitionStatus from '@/constants/CompetitionStatus'
 import useConfirmation from '@/components/Confirmation'
+import { api } from '@/lib/api'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -41,7 +42,13 @@ export default function StageCompetitionModal({
   const [component, promptComfirmation] = useConfirmation({
     description: 'Are you sure you want to change the competition status?',
     onConfirm: async (status) => {
-      //
+      if (!competition?.itemCode) return
+      await api.post(`/stageManagement/updateCompetitionStatus`, {
+        itemCode: competition.itemCode,
+        eventId,
+        stageId,
+        status,
+      })
     },
   })
 
@@ -122,6 +129,7 @@ export default function StageCompetitionModal({
                           className="border-b last:border-b-0 pb-3 mb-3"
                         >
                           <StageCompetitionParticipant
+                            itemCode={competition.itemCode}
                             competitionStatus={competition.status}
                             data={participant}
                             onManualEnroll={() => {
@@ -135,18 +143,21 @@ export default function StageCompetitionModal({
             </ScrollArea>
           </DialogContent>
         )}
-        <CodeLetterSelectModal
-          open={!!modalParticipant}
-          onClose={() => setModalParticipant(undefined)}
-          chestNumber={modalParticipant?.chestNumber ?? 0}
-          maxCount={
-            data?.participants.filter(
-              (p) => p.status === ParticipantStatus.Enrolled,
-            ).length ?? 0
-          }
-          usedLetters={data?.participants.map((p) => p.codeLetter) ?? []}
-          isLoading={isLoading}
-        />
+        {!!competition?.itemCode && (
+          <CodeLetterSelectModal
+            open={!!modalParticipant}
+            itemCode={competition.itemCode}
+            onClose={() => setModalParticipant(undefined)}
+            chestNumber={modalParticipant?.chestNumber ?? 0}
+            maxCount={
+              data?.participants.filter(
+                (p) => p.status === ParticipantStatus.Enrolled,
+              ).length ?? 0
+            }
+            usedLetters={data?.participants.map((p) => p.codeLetter) ?? []}
+            isLoading={isLoading}
+          />
+        )}
       </Dialog>
       {component}
     </>

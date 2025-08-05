@@ -10,6 +10,9 @@ export type Competition = {
   date: string
   startTime: string
   endTime: string
+  judge1Name: string
+  judge2Name: string
+  judge3Name: string
 }
 
 export default function useStageCompetitions({
@@ -29,7 +32,8 @@ export default function useStageCompetitions({
 }) {
   return useQuery({
     queryKey: [
-      'stageManagement/competitions',
+      'stageManagement',
+      'competitions',
       { status, categoryId, page, limit, eventId, stageId },
     ],
     queryFn: async () => {

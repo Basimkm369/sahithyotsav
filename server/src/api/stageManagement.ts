@@ -1,7 +1,10 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import AppResponse from 'src/models/AppResponse';
 import kvStore from 'src/utils/kvStore';
-import { decryptId, executeQuery } from 'src/utils/db';
+import { decryptId, executeQuery, executeStoredProcedure } from 'src/utils/db';
+import CompetitionStatus from 'src/constants/CompetitionStatus';
+import { body, validationResult } from 'express-validator';
+import AppError from 'src/models/AppError';
 
 const router = express.Router();
 
@@ -77,12 +80,18 @@ router.get('/competitions', async (req, res, next) => {
       cp.status,
       cp.programdate as date,
       cp.scheduledstart as startTime,
-      cp.scheduledend as endTime
+      cp.scheduledend as endTime,
+      ISNULL(jd1.judgename, '') as judge1Name,
+      ISNULL(jd2.judgename, '') as judge2Name,
+      ISNULL(jd3.judgename, '') as judge3Name
     from
       ofm_competitions as cp
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
       inner join ofm_stages as st on st.pid = cp.stageno
+      inner join ofm_judges as jd1 on jd1.pid = cp.judgeid1
+      inner join ofm_judges as jd2 on jd2.pid = cp.judgeid2
+      inner join ofm_judges as jd3 on jd3.pid = cp.judgeid3
     where cp.stageno = ${stageId} and cp.eventid = ${eventId}`;
 
     if (status === 'C') {
@@ -100,7 +109,10 @@ router.get('/competitions', async (req, res, next) => {
       cp.itemcode,
       cp.programdate,
       cp.scheduledstart,
-      cp.scheduledend
+      cp.scheduledend,
+      jd1.judgename,
+      jd2.judgename,
+      jd3.judgename
     order by
       im.itemname, ca.categoryname, st.stage
     offset (${page} - 1) * ${limit} rows
@@ -150,11 +162,133 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
 
   return next(
     new AppResponse('', {
-      participants: data.sort((a, b) =>
-        a.codeLetter.localeCompare(b.codeLetter),
-      ),
+      participants: data.sort((a, b) => a.chestNumber - b.chestNumber),
     }),
   );
 });
+
+router.post(
+  '/updateCompetitionStatus',
+  [
+    body('eventId').notEmpty(),
+    body('stageId').notEmpty(),
+    body('itemCode').notEmpty().isNumeric(),
+    body('status').notEmpty().isString().isLength({ max: 1 }),
+  ],
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        throw new AppError('Validation Error', 400, { errors: errors.array() });
+      }
+
+      const {
+        eventId: eventIdEnc,
+        stageId: stageIdEnc,
+        itemCode,
+        status,
+      } = req.body;
+
+      let stageId = kvStore.get(`encId:${stageIdEnc}`);
+      if (!stageId) {
+        stageId = await decryptId(stageIdEnc as string);
+        kvStore.set(`encId:${stageIdEnc}`, stageId);
+      }
+
+      let eventId = kvStore.get(`encId:${eventIdEnc}`);
+      if (!eventId) {
+        eventId = await decryptId(eventIdEnc as string);
+        kvStore.set(`encId:${eventIdEnc}`, eventId);
+      }
+
+      const programRes = await executeQuery(
+        `SELECT id FROM OFM_Competitions
+        WHERE itemcode = ${itemCode}
+        AND stageno = ${stageId}
+        AND eventid = ${eventId}`,
+      );
+      const programId = programRes?.[0]?.id;
+      if (!programId) throw new Error('Program ID not found');
+
+      await executeStoredProcedure('usp_StartProgram', {
+        programId,
+        Status: status,
+        datetime: new Date(),
+        Notes: '',
+      });
+
+      return next(new AppResponse('Competition status updated successfully'));
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
+
+router.post(
+  '/updateCompetitionParticipant',
+  [
+    body('eventId').notEmpty(),
+    body('stageId').notEmpty(),
+    body('itemCode').notEmpty().isNumeric(),
+    body('chestNumber').if(body('codeLetter').not().exists()).notEmpty(),
+    body('codeLetter')
+      .if(body('chestNumber').not().exists())
+      .notEmpty()
+      .isString()
+      .isLength({ max: 10 }),
+    body('status').notEmpty().isString().isLength({ max: 1 }),
+  ],
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        throw new AppError('Validation Error', 400, { errors: errors.array() });
+      }
+
+      const {
+        eventId: eventIdEnc,
+        stageId: stageIdEnc,
+        itemCode,
+        chestNumber,
+        status,
+        codeLetter,
+      } = req.body;
+
+      let stageId = kvStore.get(`encId:${stageIdEnc}`);
+      if (!stageId) {
+        stageId = await decryptId(stageIdEnc as string);
+        kvStore.set(`encId:${stageIdEnc}`, stageId);
+      }
+
+      let eventId = kvStore.get(`encId:${eventIdEnc}`);
+      if (!eventId) {
+        eventId = await decryptId(eventIdEnc as string);
+        kvStore.set(`encId:${eventIdEnc}`, eventId);
+      }
+
+      const pidRes = await executeQuery(
+        `SELECT ai.id FROM OFM_AssignItem ai
+          INNER JOIN ofm_competitions co on co.itemcode = ai.itemcode
+          WHERE ai.chestno = '${chestNumber}'
+            AND ai.itemcode = ${itemCode}
+            AND co.stageno = ${stageId}
+            AND co.eventid = ${eventId}
+            AND ai.eventid = ${eventId}`,
+      );
+      const pid = pidRes?.[0]?.id;
+      if (!pid) throw new Error('Participant ID not found');
+
+      await executeStoredProcedure('usp_updateCodeLetter', {
+        pid,
+        CodeLetter: codeLetter,
+        Status: status,
+      });
+
+      return next(new AppResponse('Participant updated successfully'));
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
 
 export default router;

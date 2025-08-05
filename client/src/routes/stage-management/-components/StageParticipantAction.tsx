@@ -1,18 +1,40 @@
 import { CompetitionDetails } from '../-hooks/useStageCompetitionDetails'
 import Button from '@/components/Button'
+import ButtonLoader from '@/components/ButtonLoader'
 import ParticipantStatus from '@/constants/ParticipantStatus'
+import { Route } from '..'
+import useCompetitionParticipantMutation from '../-hooks/useCompetitionParticipantMutation'
 
 export default function StageParticipantAction({
+  itemCode: itemId,
   data,
   onManualEnroll,
 }: {
+  itemCode: number
   data: CompetitionDetails['participants'][0]
   onManualEnroll?: () => void
 }) {
-  const { status, codeLetter } = data
+  const { stageId, eventId } = Route.useSearch()
+  const { status, codeLetter, chestNumber } = data
+  const { mutate } = useCompetitionParticipantMutation()
 
   if (!status) {
-    return <Button size="sm">Report</Button>
+    return (
+      <ButtonLoader
+        size="sm"
+        onClick={() => {
+          mutate({
+            itemId,
+            eventId,
+            stageId,
+            chestNumber,
+            status: ParticipantStatus.Enrolled,
+          })
+        }}
+      >
+        Report
+      </ButtonLoader>
+    )
   }
   if (status === ParticipantStatus.Enrolled && !codeLetter.trim()) {
     return (

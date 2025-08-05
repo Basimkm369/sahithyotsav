@@ -13,7 +13,7 @@ const Button = ({ children, isLoading = false, ...props }: ButtonProps) => {
       type="button"
       disabled={isLoading}
       {...(props as any)}
-      className={cn('relative cursor-pointer', props.className)}
+      className={cn('rounded-3xl relative cursor-pointer', props.className)}
     >
       {isLoading && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">

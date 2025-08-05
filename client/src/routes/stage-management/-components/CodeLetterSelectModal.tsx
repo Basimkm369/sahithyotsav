@@ -8,6 +8,10 @@ import {
 import Button from '@/components/Button'
 import { useCallback, useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
+import ButtonLoader from '@/components/ButtonLoader'
+import ParticipantStatus from '@/constants/ParticipantStatus'
+import { Route } from '..'
+import useCompetitionParticipantMutation from '../-hooks/useCompetitionParticipantMutation'
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
@@ -18,7 +22,7 @@ export default function CodeLetterSelectModal({
   maxCount,
   usedLetters,
   isLoading,
-  onContinue,
+  itemCode,
 }: {
   open: boolean
   onClose: () => void
@@ -26,8 +30,9 @@ export default function CodeLetterSelectModal({
   maxCount: number
   usedLetters: string[]
   isLoading?: boolean
-  onContinue?: (letter: string) => void
+  itemCode: number
 }) {
+  const { eventId, stageId } = Route.useSearch()
   const availableLetters = LETTERS.slice(0, maxCount).filter(
     (l) => !usedLetters.find((x) => x.toUpperCase() === l),
   )
@@ -44,7 +49,7 @@ export default function CodeLetterSelectModal({
         availableLetters[Math.floor(Math.random() * availableLetters.length)]
       setSelected(randLetter)
       elapsed += 100
-      if (elapsed >= 3000) {
+      if (elapsed >= 2000) {
         clearInterval(intervalId)
         setRandomizing(false)
       }
@@ -56,6 +61,8 @@ export default function CodeLetterSelectModal({
       setSelected(null)
     }
   }, [open])
+
+  const { mutate } = useCompetitionParticipantMutation()
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -92,13 +99,23 @@ export default function CodeLetterSelectModal({
           >
             Randomize
           </Button>
-          <Button
+          <ButtonLoader
             disabled={!selected || isLoading || randomizing}
-            onClick={() => selected && onContinue?.(selected)}
+            onClick={async () => {
+              mutate({
+                itemId: itemCode,
+                eventId,
+                stageId,
+                chestNumber,
+                codeLetter: selected!,
+                status: ParticipantStatus.Enrolled,
+              })
+              onClose()
+            }}
             isLoading={isLoading}
           >
             Continue
-          </Button>
+          </ButtonLoader>
         </DialogFooter>
       </DialogContent>
     </Dialog>

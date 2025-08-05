@@ -6,7 +6,7 @@ import {
   CardDescription,
 } from '@/components/ui/card'
 import { Competition } from '../-hooks/useStageCompetitions'
-import { LucideCalendar, LucideClock } from 'lucide-react'
+import { LucideCalendar, LucideClock, LucideGavel } from 'lucide-react'
 import dayjs from 'dayjs'
 import { formatTime } from '@/lib/datetime'
 import { getCompetitionStatusBadge } from '@/lib/badge'
@@ -41,6 +41,16 @@ export default function StageCompetitionCard({
             <div className="flex gap-1 items-center flex-nowrap">
               <LucideClock className="w-4 opacity-40" />
               {formatTime(data.startTime)} - {formatTime(data.startTime)}
+            </div>
+          )}
+          {(data.judge1Name.trim() ||
+            data.judge2Name.trim() ||
+            data.judge3Name.trim()) && (
+            <div className="flex gap-1 items-center flex-nowrap">
+              <LucideGavel className="w-4 opacity-40" />
+              {[data.judge1Name, data.judge2Name, data.judge3Name]
+                .filter(Boolean)
+                .join(', ')}
             </div>
           )}
         </div>

@@ -65,7 +65,7 @@ export default function StageCompetitions({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px]">
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
@@ -97,7 +97,7 @@ export default function StageCompetitions({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px]">
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>

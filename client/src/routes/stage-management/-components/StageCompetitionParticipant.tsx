@@ -8,10 +8,12 @@ import StageParticipantAction from './StageParticipantAction'
 import CompetitionStatus from '@/constants/CompetitionStatus'
 
 export default function StageCompetitionParticipant({
+  itemCode,
   competitionStatus,
   data,
   onManualEnroll,
 }: {
+  itemCode: number
   competitionStatus: string
   data: CompetitionDetails['participants'][0]
   onManualEnroll?: () => void
@@ -42,7 +44,11 @@ export default function StageCompetitionParticipant({
         {[CompetitionStatus.Started, CompetitionStatus.InProgress].includes(
           competitionStatus as CompetitionStatus,
         ) && (
-          <StageParticipantAction data={data} onManualEnroll={onManualEnroll} />
+          <StageParticipantAction
+            itemCode={itemCode}
+            data={data}
+            onManualEnroll={onManualEnroll}
+          />
         )}
       </div>
     </div>

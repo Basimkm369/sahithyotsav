@@ -21,7 +21,7 @@ export default function useStageCompetitionDetails({
   stageId: string
 }) {
   return useQuery({
-    queryKey: ['stageManagement/competitions', { itemId, eventId, stageId }],
+    queryKey: ['stageManagement', 'competitions', { itemId, eventId, stageId }],
     queryFn: async () => {
       const params: Record<string, any> = {}
       if (eventId) params.eventId = eventId
