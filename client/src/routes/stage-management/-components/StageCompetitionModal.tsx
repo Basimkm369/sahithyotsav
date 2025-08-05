@@ -22,6 +22,7 @@ import { api } from '@/lib/api'
 import { AiOutlineQrcode } from 'react-icons/ai';
 import QRScanDialog from './QRScanDialog';
 import useCompetitionParticipantMutation from '../-hooks/useCompetitionParticipantMutation'
+import queryClient from '@/lib/queryClient'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -64,6 +65,9 @@ export default function StageCompetitionModal({
         eventId,
         stageId,
         status,
+      })
+      await queryClient.invalidateQueries({
+        queryKey: ['stageManagement', 'competitions'],
       })
     },
   })

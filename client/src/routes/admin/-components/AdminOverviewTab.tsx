@@ -10,14 +10,14 @@ export default function AdminOverview() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="flex flex-wrap justify-center gap-6">
         {[...Array(4)].map((_, i) => (
-          <Card key={i}>
+          <Card key={i} className="gap-2 w-full max-w-50">
             <CardHeader>
-              <Skeleton className="h-6 w-1/2 mb-2" />
+              <Skeleton className="h-5 w-1/2 mb-2" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-7 w-full" />
             </CardContent>
           </Card>
         ))}
