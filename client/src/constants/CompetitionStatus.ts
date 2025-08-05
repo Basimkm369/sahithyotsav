@@ -10,4 +10,28 @@ enum CompetitionStatus {
   PrizeDistributed = 'D',
 }
 
+export const statusLabels: Record<string, string> = {
+  [CompetitionStatus.NotStarted]: 'Not Started',
+  [CompetitionStatus.Started]: 'Started',
+  [CompetitionStatus.InProgress]: 'In Progress',
+  [CompetitionStatus.Completed]: 'Completed',
+  [CompetitionStatus.MarkEntryClosed]: 'Mark Entry Closed',
+  [CompetitionStatus.Finalized]: 'Finalized',
+  [CompetitionStatus.MediaCompleted]: 'Media Completed',
+  [CompetitionStatus.Announced]: 'Announced',
+  [CompetitionStatus.PrizeDistributed]: 'Prize Distributed',
+}
+
+export const statusOrder = [
+  CompetitionStatus.NotStarted,
+  CompetitionStatus.Started,
+  CompetitionStatus.InProgress,
+  CompetitionStatus.Completed,
+  CompetitionStatus.MarkEntryClosed,
+  CompetitionStatus.Finalized,
+  CompetitionStatus.MediaCompleted,
+  CompetitionStatus.Announced,
+  CompetitionStatus.PrizeDistributed,
+]
+
 export default CompetitionStatus

@@ -29,19 +29,19 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
       </CardHeader>
       <CardContent className="flex flex-col h-full justify-between">
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-          <div className="flex gap-1 items-center flex-nowrap">
-            <LucideMapPin className="w-4 opacity-40" />
+          <div className="flex gap-1 flex-nowrap">
+            <LucideMapPin className="w-4 opacity-40  pb-[3px]" />
             {data.stageName}
           </div>
           {dayjs(data.date).isValid() && (
-            <div className="flex gap-1 items-center flex-nowrap">
-              <LucideCalendar className="w-4 opacity-40" />
+            <div className="flex gap-1 flex-nowrap">
+              <LucideCalendar className="w-4 opacity-40  pb-[3px]" />
               {dayjs(data.date).format('D MMM')}
             </div>
           )}
           {formatTime(data.startTime) && formatTime(data.startTime) && (
-            <div className="flex gap-1 items-center flex-nowrap">
-              <LucideClock className="w-4 opacity-40" />
+            <div className="flex gap-1 flex-nowrap">
+              <LucideClock className="w-4 opacity-40  pb-[3px]" />
               {formatTime(data.startTime)} - {formatTime(data.startTime)}
             </div>
           )}

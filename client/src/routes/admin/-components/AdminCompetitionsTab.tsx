@@ -11,12 +11,15 @@ import { useState } from 'react'
 import TeamCompetitionCard from './AdminCompetitionCard'
 import TeamCompetitionCardSkeleton from './AdminCompetitionCardSkeleton'
 import PaginationControls from '@/components/PaginationControls'
-import useTeamCompetitions from '../-hooks/useAdminCompetitions'
+import useTeamCompetitions, {
+  Competition,
+} from '../-hooks/useAdminCompetitions'
 import { Route } from '..'
 import CompetitionStatus from '@/constants/CompetitionStatus'
 import useAdminCompetitions from '../-hooks/useAdminCompetitions'
 import { AdminSummary } from '../-hooks/useAdminSummary'
 import AdminCompetitionCard from './AdminCompetitionCard'
+import AdminCompetitionFormModal from './AdminCompetitionFormModal'
 
 const ITEMS_PER_PAGE = 24
 
@@ -41,6 +44,14 @@ export default function AdminCompetitionsTab({
     page,
     limit: ITEMS_PER_PAGE,
   })
+
+  const [selectedCompetition, setSelectedCompetition] =
+    useUrlState<Competition>(
+      'competition',
+      undefined,
+      (id) => data?.find((d) => d.itemCode.toString() === id),
+      (v) => v?.itemCode.toString(),
+    )
 
   if (!isLoading && error) return `Error: ${error}`
   if (!isLoading && !data) return 'No data found'
@@ -132,7 +143,11 @@ export default function AdminCompetitionsTab({
                 <TeamCompetitionCardSkeleton key={i} />
               ))
             : data?.map((comp) => (
-                <AdminCompetitionCard data={comp} key={comp.id} />
+                <AdminCompetitionCard
+                  data={comp}
+                  key={comp.id}
+                  onClick={() => setSelectedCompetition(comp)}
+                />
               ))}
         </div>
 
@@ -144,6 +159,11 @@ export default function AdminCompetitionsTab({
           />
         </div>
       </div>
+      <AdminCompetitionFormModal
+        data={selectedCompetition}
+        open={!!selectedCompetition}
+        onClose={() => setSelectedCompetition(undefined)}
+      />
     </>
   )
 }

@@ -31,6 +31,7 @@ import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import PaginationControls from '@/components/PaginationControls'
 import { Route } from '..'
+import useUrlState from '@/hooks/useUrlState'
 
 const ITEMS_PER_PAGE = 30
 export default function TeamParticipantsTab({
@@ -38,9 +39,9 @@ export default function TeamParticipantsTab({
 }: {
   categories: TeamManagementSummary['categories']
 }) {
-  const [categoryId, setCategoryId] = useState('all')
+  const [categoryId, setCategoryId] = useUrlState('categoryId', 'all')
 
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useUrlState('page', 1, (v) => (v ? parseInt(v) : 1))
 
   const { eventId, teamId } = Route.useSearch()
   const { data, isLoading, error } = useTeamParticipants({
@@ -78,7 +79,7 @@ export default function TeamParticipantsTab({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={category.number}>{category.name}</SelectItem>
+                <SelectItem value={`${category.number}`}>{category.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>

@@ -32,6 +32,7 @@ import PaginationControls from '@/components/PaginationControls'
 import { Route } from '..'
 import useAdminParticipants from '../-hooks/useAdminParticipants'
 import { AdminSummary } from '../-hooks/useAdminSummary'
+import useUrlState from '@/hooks/useUrlState'
 
 const ITEMS_PER_PAGE = 30
 export default function AdminParticipantsTab({
@@ -41,15 +42,16 @@ export default function AdminParticipantsTab({
   categories: AdminSummary['categories']
   teams: AdminSummary['teams']
 }) {
-  const [categoryId, setCategoryId] = useState('all')
-  const [teamId, setTeamId] = useState('all')
+  const [categoryId, setCategoryId] = useUrlState('categoryId', 'all')
+  const [teamId, setTeamId] = useUrlState('teamId', 'all')
 
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useUrlState('page', 1, (v) => (v ? parseInt(v) : 1))
 
   const { eventId } = Route.useSearch()
   const { data, isLoading, error } = useAdminParticipants({
     eventId,
     categoryId,
+    teamId,
     page,
     limit: ITEMS_PER_PAGE,
   })
@@ -114,6 +116,7 @@ export default function AdminParticipantsTab({
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
+                <TableHead>Team</TableHead>
                 <TableHead>Competitions</TableHead>
                 <TableHead>Awards</TableHead>
               </TableRow>
@@ -128,6 +131,9 @@ export default function AdminParticipantsTab({
                           <Skeleton className="h-4 w-10" />
                         </div>
                       </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-24" />
+                      </TableCell>{' '}
                       <TableCell>
                         <Skeleton className="h-4 w-24" />
                       </TableCell>
@@ -158,6 +164,7 @@ export default function AdminParticipantsTab({
                         </span>
                       </TableCell>
                       <TableCell>{participant.categoryName}</TableCell>
+                      <TableCell>{participant.teamName}</TableCell>
                       <TableCell>
                         {(() => {
                           const statusCounts: Record<string, number> = {}
