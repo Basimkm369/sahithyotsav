@@ -5,6 +5,7 @@ export type JudgementSummary = {
   judgeName: string
   itemName: string
   categoryName: string
+  competitionStatus: string
   scores: {
     codeLetter: string
     mark: number

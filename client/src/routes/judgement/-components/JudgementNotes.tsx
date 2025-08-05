@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { JudgementSummary } from '../-hooks/useJudgementSummary'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function JudgementNotes({ data }: { data: JudgementSummary }) {
   const [notes, setNotes] = useState(data.notes || '')
@@ -24,17 +25,22 @@ export default function JudgementNotes({ data }: { data: JudgementSummary }) {
   }, [notes, data])
 
   return (
-    <div>
-      <textarea
-        className="w-full border rounded-lg p-2"
-        value={notes}
-        onChange={(e) => setNotes(e.target.value)}
-        rows={6}
-        placeholder="Enter notes here..."
-      />
-      <div style={{ fontSize: '0.9em', color: '#888' }}>
-        {isSaving ? 'Saving...' : 'All changes saved'}
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl">Comments</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <textarea
+          className="w-full border rounded-lg p-2 text-lg"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          rows={6}
+          placeholder="Enter your overall comments or observations about this competition here."
+        />
+        <div className="text-sm text-slate-700">
+          {isSaving ? 'Saving...' : 'All changes saved'}
+        </div>
+      </CardContent>
+    </Card>
   )
 }

@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import queryClient from '@/lib/queryClient'
-import ParticipantStatus from '@/constants/ParticipantStatus'
 import { toast } from 'sonner'
 
 type MutationArgs = {

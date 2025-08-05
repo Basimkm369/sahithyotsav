@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Route } from '..'
 import { JudgementSummary } from '../-hooks/useJudgementSummary'
+import { useJudgementMarkMutation } from '../-hooks/useJudgementMarkMutation'
 
 const validateMark = (value: string): string | null => {
   if (!/^\d+$/.test(value)) {
@@ -24,7 +25,8 @@ const validateMark = (value: string): string | null => {
 }
 
 export default function ScoreCards({ data }: { data: JudgementSummary }) {
-  // const { eventId, itemId, judgeId } = Route.useSearch()
+  const { eventId, itemId, judgeId } = Route.useSearch()
+  const mutation = useJudgementMarkMutation()
 
   const [selectedCode, setSelectedCode] = useState<string | null>(null)
   const [mark, setMark] = useState('')
@@ -53,9 +55,17 @@ export default function ScoreCards({ data }: { data: JudgementSummary }) {
       return
     }
 
+    mutation.mutate({
+      eventId,
+      itemId,
+      judgeId,
+      codeLetter: selectedCode,
+      mark: Number(mark),
+    })
+
     setMarks((prev) => ({ ...prev, [selectedCode]: mark }))
     setSelectedCode(null)
-  }, [mark, selectedCode])
+  }, [mark, selectedCode, eventId, itemId, judgeId, mutation])
 
   const handleCloseDialog = useCallback(() => {
     setSelectedCode(null)
@@ -65,23 +75,26 @@ export default function ScoreCards({ data }: { data: JudgementSummary }) {
   if (!data) return <></>
 
   return (
-    <>
-      <div className="flex flex-wrap gap-4 justify-center">
-        {data.scores.map((p) => (
-          <Card
-            key={p.codeLetter}
-            className={`w-40 h-40 flex items-center justify-center ${!!p.mark && p.mark >= 0 ? 'bg-green-600/20 hover:bg-green-600/30 border-green-600/20' : 'bg-gray-100 hover:bg-gray-200 border-gray-200'} cursor-pointer p-6 rounded-lg text-center border`}
-            onClick={() => handleCardClick(p.codeLetter)}
-          >
-            <CardContent className="space-y-2">
-              <div className="text-5xl font-bold">{p.codeLetter}</div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl">Evaluation</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-wrap gap-4 ">
+          {data.scores.map((p) => (
+            <div
+              key={p.codeLetter}
+              className={`space-y-2 w-30 h-30 flex flex-col items-center justify-center ${!!p.mark && p.mark >= 0 ? 'bg-green-600/20 hover:bg-green-600/30 border-green-600/20' : 'bg-gray-100 hover:bg-gray-200 border-gray-200'} cursor-pointer p-6 rounded-lg text-center border`}
+              onClick={() => handleCardClick(p.codeLetter)}
+            >
+              <div className="text-4xl font-bold">{p.codeLetter}</div>
               <div className="text-2xl">
                 {!!p.mark && p.mark >= 0 ? p.mark : '-'}
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
       <Dialog open={!!selectedCode} onOpenChange={handleCloseDialog}>
         <DialogContent className="sm:max-w-md">
           {selectedCode && (
@@ -116,6 +129,6 @@ export default function ScoreCards({ data }: { data: JudgementSummary }) {
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </Card>
   )
 }
