@@ -38,12 +38,20 @@ export async function connectToDatabase() {
   return connectingPromise;
 }
 
-export async function executeQuery(queryText: string) {
+export async function executeQuery(
+  queryText: string,
+  params?: { [key: string]: any },
+) {
   if (!pool || !pool.connected) {
     await connectToDatabase();
   }
   try {
     const request = pool.request();
+    if (params) {
+      for (const key in params) {
+        request.input(key, params[key]);
+      }
+    }
     const result = await request.query(queryText);
     return result.recordset;
   } catch (err) {

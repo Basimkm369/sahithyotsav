@@ -5,6 +5,10 @@ import useJudgementSummary from './-hooks/useJudgementSummary'
 import JudgementNotes from './-components/JudgementNotes'
 import { LuCircleUser } from 'react-icons/lu'
 import CompetitionStatus from '@/constants/CompetitionStatus'
+import Button from '@/components/Button'
+import useConfirmation from '@/components/Confirmation'
+import { api } from '@/lib/api'
+import queryClient from '@/lib/queryClient'
 
 export const Route = createFileRoute('/judgement/')({
   component: JudgeDashboardPage,
@@ -23,6 +27,21 @@ function JudgeDashboardPage() {
   const { eventId, itemId, judgeId } = Route.useSearch()
   const { data, isLoading } = useJudgementSummary({ eventId, itemId, judgeId })
 
+  const [component, promptConfirmation] = useConfirmation({
+    title: '',
+    description: '',
+    onConfirm: async ({ eventId, itemId, judgeId }) => {
+      await api.post('/judgement/submit', {
+        eventId,
+        itemId,
+        judgeId,
+      })
+      await queryClient.invalidateQueries({
+        queryKey: ['judgement', { eventId, itemId, judgeId }],
+      })
+    },
+  })
+
   if (isLoading) {
     return (
       <div className="h-screen">
@@ -34,6 +53,7 @@ function JudgeDashboardPage() {
 
   return (
     <div className="space-y-4 px-4 pb-4">
+      {component}
       <div
         className="flex flex-col gap-4 justify-center items-center pt-12 -mx-4"
         style={{
@@ -74,6 +94,9 @@ function JudgeDashboardPage() {
         <div className="bg-muted rounded-3xl p-4 space-y-4">
           <ScoreCards data={data} />
           <JudgementNotes data={data} />
+          <Button onClick={() => promptConfirmation(data)}>
+            Finalize & Submit
+          </Button>
         </div>
       ) : (
         <div className="text-2xl text-red-600 font-medium text-center my-10 bg-red-100 border border-red-300 rounded-3xl py-8 px-10 w-fit mx-auto">
