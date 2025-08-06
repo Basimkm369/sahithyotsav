@@ -38,6 +38,7 @@ router.get('/', async (req, res, next) => {
       im.itemname as itemName,
       ca.categoryname as categoryName,
       jd.judgename as judgeName,
+      cp.judge${judgeId}submittedyn as judgeSubmitted
       (
         SELECT
           ai.codeletter as codeLetter,
@@ -71,6 +72,7 @@ router.get('/', async (req, res, next) => {
     const parsedData = data.map((row: any) => ({
       ...row,
       notes: row.scores ? JSON.parse(row.scores)?.[0]?.notes ?? '' : '',
+      judgeSubmitted: row.judgeSubmitted === 'Y',
       scores: row.scores
         ? JSON.parse(row.scores).sort((a: any, b: any) =>
             a.codeLetter.localeCompare(b.codeLetter),

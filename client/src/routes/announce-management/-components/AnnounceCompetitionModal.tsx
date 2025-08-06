@@ -66,7 +66,10 @@ export default function AnnounceCompetitionModal({
               <DialogTitle>
                 {competition.name} - {competition.categoryName}
               </DialogTitle>
-              {getCompetitionStatusBadge(competition.status)}
+              {getCompetitionStatusBadge(
+                competition.status as CompetitionStatus,
+                { role: 'announceMangement' },
+              )}
             </DialogHeader>
             <ScrollArea className="max-h-[calc(100vh-200px)] overflow-y-auto -mr-4 pr-4">
               <div className="mt-4 pr-2 space-y-8">

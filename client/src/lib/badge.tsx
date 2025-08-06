@@ -10,8 +10,16 @@ export const getCompetitionStatusBadge = (
   status: CompetitionStatus,
   {
     count,
-    role,
-  }: { count?: number; role?: 'stageManagement' | 'teamManagement' },
+    role = 'admin',
+  }: {
+    count?: number
+    role?:
+      | 'stageManagement'
+      | 'teamManagement'
+      | 'mediaMangement'
+      | 'announceMangement'
+      | 'admin'
+  } = {},
 ) => {
   const label =
     count !== undefined

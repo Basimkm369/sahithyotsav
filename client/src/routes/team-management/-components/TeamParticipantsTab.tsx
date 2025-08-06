@@ -32,6 +32,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import PaginationControls from '@/components/PaginationControls'
 import { Route } from '..'
 import useUrlState from '@/hooks/useUrlState'
+import CompetitionStatus from '@/constants/CompetitionStatus'
 
 const ITEMS_PER_PAGE = 30
 export default function TeamParticipantsTab({
@@ -148,7 +149,10 @@ export default function TeamParticipantsTab({
                           return Object.entries(statusCounts).map(
                             ([status, count]) => (
                               <span key={status} className="mr-1">
-                                {getCompetitionStatusBadge(status, count)}
+                                {getCompetitionStatusBadge(
+                                  status as CompetitionStatus,
+                                  { count, role: 'teamManagement' },
+                                )}
                               </span>
                             ),
                           )
@@ -204,7 +208,11 @@ export default function TeamParticipantsTab({
                 >
                   <div className="font-medium flex gap-2">
                     {competition.itemName}
-                    {getCompetitionStatusBadge(competition.status)}
+                    {getCompetitionStatusBadge(
+                      competition.status as CompetitionStatus,
+                      { role: 'teamManagement' },
+                    )}
+                    {/* TODO */}
                     {getParticipantStatusBadge(competition.participantStatus)}
                     {competition.rank === 1
                       ? '🥇'

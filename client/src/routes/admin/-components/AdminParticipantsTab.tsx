@@ -33,6 +33,7 @@ import { Route } from '..'
 import useAdminParticipants from '../-hooks/useAdminParticipants'
 import { AdminSummary } from '../-hooks/useAdminSummary'
 import useUrlState from '@/hooks/useUrlState'
+import CompetitionStatus from '@/constants/CompetitionStatus'
 
 const ITEMS_PER_PAGE = 30
 export default function AdminParticipantsTab({
@@ -83,7 +84,7 @@ export default function AdminParticipantsTab({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`} className='uppercase'>
+                <SelectItem value={`${category.number}`} className="uppercase">
                   {category.name}
                 </SelectItem>
               ))}
@@ -176,7 +177,10 @@ export default function AdminParticipantsTab({
                           return Object.entries(statusCounts).map(
                             ([status, count]) => (
                               <span key={status} className="mr-1">
-                                {getCompetitionStatusBadge(status, count)}
+                                {getCompetitionStatusBadge(
+                                  status as CompetitionStatus,
+                                  { count },
+                                )}
                               </span>
                             ),
                           )
@@ -232,7 +236,8 @@ export default function AdminParticipantsTab({
                 >
                   <div className="font-medium flex gap-2">
                     {competition.itemName}
-                    {getCompetitionStatusBadge(competition.status)}
+                    {getCompetitionStatusBadge(competition.status  as CompetitionStatus)}
+                    {/* TODO */}
                     {getParticipantStatusBadge(competition.participantStatus)}
                     {competition.rank === 1
                       ? '🥇'

@@ -15,6 +15,7 @@ import dayjs from 'dayjs'
 import { formatTime } from '@/lib/datetime'
 import { getCompetitionStatusBadge } from '@/lib/badge'
 import { Competition } from '../-hooks/useAdminCompetitions'
+import CompetitionStatus from '@/constants/CompetitionStatus'
 
 export default function AdminCompetitionCard({
   data,
@@ -32,7 +33,7 @@ export default function AdminCompetitionCard({
             {data.categoryName}
           </CardDescription>
         </div>
-        <div className="mt-1">{getCompetitionStatusBadge(data.status)}</div>
+        <div className="mt-1">{getCompetitionStatusBadge(data.status as CompetitionStatus)}</div>
       </CardHeader>
       <CardContent className="flex flex-col h-full justify-end">
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">

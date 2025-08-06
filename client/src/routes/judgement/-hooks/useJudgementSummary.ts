@@ -11,6 +11,7 @@ export type JudgementSummary = {
     mark: number
   }[]
   notes: string
+  judgeSubmitted: boolean
 }
 
 export default function useJudgementSummary({

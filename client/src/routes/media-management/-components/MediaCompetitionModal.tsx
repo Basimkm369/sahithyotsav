@@ -98,7 +98,12 @@ export default function MediaCompetitionModal({
               <DialogTitle>
                 {competition.name} - {competition.categoryName}
               </DialogTitle>
-              {getCompetitionStatusBadge(competition.status)}
+              {getCompetitionStatusBadge(
+                competition.status as CompetitionStatus,
+                {
+                  role: 'mediaMangement',
+                },
+              )}
             </DialogHeader>
             <ScrollArea className="max-h-[calc(100vh-200px)] overflow-y-auto -mr-4 pr-4">
               <div className="mt-4 pr-2 space-y-8">
@@ -112,7 +117,11 @@ export default function MediaCompetitionModal({
                       Complete Media
                     </Button>
                   )}
-                  <Button variant="outline" className='ml-auto' onClick={handleExportCSV}>
+                  <Button
+                    variant="outline"
+                    className="ml-auto"
+                    onClick={handleExportCSV}
+                  >
                     <LuDownload className="mr-1 h-4 w-4" />
                     Export CSV
                   </Button>

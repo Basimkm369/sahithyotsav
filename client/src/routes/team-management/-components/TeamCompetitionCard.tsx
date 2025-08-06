@@ -14,6 +14,7 @@ import {
   getParticipantStatusBadge,
 } from '@/lib/badge'
 import { Competition } from '../-hooks/useTeamCompetitions'
+import CompetitionStatus from '@/constants/CompetitionStatus'
 
 export default function TeamCompetitionCard({ data }: { data: Competition }) {
   return (
@@ -25,7 +26,11 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
             {data.categoryName}
           </CardDescription>
         </div>
-        <div className="mt-1">{getCompetitionStatusBadge(data.status)}</div>
+        <div className="mt-1">
+          {getCompetitionStatusBadge(data.status as CompetitionStatus, {
+            role: 'teamManagement',
+          })}
+        </div>
       </CardHeader>
       <CardContent className="flex flex-col h-full justify-between">
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">

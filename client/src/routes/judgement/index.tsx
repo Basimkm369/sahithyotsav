@@ -98,21 +98,27 @@ function JudgeDashboardPage() {
       ) : [CompetitionStatus.InProgress, CompetitionStatus.Completed].includes(
           data.competitionStatus as CompetitionStatus,
         ) ? (
-        <div className="bg-muted rounded-3xl p-4 space-y-4">
-          <ScoreCards data={data} />
-          <JudgementNotes data={data} />
-          <Button
-            onClick={() => {
-              if (data.scores.every((s) => s.mark >= 0)) {
-                promptConfirmation()
-              } else {
-                toast.error('You need to enter marks for all participants')
-              }
-            }}
-          >
-            Finalize & Submit
-          </Button>
-        </div>
+        data.judgeSubmitted ? (
+          <div className="text-2xl text-red-600 font-medium text-center my-10 bg-red-100 border border-red-300 rounded-3xl py-8 px-10 w-fit mx-auto">
+            You have already submitted
+          </div>
+        ) : (
+          <div className="bg-muted rounded-3xl p-4 space-y-4">
+            <ScoreCards data={data} />
+            <JudgementNotes data={data} />
+            <Button
+              onClick={() => {
+                if (data.scores.every((s) => s.mark >= 0)) {
+                  promptConfirmation()
+                } else {
+                  toast.error('You need to enter marks for all participants')
+                }
+              }}
+            >
+              Finalize & Submit
+            </Button>
+          </div>
+        )
       ) : (
         <div className="text-2xl text-red-600 font-medium text-center my-10 bg-red-100 border border-red-300 rounded-3xl py-8 px-10 w-fit mx-auto">
           The competition is already completed
