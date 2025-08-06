@@ -38,9 +38,10 @@ export default function AdminCompetitionFormModal({
   const [judge3Id, setJudge3Id] = useState<string>()
   const mutation = useCompetitionMutation()
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!data?.itemCode) return
-    mutation.mutate({
+    await mutation.mutateAsync({
+      eventId,
       itemId: data.itemCode,
       judge1Id: judge1Id ? Number(judge1Id) : null,
       judge2Id: judge2Id ? Number(judge2Id) : null,
