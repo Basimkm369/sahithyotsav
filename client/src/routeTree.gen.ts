@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TeamManagementIndexRouteImport } from './routes/team-management/index'
 import { Route as StageManagementIndexRouteImport } from './routes/stage-management/index'
+import { Route as MediaControlIndexRouteImport } from './routes/media-control/index'
 import { Route as JudgementIndexRouteImport } from './routes/judgement/index'
+import { Route as AnnouncementIndexRouteImport } from './routes/announcement/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -30,9 +32,19 @@ const StageManagementIndexRoute = StageManagementIndexRouteImport.update({
   path: '/stage-management/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MediaControlIndexRoute = MediaControlIndexRouteImport.update({
+  id: '/media-control/',
+  path: '/media-control/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JudgementIndexRoute = JudgementIndexRouteImport.update({
   id: '/judgement/',
   path: '/judgement/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnouncementIndexRoute = AnnouncementIndexRouteImport.update({
+  id: '/announcement/',
+  path: '/announcement/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -44,14 +56,18 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminIndexRoute
+  '/announcement': typeof AnnouncementIndexRoute
   '/judgement': typeof JudgementIndexRoute
+  '/media-control': typeof MediaControlIndexRoute
   '/stage-management': typeof StageManagementIndexRoute
   '/team-management': typeof TeamManagementIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminIndexRoute
+  '/announcement': typeof AnnouncementIndexRoute
   '/judgement': typeof JudgementIndexRoute
+  '/media-control': typeof MediaControlIndexRoute
   '/stage-management': typeof StageManagementIndexRoute
   '/team-management': typeof TeamManagementIndexRoute
 }
@@ -59,7 +75,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/announcement/': typeof AnnouncementIndexRoute
   '/judgement/': typeof JudgementIndexRoute
+  '/media-control/': typeof MediaControlIndexRoute
   '/stage-management/': typeof StageManagementIndexRoute
   '/team-management/': typeof TeamManagementIndexRoute
 }
@@ -68,16 +86,27 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/announcement'
     | '/judgement'
+    | '/media-control'
     | '/stage-management'
     | '/team-management'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/judgement' | '/stage-management' | '/team-management'
+  to:
+    | '/'
+    | '/admin'
+    | '/announcement'
+    | '/judgement'
+    | '/media-control'
+    | '/stage-management'
+    | '/team-management'
   id:
     | '__root__'
     | '/'
     | '/admin/'
+    | '/announcement/'
     | '/judgement/'
+    | '/media-control/'
     | '/stage-management/'
     | '/team-management/'
   fileRoutesById: FileRoutesById
@@ -85,7 +114,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AnnouncementIndexRoute: typeof AnnouncementIndexRoute
   JudgementIndexRoute: typeof JudgementIndexRoute
+  MediaControlIndexRoute: typeof MediaControlIndexRoute
   StageManagementIndexRoute: typeof StageManagementIndexRoute
   TeamManagementIndexRoute: typeof TeamManagementIndexRoute
 }
@@ -113,11 +144,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StageManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/media-control/': {
+      id: '/media-control/'
+      path: '/media-control'
+      fullPath: '/media-control'
+      preLoaderRoute: typeof MediaControlIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/judgement/': {
       id: '/judgement/'
       path: '/judgement'
       fullPath: '/judgement'
       preLoaderRoute: typeof JudgementIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/announcement/': {
+      id: '/announcement/'
+      path: '/announcement'
+      fullPath: '/announcement'
+      preLoaderRoute: typeof AnnouncementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -133,7 +178,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AnnouncementIndexRoute: AnnouncementIndexRoute,
   JudgementIndexRoute: JudgementIndexRoute,
+  MediaControlIndexRoute: MediaControlIndexRoute,
   StageManagementIndexRoute: StageManagementIndexRoute,
   TeamManagementIndexRoute: TeamManagementIndexRoute,
 }
