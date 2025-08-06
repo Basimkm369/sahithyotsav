@@ -1,31 +1,39 @@
 import { Badge } from '@/components/ui/badge'
+import CompetitionStatus, {
+  isAfterStatus,
+  isBeforeStatus,
+  statusLabels,
+} from '@/constants/CompetitionStatus'
 import ParticipantStatus from '@/constants/ParticipantStatus'
 
-export const getCompetitionStatusBadge = (status: string, count?: number) => {
-  const getLabel = () => {
-    switch (status) {
-      case 'N':
-        return 'Not Started'
-      case 'S':
-        return 'Started'
-      case 'P':
-        return 'In Progress'
-      case 'C':
-      case 'M':
-      case 'F':
-      case 'O':
-        return 'Completed'
-      case 'A':
-        return 'Announced'
-      case 'D':
-        return 'Prize Distributed'
-      default:
-        return status
-    }
+export const getCompetitionStatusBadge = (
+  status: CompetitionStatus,
+  {
+    count,
+    role,
+  }: { count?: number; role?: 'stageManagement' | 'teamManagement' },
+) => {
+  const label =
+    count !== undefined
+      ? `${count} ${statusLabels['status']}`
+      : statusLabels['status']
+
+  if (!label) return <></>
+
+  if (
+    role === 'stageManagement' &&
+    isAfterStatus(status, CompetitionStatus.MarkEntryClosed)
+  ) {
+    status = CompetitionStatus.MarkEntryClosed
   }
 
-  const label = count !== undefined ? `${count} ${getLabel()}` : getLabel()
-  if (!label) return <></>
+  if (
+    role === 'teamManagement' &&
+    isAfterStatus(status, CompetitionStatus.Completed) &&
+    isBeforeStatus(status, CompetitionStatus.Announced)
+  ) {
+    status = CompetitionStatus.Completed
+  }
 
   switch (status) {
     case 'N':

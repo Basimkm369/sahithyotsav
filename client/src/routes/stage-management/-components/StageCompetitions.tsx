@@ -80,11 +80,8 @@ export default function StageCompetitions({
               <SelectItem value={CompetitionStatus.Completed}>
                 Completed
               </SelectItem>
-              <SelectItem value={CompetitionStatus.Announced}>
-                Announced
-              </SelectItem>
-              <SelectItem value={CompetitionStatus.PrizeDistributed}>
-                Prize Distributed
+              <SelectItem value={CompetitionStatus.MarkEntryClosed}>
+                Mark Entry Closed
               </SelectItem>
             </SelectContent>
           </Select>
@@ -103,7 +100,7 @@ export default function StageCompetitions({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`} className='uppercase'>
+                <SelectItem value={`${category.number}`} className="uppercase">
                   {category.name}
                 </SelectItem>
               ))}

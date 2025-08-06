@@ -98,8 +98,8 @@ router.get('/competitions', async (req, res, next) => {
       left join ofm_judges as jd3 on jd3.pid = cp.judgeid3
     where cp.stageno = @stageId and cp.eventid = @eventId`;
 
-    if (status === 'C') {
-      query += ` and cp.status in ('C', 'M', 'O', 'F')`;
+    if (status === 'M') {
+      query += ` and cp.status in ('F', 'A', 'O', 'D')`;
     } else if (status) {
       query += ` and cp.status = '@status'`;
     }

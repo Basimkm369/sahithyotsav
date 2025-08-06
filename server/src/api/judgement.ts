@@ -131,9 +131,10 @@ router.post(
 
       const assignRes = await executeQuery(
         `SELECT id FROM OFM_AssignItem
-         WHERE itemcode = ${itemId}
-          AND eventid = ${eventId}
-          AND codeletter = '${codeLetter}'`,
+         WHERE itemcode = @itemId
+          AND eventid = @eventId
+          AND codeletter = @codeLetter`,
+        { itemId, eventId, codeLetter },
       );
       const pid = assignRes?.[0]?.id;
       if (!pid) throw new Error('Participant assignment not found');
@@ -170,7 +171,6 @@ router.post(
         eventId: eventIdEnc,
         judgeId: judgeIdEnc,
         itemId: itemIdEnc,
-        codeLetter,
         notes,
       } = req.body;
 

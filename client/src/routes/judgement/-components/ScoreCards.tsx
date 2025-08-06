@@ -19,8 +19,8 @@ const validateMark = (value: string): string | null => {
     return 'Only whole numbers are allowed.'
   }
   const numeric = Number(value)
-  if (numeric < 1 || numeric > 100) {
-    return 'Value must be between 1 and 100.'
+  if (numeric < 0 || numeric > 100) {
+    return 'Value must be between 0 and 100.'
   }
   return null
 }
@@ -119,7 +119,10 @@ export default function ScoreCards({ data }: { data: JudgementSummary }) {
               )}
 
               <DialogFooter className="mt-4">
-                <ButtonLoader onClick={handleSaveMark} disabled={!!errorMsg || !mark}>
+                <ButtonLoader
+                  onClick={handleSaveMark}
+                  disabled={!!errorMsg || !mark}
+                >
                   💾 Save Mark
                 </ButtonLoader>
                 <Button variant="outline" onClick={handleCloseDialog}>

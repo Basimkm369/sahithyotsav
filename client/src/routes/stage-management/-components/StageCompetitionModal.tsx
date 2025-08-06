@@ -146,7 +146,7 @@ export default function StageCompetitionModal({
                                 : 'bg-red-400/20 border-red-300/60 text-red-900',
                             )}
                           >
-                            {competition.judge1Submitted ? (
+                            {competition.judge2Submitted ? (
                               <LuCircleCheckBig />
                             ) : (
                               <LuCircleX />
@@ -161,7 +161,7 @@ export default function StageCompetitionModal({
                                 : 'bg-red-400/20 border-red-300/60 text-red-900',
                             )}
                           >
-                            {competition.judge1Submitted ? (
+                            {competition.judge3Submitted ? (
                               <LuCircleCheckBig />
                             ) : (
                               <LuCircleX />
@@ -173,16 +173,16 @@ export default function StageCompetitionModal({
                           disabled={
                             !(
                               competition.judge1Submitted &&
-                              competition.judge1Submitted &&
-                              competition.judge1Submitted
+                              competition.judge2Submitted &&
+                              competition.judge3Submitted
                             )
                           }
                           onClick={() => {
                             if (
                               !(
                                 competition.judge1Submitted &&
-                                competition.judge1Submitted &&
-                                competition.judge1Submitted
+                                competition.judge2Submitted &&
+                                competition.judge3Submitted
                               )
                             ) {
                               return

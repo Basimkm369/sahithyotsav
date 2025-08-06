@@ -47,10 +47,10 @@ const useConfirmation = ({
   title = 'Are you sure?',
   description = 'This action cannot be undone. This will permanently delete the selected items.',
 }: {
-  onConfirm: (params: any) => Promise<any>
+  onConfirm: (params?: any) => Promise<any>
   title?: string
   description?: string
-}): [ReactNode, (params: any) => void] => {
+}): [ReactNode, (params?: any) => void] => {
   const [isOpen, setIsOpen] = useState(false)
   const [params, setParams] = useState(false)
 
