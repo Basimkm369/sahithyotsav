@@ -79,7 +79,9 @@ export default function TeamParticipantsTab({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`}>{category.name}</SelectItem>
+                <SelectItem value={`${category.number}`} className="uppercase">
+                  {category.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -129,7 +131,7 @@ export default function TeamParticipantsTab({
                       onClick={() => setSelectedParticipant(participant)}
                     >
                       <TableCell>
-                        {participant.name}{' '}
+                        {participant.name.trim()}&nbsp;
                         <span className="text-gray-500">
                           #{participant.chestNumber}
                         </span>

@@ -1,30 +1,25 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import useTeamManagementSummary from '@/routes/team-management/-hooks/useTeamManagementSummary'
-import TeamCompetitionsTab from './-components/TeamCompetitionsTab'
-import TeamParticipantsTab from './-components/TeamParticipantsTab'
-import LoadingSpinner from '@/components/LoadingSpinner'
 import useUrlState from '@/hooks/useUrlState'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import useAnnounceManagementSummary from './-hooks/useAnnounceManagementSummary'
+import AnnounceCompetitionsTab from './-components/AnnounceCompetitionsTab'
 
-export const Route = createFileRoute('/team-management/')({
-  component: TeamManagementPage,
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): { eventId: string; teamId: string } => {
+export const Route = createFileRoute('/announce-management/')({
+  component: MediaControlPage,
+  validateSearch: (search: Record<string, unknown>): { eventId: string } => {
     return {
       eventId: search.eventId as string,
-      teamId: search.teamId as string,
     }
   },
 })
 
-function TeamManagementPage() {
-  const { eventId, teamId } = Route.useSearch()
-  const { data, isLoading } = useTeamManagementSummary({ eventId, teamId })
-  const [tab, setTab] = useUrlState<'competitions' | 'participants'>(
-    'tab',
-    'competitions',
-  )
+function MediaControlPage() {
+  const { eventId } = Route.useSearch()
+  const { data, isLoading } = useAnnounceManagementSummary({ eventId })
+  // const [tab, setTab] = useUrlState<'competitions' | 'teamPoints'>(
+  //   'tab',
+  //   'competitions',
+  // )
 
   if (isLoading) {
     return (
@@ -51,13 +46,16 @@ function TeamManagementPage() {
           />
         </div>
         <div className="text-center items-end flex gap-3 mt-2 border-t pt-3">
-          <div className="text-3xl font-semibold font-heading text-gray-500">
-            Team Management:{' '}
-          </div>
-          <div className="text-4xl font-bold font-heading">{data.teamName}</div>
+          <div className="text-4xl font-bold font-heading">Announcement</div>
         </div>
       </div>
-      <Tabs value={tab}>
+      <div className="bg-muted rounded-3xl p-4">
+        <AnnounceCompetitionsTab
+          categories={data.categories}
+          stages={data.stages}
+        />
+      </div>
+      {/* <Tabs value={tab}>
         <div className="flex justify-center mb-4">
           <TabsList>
             <TabsTrigger
@@ -67,23 +65,23 @@ function TeamManagementPage() {
               Competitions
             </TabsTrigger>
             <TabsTrigger
-              value="participants"
-              onClick={() => setTab('participants')}
+              value="teamPoints"
+              onClick={() => setTab('teamPoints')}
             >
-              Participants
+              Team Points
             </TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="competitions" className="bg-muted rounded-3xl p-4">
-          <TeamCompetitionsTab
+          <MediaCompetitionsTab
             categories={data.categories}
             stages={data.stages}
           />
         </TabsContent>
-        <TabsContent value="participants" className="bg-muted rounded-3xl p-4">
-          <TeamParticipantsTab categories={data.categories} />
+        <TabsContent value="teamPoints" className="bg-muted rounded-3xl p-4">
+          <MediaTeamPoints /> 
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
     </div>
   )
 }

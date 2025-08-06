@@ -123,13 +123,13 @@ router.get('/competitions', async (req, res, next) => {
     where cp.eventid = @eventId
     `;
 
-    if (stageId) query += ` and cp.stageno = '${stageId}'`;
+    if (stageId) query += ` and cp.stageno = @stageId`;
     if (status === 'C') {
       query += ` and cp.status in ('C', 'M', 'O', 'F')`;
     } else if (status) {
-      query += ` and cp.status = '${status}'`;
+      query += ` and cp.status = @status`;
     }
-    if (categoryId) query += ` and im.categoryno = '${categoryId}'`;
+    if (categoryId) query += ` and im.categoryno = @categoryId`;
 
     query += ` group by
         im.itemname,
@@ -149,11 +149,16 @@ router.get('/competitions', async (req, res, next) => {
         jd3.judgename
       order by
         im.itemname, ca.categoryname, st.stage
-      offset (${page} - 1) * ${limit} rows
-      fetch next ${limit} rows only;`;
+      offset (@page - 1) * @limit rows
+      fetch next @limit rows only;`;
 
     const data = await executeQuery(query, {
       eventId,
+      stageId,
+      categoryId,
+      status,
+      page,
+      limit
     });
 
     const parsedData = data.map((row: any) => ({
@@ -235,8 +240,6 @@ router.post(
           and eventid = @eventId`,
         { itemId, eventId, judge1Id, judge2Id, judge3Id },
       );
-
-      console.log({ itemId, eventId, judge1Id, judge2Id, judge3Id });
 
       return next(new AppResponse('Judges updated successfully'));
     } catch (err) {

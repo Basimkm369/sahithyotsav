@@ -13,32 +13,35 @@ export type Competition = {
   endTime: string
 }
 
-export default function useMediaCompetitions({
+export default function useAnnounceCompetitions({
   eventId,
-  status,
+  stageId,
+  categoryId,
   page,
   limit = 24,
 }: {
   eventId: string
-  status: FunctionStringCallback
+  stageId: string
+  categoryId: string
   page: number
   limit?: number
 }) {
   return useQuery({
     queryKey: [
-      'mediaControl',
+      'announceManagement',
       'competitions',
-      { status, page, limit, eventId },
+      { page, limit, eventId, stageId, categoryId },
     ],
     queryFn: async () => {
       const params: Record<string, any> = {}
-      if (status !== 'all') params.status = status
       if (eventId) params.eventId = eventId
+      if (stageId !== 'all') params.stageId = stageId
+      if (categoryId !== 'all') params.categoryId = categoryId
       params.page = page
       params.limit = limit
 
       const res = await api.get<{ data: Competition[] }>(
-        '/mediaControl/competitions',
+        '/announceManagement/competitions',
         { params },
       )
       return res.data?.data ?? null

@@ -41,13 +41,12 @@ export default function MediaCompetitionCard({
               {dayjs(data.date).format('D MMM')}
             </div>
           )}
-          {formatTime(data.startTime) && formatTime(data.startTime) && (
+          {formatTime(data.startTime) && formatTime(data.endTime) && (
             <div className="flex gap-1 flex-nowrap">
-              <LucideClock className="w-4 opacity-40  pb-[3px]" />
-              {formatTime(data.startTime)} - {formatTime(data.startTime)}
+              <LucideClock className="w-4 opacity-40 pb-[3px]" />
+              {formatTime(data.startTime)} - {formatTime(data.endTime)}
             </div>
           )}
-          
         </div>
       </CardContent>
     </Card>

@@ -129,7 +129,7 @@ export default function AdminCompetitionsTab({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`}>
+                <SelectItem value={`${category.number}`} className='uppercase'>
                   {category.name}
                 </SelectItem>
               ))}

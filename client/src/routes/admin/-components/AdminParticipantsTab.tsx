@@ -83,7 +83,7 @@ export default function AdminParticipantsTab({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`}>
+                <SelectItem value={`${category.number}`} className='uppercase'>
                   {category.name}
                 </SelectItem>
               ))}
@@ -158,7 +158,7 @@ export default function AdminParticipantsTab({
                       onClick={() => setSelectedParticipant(participant)}
                     >
                       <TableCell>
-                        {participant.name}{' '}
+                        {participant.name.trim()}&nbsp;
                         <span className="text-gray-500">
                           #{participant.chestNumber}
                         </span>

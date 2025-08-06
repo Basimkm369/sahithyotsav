@@ -23,6 +23,7 @@ import { AiOutlineQrcode } from 'react-icons/ai'
 import QRScanDialog from './QRScanDialog'
 import useCompetitionParticipantMutation from '../-hooks/useCompetitionParticipantMutation'
 import queryClient from '@/lib/queryClient'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -148,17 +149,17 @@ export default function StageCompetitionModal({
                           className="border-b last:border-b-0 pb-3 mb-3 animate-pulse grid grid-cols-10 items-center gap-2"
                         >
                           <div className="col-span-7 flex gap-4">
-                            <div className="rounded bg-gray-200 h-10 w-10" />
+                            <Skeleton className="rounded bg-gray-200 h-10 w-10" />
                             <div className="w-full">
-                              <div className="h-4 bg-gray-200 rounded w-1/3 mb-2" />
-                              <div className="h-3 bg-gray-100 rounded w-1/4" />
+                              <Skeleton className="h-4 bg-gray-200 rounded w-1/3 mb-2" />
+                              <Skeleton className="h-3 bg-gray-100 rounded w-1/4" />
                             </div>
                           </div>
                           <div className="col-span-1">
-                            <div className="h-6 w-16 bg-gray-200 rounded" />
+                            <Skeleton className="h-6 w-16 bg-gray-200 rounded" />
                           </div>
                           <div className="col-span-2 flex justify-end">
-                            <div className="h-8 w-24 bg-gray-100 rounded" />
+                            <Skeleton className="h-8 w-24 bg-gray-200 rounded" />
                           </div>
                         </div>
                       ))

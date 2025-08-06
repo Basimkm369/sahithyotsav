@@ -39,10 +39,10 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
               {dayjs(data.date).format('D MMM')}
             </div>
           )}
-          {formatTime(data.startTime) && formatTime(data.startTime) && (
+          {formatTime(data.startTime) && formatTime(data.endTime) && (
             <div className="flex gap-1 flex-nowrap">
               <LucideClock className="w-4 opacity-40  pb-[3px]" />
-              {formatTime(data.startTime)} - {formatTime(data.startTime)}
+              {formatTime(data.startTime)} - {formatTime(data.endTime)}
             </div>
           )}
         </div>
@@ -50,7 +50,7 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
           <div className="border-t mt-3 pt-3 space-y-2">
             {data.participants.map((participant) => (
               <div key={participant.chestNumber} className={cn('flex gap-1')}>
-                {participant.name}{' '}
+                {participant.name.trim()}&nbsp;
                 <span className="text-gray-500">
                   #{participant.chestNumber}
                 </span>

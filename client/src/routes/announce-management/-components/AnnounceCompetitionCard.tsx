@@ -5,13 +5,13 @@ import {
   CardContent,
   CardDescription,
 } from '@/components/ui/card'
-import { Competition } from '../-hooks/useAnnouncementCompetitions'
+import { Competition } from '../-hooks/useAnnounceCompetitions'
 import { LucideCalendar, LucideClock, LucideMapPin } from 'lucide-react'
 import dayjs from 'dayjs'
 import { formatTime } from '@/lib/datetime'
 import { getCompetitionStatusBadge } from '@/lib/badge'
 
-export default function AnnouncementCompetitionCard({
+export default function AnnounceCompetitionCard({
   data,
   onClick,
 }: {
@@ -41,13 +41,12 @@ export default function AnnouncementCompetitionCard({
               {dayjs(data.date).format('D MMM')}
             </div>
           )}
-          {formatTime(data.startTime) && formatTime(data.startTime) && (
+          {formatTime(data.startTime) && formatTime(data.endTime) && (
             <div className="flex gap-1 flex-nowrap">
-              <LucideClock className="w-4 opacity-40  pb-[3px]" />
-              {formatTime(data.startTime)} - {formatTime(data.startTime)}
+              <LucideClock className="w-4 opacity-40 pb-[3px]" />
+              {formatTime(data.startTime)} - {formatTime(data.endTime)}
             </div>
           )}
-          
         </div>
       </CardContent>
     </Card>
