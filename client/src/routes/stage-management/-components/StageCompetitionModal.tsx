@@ -19,11 +19,11 @@ import { getCompetitionStatusBadge } from '@/lib/badge'
 import CompetitionStatus from '@/constants/CompetitionStatus'
 import useConfirmation from '@/components/Confirmation'
 import { api } from '@/lib/api'
-import { AiOutlineQrcode } from 'react-icons/ai'
 import QRScanDialog from './QRScanDialog'
 import useCompetitionParticipantMutation from '../-hooks/useCompetitionParticipantMutation'
 import queryClient from '@/lib/queryClient'
 import { Skeleton } from '@/components/ui/skeleton'
+import { LuQrCode } from 'react-icons/lu'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -85,53 +85,57 @@ export default function StageCompetitionModal({
             </DialogHeader>
             <ScrollArea className="max-h-[calc(100vh-200px)] overflow-y-auto -mr-4 pr-4">
               <div className="mt-4 pr-2 space-y-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                    {competition.status === CompetitionStatus.NotStarted && (
-                      <Button
-                        onClick={() =>
-                          promptComfirmation(CompetitionStatus.Started)
-                        }
-                      >
-                        Start Reporting
-                      </Button>
-                    )}
-                    {competition.status === CompetitionStatus.Started && (
-                      <Button
-                        onClick={() =>
-                          promptComfirmation(CompetitionStatus.InProgress)
-                        }
-                      >
-                        Start Program
-                      </Button>
-                    )}
-                    {competition.status === CompetitionStatus.InProgress && (
-                      <Button
-                        onClick={() =>
-                          promptComfirmation(CompetitionStatus.Completed)
-                        }
-                      >
-                        End Program
-                      </Button>
-                    )}
-                    {competition.status === CompetitionStatus.Completed && (
-                      <Button
-                        onClick={() =>
-                          promptComfirmation(CompetitionStatus.MarkEntryClosed)
-                        }
-                      >
-                        Close Mark Entry
-                      </Button>
-                    )}
-                  </div>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  {competition.status === CompetitionStatus.NotStarted && (
+                    <Button
+                      onClick={() =>
+                        promptComfirmation(CompetitionStatus.Started)
+                      }
+                    >
+                      Start Reporting
+                    </Button>
+                  )}
+                  {competition.status === CompetitionStatus.Started && (
+                    <Button
+                      onClick={() =>
+                        promptComfirmation(CompetitionStatus.InProgress)
+                      }
+                    >
+                      Start Program
+                    </Button>
+                  )}
+                  {competition.status === CompetitionStatus.InProgress && (
+                    <Button
+                      onClick={() =>
+                        promptComfirmation(CompetitionStatus.Completed)
+                      }
+                    >
+                      End Program
+                    </Button>
+                  )}
+                  {competition.status === CompetitionStatus.Completed && (
+                    <Button
+                      onClick={() =>
+                        promptComfirmation(CompetitionStatus.MarkEntryClosed)
+                      }
+                    >
+                      Close Mark Entry
+                    </Button>
+                  )}
 
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowQRDialog(true)}
-                  >
-                    <AiOutlineQrcode className="mr-2 h-4 w-4" />
-                    Scan QR
-                  </Button>
+                  {[
+                    CompetitionStatus.Started,
+                    CompetitionStatus.InProgress,
+                  ].includes(competition.status as CompetitionStatus) && (
+                    <Button
+                      variant="outline"
+                      className="ml-auto"
+                      onClick={() => setShowQRDialog(true)}
+                    >
+                      <LuQrCode className="mr-1 h-4 w-4" />
+                      Scan QR
+                    </Button>
+                  )}
 
                   <QRScanDialog
                     open={showQRDialog}

@@ -157,8 +157,8 @@ router.get('/competitions', async (req, res, next) => {
       stageId,
       categoryId,
       status,
-      page,
-      limit
+      page: +page,
+      limit: +limit,
     });
 
     const parsedData = data.map((row: any) => ({
