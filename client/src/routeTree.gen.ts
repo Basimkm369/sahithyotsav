@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TeamManagementIndexRouteImport } from './routes/team-management/index'
 import { Route as StageManagementIndexRouteImport } from './routes/stage-management/index'
+import { Route as OffstageValuationIndexRouteImport } from './routes/offstage-valuation/index'
 import { Route as MediaControlIndexRouteImport } from './routes/media-control/index'
 import { Route as JudgementIndexRouteImport } from './routes/judgement/index'
 import { Route as AnnouncementIndexRouteImport } from './routes/announcement/index'
@@ -30,6 +31,11 @@ const TeamManagementIndexRoute = TeamManagementIndexRouteImport.update({
 const StageManagementIndexRoute = StageManagementIndexRouteImport.update({
   id: '/stage-management/',
   path: '/stage-management/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OffstageValuationIndexRoute = OffstageValuationIndexRouteImport.update({
+  id: '/offstage-valuation/',
+  path: '/offstage-valuation/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MediaControlIndexRoute = MediaControlIndexRouteImport.update({
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/announcement': typeof AnnouncementIndexRoute
   '/judgement': typeof JudgementIndexRoute
   '/media-control': typeof MediaControlIndexRoute
+  '/offstage-valuation': typeof OffstageValuationIndexRoute
   '/stage-management': typeof StageManagementIndexRoute
   '/team-management': typeof TeamManagementIndexRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/announcement': typeof AnnouncementIndexRoute
   '/judgement': typeof JudgementIndexRoute
   '/media-control': typeof MediaControlIndexRoute
+  '/offstage-valuation': typeof OffstageValuationIndexRoute
   '/stage-management': typeof StageManagementIndexRoute
   '/team-management': typeof TeamManagementIndexRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/announcement/': typeof AnnouncementIndexRoute
   '/judgement/': typeof JudgementIndexRoute
   '/media-control/': typeof MediaControlIndexRoute
+  '/offstage-valuation/': typeof OffstageValuationIndexRoute
   '/stage-management/': typeof StageManagementIndexRoute
   '/team-management/': typeof TeamManagementIndexRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/announcement'
     | '/judgement'
     | '/media-control'
+    | '/offstage-valuation'
     | '/stage-management'
     | '/team-management'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/announcement'
     | '/judgement'
     | '/media-control'
+    | '/offstage-valuation'
     | '/stage-management'
     | '/team-management'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/announcement/'
     | '/judgement/'
     | '/media-control/'
+    | '/offstage-valuation/'
     | '/stage-management/'
     | '/team-management/'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   AnnouncementIndexRoute: typeof AnnouncementIndexRoute
   JudgementIndexRoute: typeof JudgementIndexRoute
   MediaControlIndexRoute: typeof MediaControlIndexRoute
+  OffstageValuationIndexRoute: typeof OffstageValuationIndexRoute
   StageManagementIndexRoute: typeof StageManagementIndexRoute
   TeamManagementIndexRoute: typeof TeamManagementIndexRoute
 }
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/stage-management'
       fullPath: '/stage-management'
       preLoaderRoute: typeof StageManagementIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offstage-valuation/': {
+      id: '/offstage-valuation/'
+      path: '/offstage-valuation'
+      fullPath: '/offstage-valuation'
+      preLoaderRoute: typeof OffstageValuationIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/media-control/': {
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnnouncementIndexRoute: AnnouncementIndexRoute,
   JudgementIndexRoute: JudgementIndexRoute,
   MediaControlIndexRoute: MediaControlIndexRoute,
+  OffstageValuationIndexRoute: OffstageValuationIndexRoute,
   StageManagementIndexRoute: StageManagementIndexRoute,
   TeamManagementIndexRoute: TeamManagementIndexRoute,
 }

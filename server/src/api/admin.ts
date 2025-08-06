@@ -111,30 +111,15 @@ router.get('/competitions', async (req, res, next) => {
       jd3.pid as judge3Id,
       ISNULL(jd1.judgename, '') as judge1Name,
       ISNULL(jd2.judgename, '') as judge2Name,
-      ISNULL(jd3.judgename, '') as judge3Name,
-      (
-        SELECT
-          pa.participant as name,
-          pa.chestno as chestNumber,
-          ai.status,
-          ai.rank
-        FROM
-          ofm_assignitem AS ai
-          INNER JOIN ofm_participant AS pa ON pa.chestno = ai.chestno
-        WHERE
-          ai.itemcode = cp.itemcode
-          and pa.eventid = @eventId
-          and ai.eventid = @eventId
-        FOR JSON PATH
-      ) AS participants
+      ISNULL(jd3.judgename, '') as judge3Name
     from
       ofm_competitions as cp
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
       inner join ofm_stages as st on st.pid = cp.stageno
-      left join ofm_judges as jd1 on jd1.pid = cp.judgeid1 and jd1.eventid = @eventId
-      left join ofm_judges as jd2 on jd2.pid = cp.judgeid2 and jd1.eventid = @eventId
-      left join ofm_judges as jd3 on jd3.pid = cp.judgeid3 and jd1.eventid = @eventId
+      left join ofm_judges as jd1 on jd1.pid = cp.judgeid1
+      left join ofm_judges as jd2 on jd2.pid = cp.judgeid2
+      left join ofm_judges as jd3 on jd3.pid = cp.judgeid3
     where cp.eventid = @eventId
     `;
 
@@ -201,7 +186,7 @@ router.get('/judges', async (req, res, next) => {
     }
 
     const data = await executeQuery(
-      `SELECT pid AS id, judgename AS name FROM ofm_judges where eventid = ${eventId}`,
+      `SELECT pid AS id, judgename AS name FROM ofm_judges where entityxid = '10' and entitytype = 'N'`,
     );
     return next(new AppResponse('', data));
   } catch (err) {
@@ -213,10 +198,10 @@ router.post(
   '/updateCompetition',
   [
     body('eventId').notEmpty(),
-    body('competitionId').notEmpty(),
-    body('judge1Id').notEmpty(),
-    body('judge2Id').notEmpty(),
-    body('judge3Id').notEmpty(),
+    body('itemId').notEmpty(),
+    body('judge1Id').optional().notEmpty(),
+    body('judge2Id').optional().notEmpty(),
+    body('judge3Id').optional().notEmpty(),
   ],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -229,7 +214,7 @@ router.post(
 
       const {
         eventId: eventIdEnc,
-        competitionId,
+        itemId,
         judge1Id,
         judge2Id,
         judge3Id,
@@ -246,9 +231,12 @@ router.post(
          SET judgeid1 = @judge1Id,
              judgeid2 = @judge2Id,
              judgeid3 = @judge3Id
-         WHERE id = @competitionId`,
-        { competitionId, judge1Id, judge2Id, judge3Id },
+         WHERE itemcode = @itemId
+          and eventid = @eventId`,
+        { itemId, eventId, judge1Id, judge2Id, judge3Id },
       );
+
+      console.log({ itemId, eventId, judge1Id, judge2Id, judge3Id });
 
       return next(new AppResponse('Judges updated successfully'));
     } catch (err) {

@@ -46,7 +46,7 @@ export default function ScoreCards({ data }: { data: JudgementSummary }) {
     setErrorMsg(validateMark(value))
   }, [])
 
-  const handleSaveMark = useCallback(() => {
+  const handleSaveMark = useCallback(async () => {
     if (!selectedCode) return
 
     const validationError = validateMark(mark)
@@ -55,7 +55,7 @@ export default function ScoreCards({ data }: { data: JudgementSummary }) {
       return
     }
 
-    mutation.mutate({
+    await mutation.mutateAsync({
       eventId,
       itemId,
       judgeId,
