@@ -75,6 +75,7 @@ router.get('/competitions', async (req, res, next) => {
       COUNT(*) OVER () AS totalCount,
       cp.itemcode as itemCode,
       im.itemname as name,
+      im.stagetype as stageType,
       ca.categoryname as categoryName,
       st.stage as stageName,
       cp.status,
@@ -83,7 +84,10 @@ router.get('/competitions', async (req, res, next) => {
       cp.scheduledend as endTime,
       ISNULL(jd1.judgename, '') as judge1Name,
       ISNULL(jd2.judgename, '') as judge2Name,
-      ISNULL(jd3.judgename, '') as judge3Name
+      ISNULL(jd3.judgename, '') as judge3Name,
+      cp.judge1submittedyn as judge1Submitted,
+      cp.judge2submittedyn as judge2Submitted,
+      cp.judge3submittedyn as judge3Submitted
     from
       ofm_competitions as cp
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
@@ -92,17 +96,18 @@ router.get('/competitions', async (req, res, next) => {
       left join ofm_judges as jd1 on jd1.pid = cp.judgeid1
       left join ofm_judges as jd2 on jd2.pid = cp.judgeid2
       left join ofm_judges as jd3 on jd3.pid = cp.judgeid3
-    where cp.stageno = ${stageId} and cp.eventid = ${eventId}`;
+    where cp.stageno = @stageId and cp.eventid = @eventId`;
 
     if (status === 'C') {
       query += ` and cp.status in ('C', 'M', 'O', 'F')`;
     } else if (status) {
-      query += ` and cp.status = '${status}'`;
+      query += ` and cp.status = '@status'`;
     }
-    if (categoryId) query += ` and im.categoryno = '${categoryId}'`;
+    if (categoryId) query += ` and im.categoryno = '@categoryId'`;
 
     query += ` group by
       im.itemname,
+      im.stagetype,
       ca.categoryname,
       st.stage,
       cp.status,
@@ -112,15 +117,32 @@ router.get('/competitions', async (req, res, next) => {
       cp.scheduledend,
       jd1.judgename,
       jd2.judgename,
-      jd3.judgename
+      jd3.judgename,
+      cp.judge1submittedyn,
+      cp.judge2submittedyn,
+      cp.judge3submittedyn
     order by
       im.itemname, ca.categoryname, st.stage
-    offset (${page} - 1) * ${limit} rows
-    fetch next ${limit} rows only;`;
+    offset (@page - 1) * @limit rows
+    fetch next @limit rows only;`;
 
-    const data = await executeQuery(query);
+    const data = await executeQuery(query, {
+      stageId,
+      eventId,
+      categoryId,
+      status,
+      page: +page,
+      limit: +limit,
+    });
 
-    return next(new AppResponse('', data));
+    const parsedData = data.map((row: any) => ({
+      ...row,
+      judge1Submitted: row.judge1Submitted === 'Y',
+      judge2Submitted: row.judge2Submitted === 'Y',
+      judge3Submitted: row.judge3Submitted === 'Y',
+    }));
+
+    return next(new AppResponse('', parsedData));
   } catch (err) {
     return next(err);
   }
@@ -148,17 +170,18 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
     ai.status,
     ISNULL(ai.codeletter, '') as codeLetter
     from ofm_participant pa
-    inner join ofm_assignitem ai on ai.chestno = pa.chestno
-    inner join ofm_competitions co on co.itemcode = ai.itemcode
-    inner join ofm_team te on te.teamno = pa.teamno
-    where ai.itemcode = ${itemCode}
-      and co.stageno = ${stageId}
-      and ai.eventid = ${eventId}
-      and co.eventid = ${eventId}
-      and te.eventid = ${eventId}
-      and pa.eventid = ${eventId}`;
+    inner join ofm_assignitem ai on ai.chestno = pa.chestno and ai.eventid = @eventId
+    inner join ofm_competitions co on co.itemcode = ai.itemcode and co.eventid = @eventId
+    inner join ofm_team te on te.teamno = pa.teamno and te.eventid = @eventId
+    where ai.itemcode = @itemCode
+      and co.stageno = @stageId
+      and pa.eventid = @eventId`;
 
-  const data = await executeQuery(query);
+  const data = await executeQuery(query, {
+    eventId,
+    itemCode,
+    stageId,
+  });
 
   return next(
     new AppResponse('', {

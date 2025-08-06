@@ -50,6 +50,7 @@ router.get('/', async (req, res, next) => {
             and tme.chestno = ai.chestno
             and tme.codeletter = ai.codeletter
             and tme.eventid = @eventId
+            and tme.sino = @judgeId
         WHERE
           ai.itemcode = cp.itemcode
           and ai.eventid = @eventId
@@ -65,7 +66,7 @@ router.get('/', async (req, res, next) => {
       where cp.eventid = @eventId
         and cp.itemcode = @itemId`;
 
-    const data = await executeQuery(query, { eventId, itemId });
+    const data = await executeQuery(query, { eventId, itemId, judgeId });
 
     const parsedData = data.map((row: any) => ({
       ...row,
@@ -250,19 +251,17 @@ router.post(
         kvStore.set(`encId:${eventIdEnc}`, eventId);
       }
 
-      // await executeQuery(
-      //   `UPDATE ofm_tempmarkentry
-      //     SET notes = @notes
-      //     WHERE eventid = @eventId
-      //       AND itemcode = @itemId
-      //       AND sino = @judgeId`,
-      //   {
-      //     eventId,
-      //     itemId,
-      //     judgeId,
-      //     notes,
-      //   },
-      // );
+      await executeQuery(
+        `UPDATE ofm_competitions
+          SET judge${judgeId}submittedyn = 'Y'
+          WHERE eventid = @eventId
+            AND itemcode = @itemId`,
+        {
+          eventId,
+          itemId,
+          judgeId,
+        },
+      );
 
       return next(new AppResponse('Saved successfully'));
     } catch (err) {

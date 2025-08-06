@@ -23,7 +23,13 @@ import QRScanDialog from './QRScanDialog'
 import useCompetitionParticipantMutation from '../-hooks/useCompetitionParticipantMutation'
 import queryClient from '@/lib/queryClient'
 import { Skeleton } from '@/components/ui/skeleton'
-import { LuQrCode } from 'react-icons/lu'
+import {
+  LuCircleCheckBig,
+  LuCircleX,
+  LuQrCode,
+} from 'react-icons/lu'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -113,36 +119,105 @@ export default function StageCompetitionModal({
                       End Program
                     </Button>
                   )}
-                  {competition.status === CompetitionStatus.Completed && (
-                    <Button
-                      onClick={() =>
-                        promptComfirmation(CompetitionStatus.MarkEntryClosed)
-                      }
-                    >
-                      Close Mark Entry
-                    </Button>
-                  )}
-
+                  {competition.stageType === 'Stage' &&
+                    competition.status === CompetitionStatus.Completed && (
+                      <div>
+                        <div className="flex gap-2 mb-2">
+                          <Badge
+                            className={cn(
+                              'pl-1.5',
+                              competition.judge1Submitted
+                                ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                                : 'bg-red-400/20 border-red-300/60 text-red-900',
+                            )}
+                          >
+                            {competition.judge1Submitted ? (
+                              <LuCircleCheckBig />
+                            ) : (
+                              <LuCircleX />
+                            )}
+                            {competition.judge1Name}
+                          </Badge>
+                          <Badge
+                            className={cn(
+                              'pl-1.5',
+                              competition.judge2Submitted
+                                ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                                : 'bg-red-400/20 border-red-300/60 text-red-900',
+                            )}
+                          >
+                            {competition.judge1Submitted ? (
+                              <LuCircleCheckBig />
+                            ) : (
+                              <LuCircleX />
+                            )}
+                            {competition.judge2Name}
+                          </Badge>
+                          <Badge
+                            className={cn(
+                              'pl-1.5',
+                              competition.judge3Submitted
+                                ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                                : 'bg-red-400/20 border-red-300/60 text-red-900',
+                            )}
+                          >
+                            {competition.judge1Submitted ? (
+                              <LuCircleCheckBig />
+                            ) : (
+                              <LuCircleX />
+                            )}
+                            {competition.judge3Name}
+                          </Badge>
+                        </div>
+                        <Button
+                          disabled={
+                            !(
+                              competition.judge1Submitted &&
+                              competition.judge1Submitted &&
+                              competition.judge1Submitted
+                            )
+                          }
+                          onClick={() => {
+                            if (
+                              !(
+                                competition.judge1Submitted &&
+                                competition.judge1Submitted &&
+                                competition.judge1Submitted
+                              )
+                            ) {
+                              return
+                            }
+                            promptComfirmation(
+                              CompetitionStatus.MarkEntryClosed,
+                            )
+                          }}
+                        >
+                          Close Mark Entry
+                        </Button>
+                      </div>
+                    )}
                   {[
                     CompetitionStatus.Started,
                     CompetitionStatus.InProgress,
-                  ].includes(competition.status as CompetitionStatus) && (
-                    <Button
-                      variant="outline"
-                      className="ml-auto"
-                      onClick={() => setShowQRDialog(true)}
-                    >
-                      <LuQrCode className="mr-1 h-4 w-4" />
-                      Scan QR
-                    </Button>
-                  )}
-
-                  <QRScanDialog
-                    open={showQRDialog}
-                    onClose={() => setShowQRDialog(false)}
-                    participants={data?.participants || []}
-                    onValidScan={handleValidScan}
-                  />
+                  ].includes(competition.status as CompetitionStatus) &&
+                    data?.participants.length && (
+                      <>
+                        <Button
+                          variant="outline"
+                          className="ml-auto"
+                          onClick={() => setShowQRDialog(true)}
+                        >
+                          <LuQrCode className="mr-1 h-4 w-4" />
+                          Scan QR
+                        </Button>
+                        <QRScanDialog
+                          open={showQRDialog}
+                          onClose={() => setShowQRDialog(false)}
+                          participants={data.participants}
+                          onValidScan={handleValidScan}
+                        />
+                      </>
+                    )}
                 </div>
 
                 <div>

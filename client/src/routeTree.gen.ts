@@ -17,6 +17,7 @@ import { Route as MediaManagementIndexRouteImport } from './routes/media-managem
 import { Route as JudgementIndexRouteImport } from './routes/judgement/index'
 import { Route as AnnounceManagementIndexRouteImport } from './routes/announce-management/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as JudgementSuccessRouteImport } from './routes/judgement/success'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,9 +59,15 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JudgementSuccessRoute = JudgementSuccessRouteImport.update({
+  id: '/judgement/success',
+  path: '/judgement/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/judgement/success': typeof JudgementSuccessRoute
   '/admin': typeof AdminIndexRoute
   '/announce-management': typeof AnnounceManagementIndexRoute
   '/judgement': typeof JudgementIndexRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/judgement/success': typeof JudgementSuccessRoute
   '/admin': typeof AdminIndexRoute
   '/announce-management': typeof AnnounceManagementIndexRoute
   '/judgement': typeof JudgementIndexRoute
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/judgement/success': typeof JudgementSuccessRoute
   '/admin/': typeof AdminIndexRoute
   '/announce-management/': typeof AnnounceManagementIndexRoute
   '/judgement/': typeof JudgementIndexRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/judgement/success'
     | '/admin'
     | '/announce-management'
     | '/judgement'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/judgement/success'
     | '/admin'
     | '/announce-management'
     | '/judgement'
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/judgement/success'
     | '/admin/'
     | '/announce-management/'
     | '/judgement/'
@@ -125,6 +137,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  JudgementSuccessRoute: typeof JudgementSuccessRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AnnounceManagementIndexRoute: typeof AnnounceManagementIndexRoute
   JudgementIndexRoute: typeof JudgementIndexRoute
@@ -192,11 +205,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/judgement/success': {
+      id: '/judgement/success'
+      path: '/judgement/success'
+      fullPath: '/judgement/success'
+      preLoaderRoute: typeof JudgementSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  JudgementSuccessRoute: JudgementSuccessRoute,
   AdminIndexRoute: AdminIndexRoute,
   AnnounceManagementIndexRoute: AnnounceManagementIndexRoute,
   JudgementIndexRoute: JudgementIndexRoute,

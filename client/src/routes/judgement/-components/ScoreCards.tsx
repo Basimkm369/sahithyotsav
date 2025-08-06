@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Route } from '..'
 import { JudgementSummary } from '../-hooks/useJudgementSummary'
 import { useJudgementMarkMutation } from '../-hooks/useJudgementMarkMutation'
+import ButtonLoader from '@/components/ButtonLoader'
 
 const validateMark = (value: string): string | null => {
   if (!/^\d+$/.test(value)) {
@@ -118,9 +119,9 @@ export default function ScoreCards({ data }: { data: JudgementSummary }) {
               )}
 
               <DialogFooter className="mt-4">
-                <Button onClick={handleSaveMark} disabled={!!errorMsg || !mark}>
+                <ButtonLoader onClick={handleSaveMark} disabled={!!errorMsg || !mark}>
                   💾 Save Mark
-                </Button>
+                </ButtonLoader>
                 <Button variant="outline" onClick={handleCloseDialog}>
                   Cancel
                 </Button>

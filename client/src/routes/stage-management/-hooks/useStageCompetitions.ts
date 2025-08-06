@@ -4,6 +4,7 @@ import { api } from '@/lib/api'
 export type Competition = {
   itemCode: number
   name: string
+  stageType: string
   categoryName: string
   status: string
   totalCount: number
@@ -13,6 +14,9 @@ export type Competition = {
   judge1Name: string
   judge2Name: string
   judge3Name: string
+  judge1Submitted: boolean
+  judge2Submitted: boolean
+  judge3Submitted: boolean
 }
 
 export default function useStageCompetitions({

@@ -18,6 +18,7 @@ import useJudges from '../-hooks/useJudges'
 import { Route } from '..'
 import { Competition } from '../-hooks/useAdminCompetitions'
 import Button from '@/components/Button'
+import { toast } from 'sonner'
 
 export type Judge = { id: number; name: string }
 
@@ -39,6 +40,13 @@ export default function AdminCompetitionFormModal({
   const mutation = useCompetitionMutation()
 
   const handleSave = async () => {
+    const judgeIds = [judge1Id, judge2Id, judge3Id].filter(Boolean)
+    const uniqueJudgeIds = new Set(judgeIds)
+    if (judgeIds.length !== uniqueJudgeIds.size) {
+      toast.error('Judges must be unique.')
+      return
+    }
+
     if (!data?.itemCode) return
     await mutation.mutateAsync({
       eventId,
@@ -47,6 +55,7 @@ export default function AdminCompetitionFormModal({
       judge2Id: judge2Id ? Number(judge2Id) : null,
       judge3Id: judge3Id ? Number(judge3Id) : null,
     })
+    toast.success('Judges assigned successfully.')
     onClose()
   }
 

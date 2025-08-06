@@ -1,5 +1,5 @@
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 import ScoreCards from './-components/ScoreCards'
 import useJudgementSummary from './-hooks/useJudgementSummary'
 import JudgementNotes from './-components/JudgementNotes'
@@ -9,6 +9,7 @@ import Button from '@/components/Button'
 import useConfirmation from '@/components/Confirmation'
 import { api } from '@/lib/api'
 import queryClient from '@/lib/queryClient'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/judgement/')({
   component: JudgeDashboardPage,
@@ -26,11 +27,13 @@ export const Route = createFileRoute('/judgement/')({
 function JudgeDashboardPage() {
   const { eventId, itemId, judgeId } = Route.useSearch()
   const { data, isLoading } = useJudgementSummary({ eventId, itemId, judgeId })
+  const router = useRouter()
 
   const [component, promptConfirmation] = useConfirmation({
-    title: '',
-    description: '',
-    onConfirm: async ({ eventId, itemId, judgeId }) => {
+    title: 'Confirm Submission',
+    description:
+      'Are you sure you want to finalize and submit your marks? You will not be able to edit them after submission.',
+    onConfirm: async () => {
       await api.post('/judgement/submit', {
         eventId,
         itemId,
@@ -38,6 +41,10 @@ function JudgeDashboardPage() {
       })
       await queryClient.invalidateQueries({
         queryKey: ['judgement', { eventId, itemId, judgeId }],
+      })
+
+      router.navigate({
+        to: '/judgement/success',
       })
     },
   })
@@ -94,7 +101,15 @@ function JudgeDashboardPage() {
         <div className="bg-muted rounded-3xl p-4 space-y-4">
           <ScoreCards data={data} />
           <JudgementNotes data={data} />
-          <Button onClick={() => promptConfirmation(data)}>
+          <Button
+            onClick={() => {
+              if (data.scores.every((s) => s.mark >= 0)) {
+                promptConfirmation()
+              } else {
+                toast.error('You need to enter marks for all participants')
+              }
+            }}
+          >
             Finalize & Submit
           </Button>
         </div>
