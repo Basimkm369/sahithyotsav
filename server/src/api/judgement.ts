@@ -38,7 +38,7 @@ router.get('/', async (req, res, next) => {
       im.itemname as itemName,
       ca.categoryname as categoryName,
       jd.judgename as judgeName,
-      cp.judge${judgeId}submittedyn as judgeSubmitted
+      cp.judge${judgeId}submittedyn as judgeSubmitted,
       (
         SELECT
           ai.codeletter as codeLetter,
