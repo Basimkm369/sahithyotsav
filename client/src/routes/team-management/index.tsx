@@ -6,6 +6,7 @@ import TeamParticipantsTab from './-components/TeamParticipantsTab'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { useState } from 'react'
 import useUrlState from '@/hooks/useUrlState'
+import TeamFoodTab from './-components/TeamFoodTab'
 
 export const Route = createFileRoute('/team-management/')({
   component: TeamManagementPage,
@@ -22,7 +23,7 @@ export const Route = createFileRoute('/team-management/')({
 function TeamManagementPage() {
   const { eventId, teamId } = Route.useSearch()
   const { data, isLoading } = useTeamManagementSummary({ eventId, teamId })
-  const [tab, setTab] = useUrlState<'competitions' | 'participants'>(
+  const [tab, setTab] = useUrlState<'competitions' | 'participants' | 'food'>(
     'tab',
     'competitions',
   )
@@ -73,6 +74,12 @@ function TeamManagementPage() {
             >
               Participants
             </TabsTrigger>
+            <TabsTrigger
+              value="food"
+              onClick={() => setTab('food')}
+            >
+              Food
+            </TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="competitions" className="bg-muted rounded-3xl p-4">
@@ -83,6 +90,9 @@ function TeamManagementPage() {
         </TabsContent>
         <TabsContent value="participants" className="bg-muted rounded-3xl p-4">
           <TeamParticipantsTab categories={data.categories} />
+        </TabsContent>
+        <TabsContent value="food" className="bg-muted rounded-3xl p-4">
+          <TeamFoodTab categories={data.categories} />
         </TabsContent>
       </Tabs>
     </div>
