@@ -52,12 +52,15 @@ function TeamManagementPage() {
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="text-center items-end flex gap-3 mt-2 border-t pt-3">
+        <div className="flex flex-col sm:flex-row items-end gap-3 mt-2 border-t pt-3 text-center sm:text-left">
           <div className="text-3xl font-semibold font-heading text-gray-500">
             Team Management:{' '}
           </div>
-          <div className="text-4xl font-bold font-heading">{data.teamName}</div>
+          <div className="text-4xl font-bold font-heading">
+            {data.teamName}
+          </div>
         </div>
+
       </div>
       <Tabs value={tab}>
         <div className="flex justify-center mb-4">
