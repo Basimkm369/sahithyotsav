@@ -31,6 +31,11 @@ export default function StageCompetitionCard({
         <div className="mt-1">
           {getCompetitionStatusBadge(data.status as CompetitionStatus, {
             role: 'stageManagement',
+            blink: [
+              CompetitionStatus.Started,
+              CompetitionStatus.InProgress,
+              CompetitionStatus.Completed,
+            ].includes(data.status as CompetitionStatus),
           })}
         </div>
       </CardHeader>

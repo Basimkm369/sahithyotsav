@@ -63,6 +63,7 @@ export default function OffstageCompetitionModal({
                 competition.status as CompetitionStatus,
                 {
                   role: 'offstageManagement',
+                  blink: competition.status === CompetitionStatus.Completed,
                 },
               )}
             </DialogHeader>
@@ -159,9 +160,6 @@ export default function OffstageCompetitionModal({
                           </div>
                           <div className="col-span-1">
                             <Skeleton className="h-6 w-16 bg-gray-200 rounded" />
-                          </div>
-                          <div className="col-span-2 flex justify-end">
-                            <Skeleton className="h-8 w-24 bg-gray-200 rounded" />
                           </div>
                         </div>
                       ))

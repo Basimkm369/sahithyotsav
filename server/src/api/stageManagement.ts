@@ -101,9 +101,9 @@ router.get('/competitions', async (req, res, next) => {
     if (status === 'M') {
       query += ` and cp.status in ('F', 'A', 'O', 'D')`;
     } else if (status) {
-      query += ` and cp.status = '@status'`;
+      query += ` and cp.status = @status`;
     }
-    if (categoryId) query += ` and im.categoryno = '@categoryId'`;
+    if (categoryId) query += ` and im.categoryno = @categoryId`;
 
     query += ` group by
       im.itemname,

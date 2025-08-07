@@ -33,7 +33,7 @@ import { Route } from '..'
 import useAdminParticipants from '../-hooks/useAdminParticipants'
 import { AdminSummary } from '../-hooks/useAdminSummary'
 import useUrlState from '@/hooks/useUrlState'
-import CompetitionStatus from '@/constants/CompetitionStatus'
+import CompetitionStatus, { isAfterStatus } from '@/constants/CompetitionStatus'
 
 const ITEMS_PER_PAGE = 30
 export default function AdminParticipantsTab({
@@ -239,8 +239,10 @@ export default function AdminParticipantsTab({
                     {getCompetitionStatusBadge(
                       competition.status as CompetitionStatus,
                     )}
-                    {/* TODO */}
-                    {getParticipantStatusBadge(competition)}
+                    {isAfterStatus(
+                      competition.status as CompetitionStatus,
+                      CompetitionStatus.Started,
+                    ) && getParticipantStatusBadge(competition)}
                     {competition.rank === 1
                       ? '🥇'
                       : competition.rank === 2

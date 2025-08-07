@@ -10,6 +10,7 @@ export type Competition = {
   participants: {
     name: string
     chestNumber: string
+    codeLetter: string
     status: string
     rank: number
   }[]

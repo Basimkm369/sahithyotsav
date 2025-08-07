@@ -30,7 +30,8 @@ export default function OffstageCompetitionCard({
         </div>
         <div className="mt-1">
           {getCompetitionStatusBadge(data.status as CompetitionStatus, {
-            role: 'stageManagement',
+            role: 'offstageManagement',
+            blink: data.status === CompetitionStatus.Completed,
           })}
         </div>
       </CardHeader>

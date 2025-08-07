@@ -14,7 +14,8 @@ import {
   getParticipantStatusBadge,
 } from '@/lib/badge'
 import { Competition } from '../-hooks/useTeamCompetitions'
-import CompetitionStatus from '@/constants/CompetitionStatus'
+import CompetitionStatus, { isAfterStatus } from '@/constants/CompetitionStatus'
+import ParticipantStatus from '@/constants/ParticipantStatus'
 
 export default function TeamCompetitionCard({ data }: { data: Competition }) {
   return (
@@ -29,6 +30,15 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
         <div className="mt-1">
           {getCompetitionStatusBadge(data.status as CompetitionStatus, {
             role: 'teamManagement',
+            blink:
+              [
+                CompetitionStatus.Started,
+                CompetitionStatus.InProgress,
+              ].includes(data.status as CompetitionStatus) &&
+              data.participants.some(
+                (p) => p.status === ParticipantStatus.NotEnrolled,
+              ) &&
+              'Your team participants has reported yet',
           })}
         </div>
       </CardHeader>
@@ -71,7 +81,10 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
                             : ''}
                     </div>
                   ) : (
-                    getParticipantStatusBadge(participant)
+                    isAfterStatus(
+                      data.status as CompetitionStatus,
+                      CompetitionStatus.Started,
+                    ) && getParticipantStatusBadge(participant)
                   )}
                 </div>
               </div>

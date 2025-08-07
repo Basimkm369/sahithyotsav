@@ -32,7 +32,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import PaginationControls from '@/components/PaginationControls'
 import { Route } from '..'
 import useUrlState from '@/hooks/useUrlState'
-import CompetitionStatus from '@/constants/CompetitionStatus'
+import CompetitionStatus, { isAfterStatus } from '@/constants/CompetitionStatus'
+import ParticipantStatus from '@/constants/ParticipantStatus'
 
 const ITEMS_PER_PAGE = 30
 export default function TeamParticipantsTab({
@@ -210,10 +211,26 @@ export default function TeamParticipantsTab({
                     {competition.itemName}
                     {getCompetitionStatusBadge(
                       competition.status as CompetitionStatus,
-                      { role: 'teamManagement' },
+                      {
+                        role: 'teamManagement',
+                        blink:
+                          [
+                            CompetitionStatus.Started,
+                            CompetitionStatus.InProgress,
+                          ].includes(competition.status as CompetitionStatus) &&
+                          competition.participantStatus ===
+                            ParticipantStatus.NotEnrolled &&
+                          'This participant has reported yet',
+                      },
                     )}
-                    {/* TODO */}
-                    {getParticipantStatusBadge(competition)}
+                    {isAfterStatus(
+                      competition.status as CompetitionStatus,
+                      CompetitionStatus.Started,
+                    ) &&
+                      getParticipantStatusBadge({
+                        codeLetter: competition.codeLetter,
+                        status: competition.participantStatus,
+                      })}
                     {competition.rank === 1
                       ? '🥇'
                       : competition.rank === 2

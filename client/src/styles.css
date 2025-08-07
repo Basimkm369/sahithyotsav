@@ -92,7 +92,7 @@ code {
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
 }
- 
+
 .dark {
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
@@ -145,6 +145,21 @@ html {
   font-family: 'Mozilla Text';
 }
 
-.page-content-container {
-  @apply mx-4 p-4 bg-gray-200 rounded-3xl;
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.blinking-dot {
+  height: 8px;
+  width: 8px;
+  border-radius: 9999px;
+  display: inline-block;
+  margin-right: 2px;
+  animation: blink 1s infinite;
 }

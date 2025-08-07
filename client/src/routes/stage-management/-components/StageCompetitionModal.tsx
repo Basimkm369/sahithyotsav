@@ -87,6 +87,11 @@ export default function StageCompetitionModal({
                 competition.status as CompetitionStatus,
                 {
                   role: 'stageManagement',
+                  blink: [
+                    CompetitionStatus.Started,
+                    CompetitionStatus.InProgress,
+                    CompetitionStatus.Completed,
+                  ].includes(competition.status as CompetitionStatus),
                 },
               )}
             </DialogHeader>

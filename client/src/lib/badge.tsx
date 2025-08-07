@@ -4,16 +4,20 @@ import CompetitionStatus, {
   isBeforeStatus,
   statusLabels as competitionStatusLabels,
 } from '@/constants/CompetitionStatus'
-import ParticipantStatus, {
-  statusLabels as participantStatusLabels,
-} from '@/constants/ParticipantStatus'
+import ParticipantStatus from '@/constants/ParticipantStatus'
 import { cn } from './utils'
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip'
 
 export const getCompetitionStatusBadge = (
   status: CompetitionStatus,
   {
     count,
     role = 'admin',
+    blink = false,
   }: {
     count?: number
     role?:
@@ -23,6 +27,7 @@ export const getCompetitionStatusBadge = (
       | 'mediaMangement'
       | 'announceMangement'
       | 'admin'
+    blink?: boolean | string
   } = {},
 ) => {
   const label =
@@ -47,12 +52,12 @@ export const getCompetitionStatusBadge = (
     status = CompetitionStatus.Completed
   }
 
-  return (
+  const badge = (
     <Badge
       variant="outline"
       className={cn(
         status === CompetitionStatus.NotStarted &&
-          'bg-gray-400/20 text-gray-800 border-gray-300/60',
+          'bg-gray-400/20 text-gray-900 border-gray-300/60',
         status === CompetitionStatus.Started &&
           'bg-blue-400/20 text-blue-900 border-blue-300/60',
         status === CompetitionStatus.InProgress &&
@@ -71,9 +76,36 @@ export const getCompetitionStatusBadge = (
           'bg-green-400/20 text-green-900 border-green-300/60',
       )}
     >
+      {!!blink && (
+        <span
+          className={cn(
+            'blinking-dot',
+            status === CompetitionStatus.NotStarted && 'bg-gray-900',
+            status === CompetitionStatus.Started && 'bg-blue-900',
+            status === CompetitionStatus.InProgress && 'bg-yellow-900',
+            status === CompetitionStatus.Completed && 'bg-green-900',
+            status === CompetitionStatus.MarkEntryClosed && 'bg-green-900',
+            status === CompetitionStatus.Finalized && 'bg-green-900',
+            status === CompetitionStatus.MediaCompleted && 'bg-green-900',
+            status === CompetitionStatus.Announced && 'bg-green-900',
+            status === CompetitionStatus.PrizeDistributed && 'bg-green-900',
+          )}
+        />
+      )}
       {label}
     </Badge>
   )
+
+  if (typeof blink === 'string' && !!blink) {
+    return (
+      <Tooltip>
+        <TooltipTrigger>{badge}</TooltipTrigger>
+        <TooltipContent>{blink}</TooltipContent>
+      </Tooltip>
+    )
+  }
+
+  return badge
 }
 
 export const getParticipantStatusBadge = ({
@@ -83,7 +115,7 @@ export const getParticipantStatusBadge = ({
   status: string
   codeLetter: string
 }) => {
-  if (!status) return <></>
+  if (!status && status !== '') return <></>
 
   if (status === ParticipantStatus.NotEnrolled) {
     return (
@@ -91,7 +123,7 @@ export const getParticipantStatusBadge = ({
         variant="outline"
         className="bg-gray-400/20 text-gray-800 border-gray-300/60"
       >
-        Reported
+        Not Reported
       </Badge>
     )
   }
