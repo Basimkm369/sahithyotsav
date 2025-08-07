@@ -213,7 +213,7 @@ export default function TeamParticipantsTab({
                       { role: 'teamManagement' },
                     )}
                     {/* TODO */}
-                    {getParticipantStatusBadge(competition.participantStatus)}
+                    {getParticipantStatusBadge(competition)}
                     {competition.rank === 1
                       ? '🥇'
                       : competition.rank === 2

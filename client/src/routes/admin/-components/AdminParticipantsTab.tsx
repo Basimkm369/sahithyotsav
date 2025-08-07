@@ -236,9 +236,11 @@ export default function AdminParticipantsTab({
                 >
                   <div className="font-medium flex gap-2">
                     {competition.itemName}
-                    {getCompetitionStatusBadge(competition.status  as CompetitionStatus)}
+                    {getCompetitionStatusBadge(
+                      competition.status as CompetitionStatus,
+                    )}
                     {/* TODO */}
-                    {getParticipantStatusBadge(competition.participantStatus)}
+                    {getParticipantStatusBadge(competition)}
                     {competition.rank === 1
                       ? '🥇'
                       : competition.rank === 2

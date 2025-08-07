@@ -1,7 +1,6 @@
-import useStageCompetitions, {
+import {
   Competition,
-} from '../-hooks/useStageCompetitions'
-import { StageManagementSummary } from '@/routes/stage-management/-hooks/useStageManagementSummary'
+} from '../-hooks/useOffstageCompetitions'
 import {
   Select,
   SelectTrigger,
@@ -9,27 +8,32 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
-import StageCompetitionCard from './StageCompetitionCard'
-import StageCompetitionCardSkeleton from './StageCompetitionCardSkeleton'
 import PaginationControls from '@/components/PaginationControls'
 import { Route } from '..'
-import StageCompetitionModal from './StageCompetitionModal'
 import useUrlState from '@/hooks/useUrlState'
 import CompetitionStatus from '@/constants/CompetitionStatus'
+import { OffstageManagementSummary } from '../-hooks/useOffstageManagementSummary'
+import useOffstageCompetitions from '../-hooks/useOffstageCompetitions'
+import OffstageCompetitionModal from './OffstageCompetitionModal'
+import OffstageCompetitionCardSkeleton from './OffstageCompetitionCardSkeleton'
+import OffstageCompetitionCard from './OffstageCompetitionCard'
 
 const ITEMS_PER_PAGE = 24
 
-export default function StageCompetitions({
+export default function OffstageCompetitions({
+  stages,
   categories,
 }: {
-  categories: StageManagementSummary['categories']
+  stages: OffstageManagementSummary['stages']
+  categories: OffstageManagementSummary['categories']
 }) {
   const [status, setStatus] = useUrlState('status', 'all')
   const [categoryId, setCategoryId] = useUrlState('categoryId', 'all')
+  const [stageId, setStageId] = useUrlState('stageId', 'all')
   const [page, setPage] = useUrlState('page', 1, (v) => (v ? parseInt(v) : 1))
 
-  const { stageId, eventId } = Route.useSearch()
-  const { data, isLoading, error } = useStageCompetitions({
+  const { eventId } = Route.useSearch()
+  const { data, isLoading, error } = useOffstageCompetitions({
     stageId,
     eventId,
     status,
@@ -57,6 +61,25 @@ export default function StageCompetitions({
     <>
       <div className="grid gap-4 my-4">
         <div className="flex flex-wrap gap-4 justify-center items-center">
+          {/* Stage Filter */}
+          <Select
+            value={stageId}
+            onValueChange={(value) => {
+              setStageId(value)
+              setPage(1)
+            }}
+          >
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+              <SelectValue placeholder="Select stage" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Stages</SelectItem>
+              {stages.map((stage) => (
+                <SelectItem value={`${stage.number}`}>{stage.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
           {/* Status Filter */}
           <Select
             value={status}
@@ -111,10 +134,10 @@ export default function StageCompetitions({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {isLoading
             ? Array.from({ length: 24 }, () => 0).map((_, i) => (
-                <StageCompetitionCardSkeleton key={i} />
+                <OffstageCompetitionCardSkeleton key={i} />
               ))
             : data?.map((comp) => (
-                <StageCompetitionCard
+                <OffstageCompetitionCard
                   data={comp}
                   key={comp.itemCode}
                   onClick={() => setSelectedCompetition(comp)}
@@ -131,7 +154,7 @@ export default function StageCompetitions({
           />
         </div>
       </div>
-      <StageCompetitionModal
+      <OffstageCompetitionModal
         data={selectedCompetition}
         open={!!selectedCompetition}
         onClose={() => setSelectedCompetition(undefined)}

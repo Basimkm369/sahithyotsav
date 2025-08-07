@@ -1,30 +1,27 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 
-export type StageManagementSummary = {
-  stageName: string
+export type OffstageManagementSummary = {
+  stages: { name: string; number: string }[]
   categories: {
     name: string
     number: number
   }[]
 }
 
-export default function useStageManagementSummary({
+export default function useOffstageManagementSummary({
   eventId,
-  stageId,
 }: {
   eventId: string
-  stageId: string
 }) {
   return useQuery({
-    queryKey: ['stageManagement', { eventId, stageId }],
+    queryKey: ['offstageManagement', { eventId }],
     queryFn: async () => {
       const params: Record<string, string> = {}
       if (eventId) params.eventId = eventId
-      if (stageId) params.stageId = stageId
 
-      const res = await api.get<{ data: StageManagementSummary }>(
-        '/stageManagement',
+      const res = await api.get<{ data: OffstageManagementSummary }>(
+        '/offstageManagement',
         { params },
       )
       return res.data?.data ?? null

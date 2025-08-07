@@ -4,7 +4,6 @@ import { api } from '@/lib/api'
 export type Competition = {
   itemCode: number
   name: string
-  stageType: string
   categoryName: string
   status: string
   totalCount: number
@@ -19,7 +18,7 @@ export type Competition = {
   judge3Submitted: boolean
 }
 
-export default function useStageCompetitions({
+export default function useOffstageCompetitions({
   eventId,
   stageId,
   status,
@@ -36,7 +35,7 @@ export default function useStageCompetitions({
 }) {
   return useQuery({
     queryKey: [
-      'stageManagement',
+      'offstageManagement',
       'competitions',
       { status, categoryId, page, limit, eventId, stageId },
     ],
@@ -44,13 +43,13 @@ export default function useStageCompetitions({
       const params: Record<string, any> = {}
       if (status !== 'all') params.status = status
       if (categoryId !== 'all') params.categoryId = categoryId
+      if (stageId !== 'all') params.stageId = stageId
       if (eventId) params.eventId = eventId
-      if (stageId) params.stageId = stageId
       params.page = page
       params.limit = limit
 
       const res = await api.get<{ data: Competition[] }>(
-        '/stageManagement/competitions',
+        '/offstageManagement/competitions',
         { params },
       )
       return res.data?.data ?? null

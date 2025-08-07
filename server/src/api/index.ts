@@ -5,6 +5,7 @@ import judgement from './judgement';
 import admin from './admin';
 import mediaManagement from './mediaManagement';
 import announceManagement from './announceManagement';
+import offstageManagement from './offstageManagement';
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ router.use('/teamManagement', teamManagement);
 router.use('/stageManagement', stageManagement);
 router.use('/mediaManagement', mediaManagement);
 router.use('/announceManagement', announceManagement);
+router.use('/offstageManagement', offstageManagement);
 router.use('/judgement', judgement);
 router.use('/admin', admin);
  

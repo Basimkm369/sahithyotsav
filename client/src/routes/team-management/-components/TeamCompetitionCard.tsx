@@ -71,7 +71,7 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
                             : ''}
                     </div>
                   ) : (
-                    getParticipantStatusBadge(participant.status)
+                    getParticipantStatusBadge(participant)
                   )}
                 </div>
               </div>

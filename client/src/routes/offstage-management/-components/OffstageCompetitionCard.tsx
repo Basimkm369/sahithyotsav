@@ -5,14 +5,14 @@ import {
   CardContent,
   CardDescription,
 } from '@/components/ui/card'
-import { Competition } from '../-hooks/useStageCompetitions'
+import { Competition } from '../-hooks/useOffstageCompetitions'
 import { LucideCalendar, LucideClock, LucideGavel } from 'lucide-react'
 import dayjs from 'dayjs'
 import { formatTime } from '@/lib/datetime'
 import { getCompetitionStatusBadge } from '@/lib/badge'
 import CompetitionStatus from '@/constants/CompetitionStatus'
 
-export default function StageCompetitionCard({
+export default function OffstageCompetitionCard({
   data,
   onClick,
 }: {

@@ -92,134 +92,142 @@ export default function StageCompetitionModal({
             </DialogHeader>
             <ScrollArea className="max-h-[calc(100vh-200px)] overflow-y-auto -mr-4 pr-4">
               <div className="mt-4 pr-2 space-y-8">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                  {competition.status === CompetitionStatus.NotStarted && (
-                    <Button
-                      onClick={() =>
-                        promptComfirmation(CompetitionStatus.Started)
-                      }
-                    >
-                      Start Reporting
-                    </Button>
-                  )}
-                  {competition.status === CompetitionStatus.Started && (
-                    <Button
-                      onClick={() =>
-                        promptComfirmation(CompetitionStatus.InProgress)
-                      }
-                    >
-                      Start Program
-                    </Button>
-                  )}
-                  {competition.status === CompetitionStatus.InProgress && (
-                    <Button
-                      onClick={() =>
-                        promptComfirmation(CompetitionStatus.Completed)
-                      }
-                    >
-                      End Program
-                    </Button>
-                  )}
-                  {competition.stageType === 'Stage' &&
-                    competition.status === CompetitionStatus.Completed && (
-                      <div>
-                        <div className="flex gap-2 mb-2">
-                          <Badge
-                            className={cn(
-                              'pl-1.5',
-                              competition.judge1Submitted
-                                ? 'bg-green-400/20 border-green-300/60 text-green-900'
-                                : 'bg-red-400/20 border-red-300/60 text-red-900',
-                            )}
-                          >
-                            {competition.judge1Submitted ? (
-                              <LuCircleCheckBig />
-                            ) : (
-                              <LuCircleX />
-                            )}
-                            {competition.judge1Name}
-                          </Badge>
-                          <Badge
-                            className={cn(
-                              'pl-1.5',
-                              competition.judge2Submitted
-                                ? 'bg-green-400/20 border-green-300/60 text-green-900'
-                                : 'bg-red-400/20 border-red-300/60 text-red-900',
-                            )}
-                          >
-                            {competition.judge2Submitted ? (
-                              <LuCircleCheckBig />
-                            ) : (
-                              <LuCircleX />
-                            )}
-                            {competition.judge2Name}
-                          </Badge>
-                          <Badge
-                            className={cn(
-                              'pl-1.5',
-                              competition.judge3Submitted
-                                ? 'bg-green-400/20 border-green-300/60 text-green-900'
-                                : 'bg-red-400/20 border-red-300/60 text-red-900',
-                            )}
-                          >
-                            {competition.judge3Submitted ? (
-                              <LuCircleCheckBig />
-                            ) : (
-                              <LuCircleX />
-                            )}
-                            {competition.judge3Name}
-                          </Badge>
-                        </div>
-                        <Button
-                          disabled={
-                            !(
-                              competition.judge1Submitted &&
-                              competition.judge2Submitted &&
-                              competition.judge3Submitted
-                            )
-                          }
-                          onClick={() => {
-                            if (
+                {([
+                  CompetitionStatus.NotStarted,
+                  CompetitionStatus.Started,
+                  CompetitionStatus.InProgress,
+                ].includes(competition.status as CompetitionStatus) ||
+                  (competition.stageType === 'Stage' &&
+                    competition.status === CompetitionStatus.Completed)) && (
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    {competition.status === CompetitionStatus.NotStarted && (
+                      <Button
+                        onClick={() =>
+                          promptComfirmation(CompetitionStatus.Started)
+                        }
+                      >
+                        Start Reporting
+                      </Button>
+                    )}
+                    {competition.status === CompetitionStatus.Started && (
+                      <Button
+                        onClick={() =>
+                          promptComfirmation(CompetitionStatus.InProgress)
+                        }
+                      >
+                        Start Program
+                      </Button>
+                    )}
+                    {competition.status === CompetitionStatus.InProgress && (
+                      <Button
+                        onClick={() =>
+                          promptComfirmation(CompetitionStatus.Completed)
+                        }
+                      >
+                        End Program
+                      </Button>
+                    )}
+                    {competition.stageType === 'Stage' &&
+                      competition.status === CompetitionStatus.Completed && (
+                        <div>
+                          <div className="flex gap-2 mb-2">
+                            <Badge
+                              className={cn(
+                                'pl-1.5',
+                                competition.judge1Submitted
+                                  ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                                  : 'bg-red-400/20 border-red-300/60 text-red-900',
+                              )}
+                            >
+                              {competition.judge1Submitted ? (
+                                <LuCircleCheckBig />
+                              ) : (
+                                <LuCircleX />
+                              )}
+                              {competition.judge1Name}
+                            </Badge>
+                            <Badge
+                              className={cn(
+                                'pl-1.5',
+                                competition.judge2Submitted
+                                  ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                                  : 'bg-red-400/20 border-red-300/60 text-red-900',
+                              )}
+                            >
+                              {competition.judge2Submitted ? (
+                                <LuCircleCheckBig />
+                              ) : (
+                                <LuCircleX />
+                              )}
+                              {competition.judge2Name}
+                            </Badge>
+                            <Badge
+                              className={cn(
+                                'pl-1.5',
+                                competition.judge3Submitted
+                                  ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                                  : 'bg-red-400/20 border-red-300/60 text-red-900',
+                              )}
+                            >
+                              {competition.judge3Submitted ? (
+                                <LuCircleCheckBig />
+                              ) : (
+                                <LuCircleX />
+                              )}
+                              {competition.judge3Name}
+                            </Badge>
+                          </div>
+                          <Button
+                            disabled={
                               !(
                                 competition.judge1Submitted &&
                                 competition.judge2Submitted &&
                                 competition.judge3Submitted
                               )
-                            ) {
-                              return
                             }
-                            promptComfirmation(
-                              CompetitionStatus.MarkEntryClosed,
-                            )
-                          }}
-                        >
-                          Close Mark Entry
-                        </Button>
-                      </div>
-                    )}
-                  {[
-                    CompetitionStatus.Started,
-                    CompetitionStatus.InProgress,
-                  ].includes(competition.status as CompetitionStatus) &&
-                    data?.participants.length && (
-                      <>
-                        <Button
-                          variant="outline"
-                          className="ml-auto"
-                          onClick={() => setShowQRDialog(true)}
-                        >
-                          <LuQrCode className="mr-1 h-4 w-4" />
-                          Scan QR
-                        </Button>
-                        <QRScanDialog
-                          open={showQRDialog}
-                          onClose={() => setShowQRDialog(false)}
-                          participants={data.participants}
-                          onValidScan={handleValidScan}
-                        />
-                      </>
-                    )}
-                </div>
+                            onClick={() => {
+                              if (
+                                !(
+                                  competition.judge1Submitted &&
+                                  competition.judge2Submitted &&
+                                  competition.judge3Submitted
+                                )
+                              ) {
+                                return
+                              }
+                              promptComfirmation(
+                                CompetitionStatus.MarkEntryClosed,
+                              )
+                            }}
+                          >
+                            Close Mark Entry
+                          </Button>
+                        </div>
+                      )}
+                    {[
+                      CompetitionStatus.Started,
+                      CompetitionStatus.InProgress,
+                    ].includes(competition.status as CompetitionStatus) &&
+                      data?.participants.length && (
+                        <>
+                          <Button
+                            variant="outline"
+                            className="ml-auto"
+                            onClick={() => setShowQRDialog(true)}
+                          >
+                            <LuQrCode className="mr-1 h-4 w-4" />
+                            Scan QR
+                          </Button>
+                          <QRScanDialog
+                            open={showQRDialog}
+                            onClose={() => setShowQRDialog(false)}
+                            participants={data.participants}
+                            onValidScan={handleValidScan}
+                          />
+                        </>
+                      )}
+                  </div>
+                )}
 
                 <div>
                   {isLoading

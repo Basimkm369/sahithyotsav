@@ -11,24 +11,21 @@ export type CompetitionDetails = {
   }[]
 }
 
-export default function useStageCompetitionDetails({
+export default function useOffstageCompetitionDetails({
   itemId,
   eventId,
-  stageId,
 }: {
   itemId?: number
   eventId: string
-  stageId: string
 }) {
   return useQuery({
-    queryKey: ['stageManagement', 'competitions', { itemId, eventId, stageId }],
+    queryKey: ['offstageManagement', 'competitions', { itemId, eventId }],
     queryFn: async () => {
       const params: Record<string, any> = {}
       if (eventId) params.eventId = eventId
-      if (stageId) params.stageId = stageId
 
       const res = await api.get<{ data: CompetitionDetails }>(
-        `/stageManagement/competitions/${itemId}`,
+        `/offstageManagement/competitions/${itemId}`,
         { params },
       )
       return res.data?.data ?? null

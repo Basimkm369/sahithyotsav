@@ -1,21 +1,11 @@
-import {
-  getParticipantStatusBadge,
-} from '@/lib/badge'
-import { CompetitionDetails } from '../-hooks/useStageCompetitionDetails'
+import { getParticipantStatusBadge } from '@/lib/badge'
+import { CompetitionDetails } from '../-hooks/useOffstageCompetitionDetails'
 import { cn } from '@/lib/utils'
-import StageParticipantAction from './StageParticipantAction'
-import CompetitionStatus from '@/constants/CompetitionStatus'
 
-export default function StageCompetitionParticipant({
-  itemCode,
-  competitionStatus,
+export default function OffstageCompetitionParticipant({
   data,
-  onManualEnroll,
 }: {
-  itemCode: number
-  competitionStatus: string
   data: CompetitionDetails['participants'][0]
-  onManualEnroll?: () => void
 }) {
   return (
     <div className="grid grid-cols-10 gap-2 items-center">
@@ -39,17 +29,6 @@ export default function StageCompetitionParticipant({
         </div>
       </div>
       <div className="col-span-1">{getParticipantStatusBadge(data)}</div>
-      <div className="col-span-2 flex justify-end">
-        {[CompetitionStatus.Started, CompetitionStatus.InProgress].includes(
-          competitionStatus as CompetitionStatus,
-        ) && (
-          <StageParticipantAction
-            itemCode={itemCode}
-            data={data}
-            onManualEnroll={onManualEnroll}
-          />
-        )}
-      </div>
     </div>
   )
 }
