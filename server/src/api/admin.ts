@@ -233,11 +233,22 @@ router.post(
 
       await executeQuery(
         `UPDATE ofm_competitions
-         SET judgeid1 = @judge1Id,
-             judgeid2 = @judge2Id,
-             judgeid3 = @judge3Id
-         WHERE itemcode = @itemId
-          and eventid = @eventId`,
+          SET 
+            judgeid1 = CASE 
+                        WHEN judge1submittedYN != 'N' THEN @judge1Id 
+                        ELSE judgeid1 
+                      END,
+            judgeid2 = CASE 
+                        WHEN judge2submittedYN != 'N' THEN @judge2Id 
+                        ELSE judgeid2 
+                      END,
+            judgeid3 = CASE 
+                        WHEN judge3submittedYN != 'N' THEN @judge3Id 
+                        ELSE judgeid3 
+                      END
+          WHERE 
+            itemcode = @itemId
+            AND eventid = @eventId`,
         { itemId, eventId, judge1Id, judge2Id, judge3Id },
       );
 
