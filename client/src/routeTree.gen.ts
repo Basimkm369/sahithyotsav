@@ -16,7 +16,6 @@ import { Route as PrizeManagementIndexRouteImport } from './routes/prize-managem
 import { Route as OffstageManagementIndexRouteImport } from './routes/offstage-management/index'
 import { Route as MediaManagementIndexRouteImport } from './routes/media-management/index'
 import { Route as JudgementIndexRouteImport } from './routes/judgement/index'
-import { Route as JudgeLinksIndexRouteImport } from './routes/judge-links/index'
 import { Route as FoodCourtControlIndexRouteImport } from './routes/food-court-control/index'
 import { Route as AnnounceManagementIndexRouteImport } from './routes/announce-management/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
@@ -57,11 +56,6 @@ const JudgementIndexRoute = JudgementIndexRouteImport.update({
   path: '/judgement/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const JudgeLinksIndexRoute = JudgeLinksIndexRouteImport.update({
-  id: '/judge-links/',
-  path: '/judge-links/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const FoodCourtControlIndexRoute = FoodCourtControlIndexRouteImport.update({
   id: '/food-court-control/',
   path: '/food-court-control/',
@@ -89,7 +83,6 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminIndexRoute
   '/announce-management': typeof AnnounceManagementIndexRoute
   '/food-court-control': typeof FoodCourtControlIndexRoute
-  '/judge-links': typeof JudgeLinksIndexRoute
   '/judgement': typeof JudgementIndexRoute
   '/media-management': typeof MediaManagementIndexRoute
   '/offstage-management': typeof OffstageManagementIndexRoute
@@ -103,7 +96,6 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/announce-management': typeof AnnounceManagementIndexRoute
   '/food-court-control': typeof FoodCourtControlIndexRoute
-  '/judge-links': typeof JudgeLinksIndexRoute
   '/judgement': typeof JudgementIndexRoute
   '/media-management': typeof MediaManagementIndexRoute
   '/offstage-management': typeof OffstageManagementIndexRoute
@@ -118,7 +110,6 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/announce-management/': typeof AnnounceManagementIndexRoute
   '/food-court-control/': typeof FoodCourtControlIndexRoute
-  '/judge-links/': typeof JudgeLinksIndexRoute
   '/judgement/': typeof JudgementIndexRoute
   '/media-management/': typeof MediaManagementIndexRoute
   '/offstage-management/': typeof OffstageManagementIndexRoute
@@ -134,7 +125,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/announce-management'
     | '/food-court-control'
-    | '/judge-links'
     | '/judgement'
     | '/media-management'
     | '/offstage-management'
@@ -148,7 +138,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/announce-management'
     | '/food-court-control'
-    | '/judge-links'
     | '/judgement'
     | '/media-management'
     | '/offstage-management'
@@ -162,7 +151,6 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/announce-management/'
     | '/food-court-control/'
-    | '/judge-links/'
     | '/judgement/'
     | '/media-management/'
     | '/offstage-management/'
@@ -177,7 +165,6 @@ export interface RootRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AnnounceManagementIndexRoute: typeof AnnounceManagementIndexRoute
   FoodCourtControlIndexRoute: typeof FoodCourtControlIndexRoute
-  JudgeLinksIndexRoute: typeof JudgeLinksIndexRoute
   JudgementIndexRoute: typeof JudgementIndexRoute
   MediaManagementIndexRoute: typeof MediaManagementIndexRoute
   OffstageManagementIndexRoute: typeof OffstageManagementIndexRoute
@@ -237,13 +224,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JudgementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/judge-links/': {
-      id: '/judge-links/'
-      path: '/judge-links'
-      fullPath: '/judge-links'
-      preLoaderRoute: typeof JudgeLinksIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/food-court-control/': {
       id: '/food-court-control/'
       path: '/food-court-control'
@@ -281,7 +261,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AnnounceManagementIndexRoute: AnnounceManagementIndexRoute,
   FoodCourtControlIndexRoute: FoodCourtControlIndexRoute,
-  JudgeLinksIndexRoute: JudgeLinksIndexRoute,
   JudgementIndexRoute: JudgementIndexRoute,
   MediaManagementIndexRoute: MediaManagementIndexRoute,
   OffstageManagementIndexRoute: OffstageManagementIndexRoute,
