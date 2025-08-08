@@ -16,6 +16,7 @@ import { Route as PrizeManagementIndexRouteImport } from './routes/prize-managem
 import { Route as OffstageManagementIndexRouteImport } from './routes/offstage-management/index'
 import { Route as MediaManagementIndexRouteImport } from './routes/media-management/index'
 import { Route as JudgementIndexRouteImport } from './routes/judgement/index'
+import { Route as J23dgdfgeLinfh34IndexRouteImport } from './routes/j23dgdfge-linfh34/index'
 import { Route as FoodCourtControlIndexRouteImport } from './routes/food-court-control/index'
 import { Route as AnnounceManagementIndexRouteImport } from './routes/announce-management/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
@@ -56,6 +57,11 @@ const JudgementIndexRoute = JudgementIndexRouteImport.update({
   path: '/judgement/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const J23dgdfgeLinfh34IndexRoute = J23dgdfgeLinfh34IndexRouteImport.update({
+  id: '/j23dgdfge-linfh34/',
+  path: '/j23dgdfge-linfh34/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FoodCourtControlIndexRoute = FoodCourtControlIndexRouteImport.update({
   id: '/food-court-control/',
   path: '/food-court-control/',
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminIndexRoute
   '/announce-management': typeof AnnounceManagementIndexRoute
   '/food-court-control': typeof FoodCourtControlIndexRoute
+  '/j23dgdfge-linfh34': typeof J23dgdfgeLinfh34IndexRoute
   '/judgement': typeof JudgementIndexRoute
   '/media-management': typeof MediaManagementIndexRoute
   '/offstage-management': typeof OffstageManagementIndexRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/announce-management': typeof AnnounceManagementIndexRoute
   '/food-court-control': typeof FoodCourtControlIndexRoute
+  '/j23dgdfge-linfh34': typeof J23dgdfgeLinfh34IndexRoute
   '/judgement': typeof JudgementIndexRoute
   '/media-management': typeof MediaManagementIndexRoute
   '/offstage-management': typeof OffstageManagementIndexRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/announce-management/': typeof AnnounceManagementIndexRoute
   '/food-court-control/': typeof FoodCourtControlIndexRoute
+  '/j23dgdfge-linfh34/': typeof J23dgdfgeLinfh34IndexRoute
   '/judgement/': typeof JudgementIndexRoute
   '/media-management/': typeof MediaManagementIndexRoute
   '/offstage-management/': typeof OffstageManagementIndexRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/announce-management'
     | '/food-court-control'
+    | '/j23dgdfge-linfh34'
     | '/judgement'
     | '/media-management'
     | '/offstage-management'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/announce-management'
     | '/food-court-control'
+    | '/j23dgdfge-linfh34'
     | '/judgement'
     | '/media-management'
     | '/offstage-management'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/announce-management/'
     | '/food-court-control/'
+    | '/j23dgdfge-linfh34/'
     | '/judgement/'
     | '/media-management/'
     | '/offstage-management/'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AnnounceManagementIndexRoute: typeof AnnounceManagementIndexRoute
   FoodCourtControlIndexRoute: typeof FoodCourtControlIndexRoute
+  J23dgdfgeLinfh34IndexRoute: typeof J23dgdfgeLinfh34IndexRoute
   JudgementIndexRoute: typeof JudgementIndexRoute
   MediaManagementIndexRoute: typeof MediaManagementIndexRoute
   OffstageManagementIndexRoute: typeof OffstageManagementIndexRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JudgementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/j23dgdfge-linfh34/': {
+      id: '/j23dgdfge-linfh34/'
+      path: '/j23dgdfge-linfh34'
+      fullPath: '/j23dgdfge-linfh34'
+      preLoaderRoute: typeof J23dgdfgeLinfh34IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/food-court-control/': {
       id: '/food-court-control/'
       path: '/food-court-control'
@@ -261,6 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AnnounceManagementIndexRoute: AnnounceManagementIndexRoute,
   FoodCourtControlIndexRoute: FoodCourtControlIndexRoute,
+  J23dgdfgeLinfh34IndexRoute: J23dgdfgeLinfh34IndexRoute,
   JudgementIndexRoute: JudgementIndexRoute,
   MediaManagementIndexRoute: MediaManagementIndexRoute,
   OffstageManagementIndexRoute: OffstageManagementIndexRoute,
