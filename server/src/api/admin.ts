@@ -200,8 +200,7 @@ router.get('/judges', async (req, res, next) => {
         JOIN 
           ofm_eventmaster e ON e.eventid = @eventId
         WHERE 
-          j.entityxid = e.entityxid AND
-          j.entitytype = 'N'
+          j.entityxid = e.entityxid
       `,{eventId}
     );
     return next(new AppResponse('', data));
