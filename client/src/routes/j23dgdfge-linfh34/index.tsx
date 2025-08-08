@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import useJudgeLinkSummary from '@/routes/judge-links/-hooks/useJudgeLinkSummary'
-import useJudgeLinkCompetitions from '@/routes/judge-links/-hooks/useJudgeLinkCompetitions'
+import useJudgeLinkSummary from '@/routes/j23dgdfge-linfh34/-hooks/useJudgeLinkSummary'
+import useJudgeLinkCompetitions from '@/routes/j23dgdfge-linfh34/-hooks/useJudgeLinkCompetitions'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import useUrlState from '@/hooks/useUrlState'
 import {

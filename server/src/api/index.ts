@@ -7,8 +7,8 @@ import foodManagement from './foodManagement';
 import mediaManagement from './mediaManagement';
 import announceManagement from './announceManagement';
 import offstageManagement from './offstageManagement';
-// import prizeManagement from './prizeManagement';
-// import judgeLinks from './judgeLinks';
+import prizeManagement from './prizeManagement';
+import judgeLinks from './judgeLinks';
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router.use('/offstageManagement', offstageManagement);
 router.use('/judgement', judgement);
 router.use('/admin', admin);
 router.use('/foodManagement', foodManagement);
-// router.use('/prizeManagement', prizeManagement);
-// router.use('/judgeLinks', judgeLinks);
+router.use('/prizeManagement', prizeManagement);
+router.use('/judgeLinks', judgeLinks);
 
 export default router;
