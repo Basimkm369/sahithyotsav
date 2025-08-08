@@ -8,14 +8,12 @@ export type CompetitionDetails = {
     teamName: string
     codeLetter: string
     categoryName: string
-    mark: string
     grade: string
-    prize: string
-    status: string
+    rank: number
   }[]
 }
 
-export default function useAnnouncementCompetitionDetails({
+export default function useAnnounceCompetitionDetails({
   itemId,
   eventId,
 }: {
@@ -23,13 +21,13 @@ export default function useAnnouncementCompetitionDetails({
   eventId: string
 }) {
   return useQuery({
-    queryKey: ['announcementControl', 'competitions', { itemId, eventId }],
+    queryKey: ['announceManagement', 'competitions', { itemId, eventId }],
     queryFn: async () => {
       const params: Record<string, any> = {}
       if (eventId) params.eventId = eventId
 
       const res = await api.get<{ data: CompetitionDetails }>(
-        `/announcementControl/competitions/${itemId}`,
+        `/announceManagement/competitions/${itemId}`,
         { params },
       )
       return res.data?.data ?? null

@@ -14,18 +14,26 @@ import PaginationControls from '@/components/PaginationControls'
 import { Route } from '..'
 import MediaCompetitionModal from './MediaCompetitionModal'
 import useUrlState from '@/hooks/useUrlState'
-import CompetitionStatus from '@/constants/CompetitionStatus'
+import { MediaManagementSummary } from '../-hooks/useMediaManagementSummary'
 
 const ITEMS_PER_PAGE = 24
 
-export default function MediaCompetitions() {
-  const [status, setStatus] = useUrlState('status', 'all')
+export default function MediaCompetitionsTab({
+  categories,
+  stages,
+}: {
+  categories: MediaManagementSummary['categories']
+  stages: MediaManagementSummary['stages']
+}) {
+  const [stageId, setStageId] = useUrlState('stageId', 'all')
+  const [categoryId, setCategoryId] = useUrlState('categoryId', 'all')
   const [page, setPage] = useUrlState('page', 1, (v) => (v ? parseInt(v) : 1))
 
   const { eventId } = Route.useSearch()
   const { data, isLoading, error } = useMediaCompetitions({
     eventId,
-    status,
+    stageId,
+    categoryId,
     page,
     limit: ITEMS_PER_PAGE,
   })
@@ -49,25 +57,43 @@ export default function MediaCompetitions() {
     <>
       <div className="grid gap-4 my-4">
         <div className="flex flex-wrap gap-4 justify-center items-center">
-          {/* Status Filter */}
+          {/* Stage Filter */}
           <Select
-            value={status}
+            value={stageId}
             onValueChange={(value) => {
-              setStatus(value)
+              setStageId(value)
               setPage(1)
             }}
           >
             <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
-              <SelectValue placeholder="Select status" />
+              <SelectValue placeholder="Select stage" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value={CompetitionStatus.Finalized}>
-                Finalized
-              </SelectItem>
-              <SelectItem value={CompetitionStatus.MediaCompleted}>
-                Media Completed
-              </SelectItem>
+              <SelectItem value="all">All Stages</SelectItem>
+              {stages.map((stage) => (
+                <SelectItem value={`${stage.number}`}>{stage.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Category Filter */}
+          <Select
+            value={categoryId}
+            onValueChange={(value) => {
+              setCategoryId(value)
+              setPage(1)
+            }}
+          >
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories.map((category) => (
+                <SelectItem value={`${category.number}`} className='uppercase'>
+                  {category.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -86,12 +112,11 @@ export default function MediaCompetitions() {
               ))}
         </div>
 
-        <div className="w-full flex justify-center mt-4">
+        <div className="w-full flex justify-center">
           <PaginationControls
             totalPages={totalPages}
             page={page}
             onChange={setPage}
-            className="mt-4"
           />
         </div>
       </div>

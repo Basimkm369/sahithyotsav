@@ -8,6 +8,7 @@ export type Participant = {
   competitions: {
     itemName: string
     participantStatus: string
+    codeLetter: string
     status: string
     rank: number
   }[]

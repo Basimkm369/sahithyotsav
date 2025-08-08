@@ -1,156 +1,138 @@
 import { Badge } from '@/components/ui/badge'
+import CompetitionStatus, {
+  isAfterStatus,
+  isBeforeStatus,
+  statusLabels as competitionStatusLabels,
+} from '@/constants/CompetitionStatus'
 import ParticipantStatus from '@/constants/ParticipantStatus'
+import { cn } from './utils'
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip'
 
-export const getCompetitionStatusBadge = (status: string, count?: number) => {
-  const getLabel = () => {
-    switch (status) {
-      case 'N':
-        return 'Not Started'
-      case 'S':
-        return 'Started'
-      case 'P':
-        return 'In Progress'
-      case 'C':
-      case 'M':
-      case 'F':
-      case 'O':
-        return 'Completed'
-      case 'A':
-        return 'Announced'
-      case 'D':
-        return 'Prize Distributed'
-      default:
-        return status
-    }
-  }
+export const getCompetitionStatusBadge = (
+  status: CompetitionStatus,
+  {
+    count,
+    role = 'admin',
+    blink = false,
+  }: {
+    count?: number
+    role?:
+      | 'stageManagement'
+      | 'offstageManagement'
+      | 'teamManagement'
+      | 'mediaMangement'
+      | 'announceMangement'
+      | 'admin'
+    blink?: boolean | string
+  } = {},
+) => {
+  const label =
+    count !== undefined
+      ? `${count} ${competitionStatusLabels[status]}`
+      : competitionStatusLabels[status]
 
-  const label = count !== undefined ? `${count} ${getLabel()}` : getLabel()
   if (!label) return <></>
 
-  switch (status) {
-    case 'N':
-      return (
-        <Badge
-          variant="outline"
-          className="bg-gray-100 text-gray-800 border-gray-200"
-        >
-          {label}
-        </Badge>
-      )
-    case 'S':
-      return (
-        <Badge
-          variant="outline"
-          className="bg-blue-100 text-blue-800 border-blue-200"
-        >
-          {label}
-        </Badge>
-      )
-    case 'P':
-      return (
-        <Badge
-          variant="outline"
-          className="bg-yellow-100 text-yellow-800 border-yellow-200"
-        >
-          {label}
-        </Badge>
-      )
-    case 'C':
-    case 'M':
-    case 'F':
-    case 'O':
-      return (
-        <Badge
-          variant="outline"
-          className="bg-green-100 text-green-800 border-green-200"
-        >
-          {label}
-        </Badge>
-      )
-    case 'A':
-      return (
-        <Badge
-          variant="outline"
-          className="bg-purple-100 text-purple-800 border-purple-200"
-        >
-          {label}
-        </Badge>
-      )
-    case 'D':
-      return (
-        <Badge
-          variant="outline"
-          className="bg-teal-100 text-teal-800 border-teal-200"
-        >
-          {label}
-        </Badge>
-      )
-    default:
-      return (
-        <Badge variant="outline" className="bg-muted text-muted-foreground">
-          {label}
-        </Badge>
-      )
+  if (
+    ['stageManagement', 'offstageManagement'].includes(role) &&
+    isAfterStatus(status, CompetitionStatus.MarkEntryClosed)
+  ) {
+    status = CompetitionStatus.MarkEntryClosed
   }
+
+  if (
+    role === 'teamManagement' &&
+    isAfterStatus(status, CompetitionStatus.Completed) &&
+    isBeforeStatus(status, CompetitionStatus.Announced)
+  ) {
+    status = CompetitionStatus.Completed
+  }
+
+  const badge = (
+    <Badge
+      variant="outline"
+      className={cn(
+        status === CompetitionStatus.NotStarted &&
+          'bg-gray-400/20 text-gray-900 border-gray-300/60',
+        status === CompetitionStatus.Started &&
+          'bg-blue-400/20 text-blue-900 border-blue-300/60',
+        status === CompetitionStatus.InProgress &&
+          'bg-yellow-400/20 text-yellow-900 border-yellow-300/60',
+        status === CompetitionStatus.Completed &&
+          'bg-green-400/20 text-green-900 border-green-300/60',
+        status === CompetitionStatus.MarkEntryClosed &&
+          'bg-green-400/20 text-green-900 border-green-300/60',
+        status === CompetitionStatus.Finalized &&
+          'bg-green-400/20 text-green-900 border-green-300/60',
+        status === CompetitionStatus.MediaCompleted &&
+          'bg-green-400/20 text-green-900 border-green-300/60',
+        status === CompetitionStatus.Announced &&
+          'bg-green-400/20 text-green-900 border-green-300/60',
+        status === CompetitionStatus.PrizeDistributed &&
+          'bg-green-400/20 text-green-900 border-green-300/60',
+      )}
+    >
+      {!!blink && (
+        <span
+          className={cn(
+            'blinking-dot',
+            status === CompetitionStatus.NotStarted && 'bg-gray-900',
+            status === CompetitionStatus.Started && 'bg-blue-900',
+            status === CompetitionStatus.InProgress && 'bg-yellow-900',
+            status === CompetitionStatus.Completed && 'bg-green-900',
+            status === CompetitionStatus.MarkEntryClosed && 'bg-green-900',
+            status === CompetitionStatus.Finalized && 'bg-green-900',
+            status === CompetitionStatus.MediaCompleted && 'bg-green-900',
+            status === CompetitionStatus.Announced && 'bg-green-900',
+            status === CompetitionStatus.PrizeDistributed && 'bg-green-900',
+          )}
+        />
+      )}
+      {label}
+    </Badge>
+  )
+
+  if (typeof blink === 'string' && !!blink) {
+    return (
+      <Tooltip>
+        <TooltipTrigger>{badge}</TooltipTrigger>
+        <TooltipContent>{blink}</TooltipContent>
+      </Tooltip>
+    )
+  }
+
+  return badge
 }
 
-export const getParticipantStatusBadge = (status: string) => {
-  if (!status) return <></>
-
-  switch (status) {
-    case 'E': // Enrolled
-      return (
-        <Badge
-          variant="outline"
-          className="bg-gray-100 text-gray-800 border-gray-200"
-        >
-          Enrolled
-        </Badge>
-      )
-
-    case 'I': // In Progress
-      return (
-        <Badge
-          variant="outline"
-          className="bg-yellow-100 text-yellow-800 border-yellow-200"
-        >
-          In Progress
-        </Badge>
-      )
-
-    case 'C': // Completed
-      return (
-        <Badge
-          variant="outline"
-          className="bg-green-100 text-green-800 border-green-200"
-        >
-          Completed
-        </Badge>
-      )
-
-    default:
-      return (
-        <Badge variant="outline" className="bg-muted text-muted-foreground">
-          {status}
-        </Badge>
-      )
-  }
-}
-
-export const getParticipantStatusBadgeV2 = ({
+export const getParticipantStatusBadge = ({
   status,
   codeLetter,
 }: {
   status: string
   codeLetter: string
 }) => {
-  if (!status) return <></>
+  if (!status && status !== '') return <></>
+
+  if (status === ParticipantStatus.NotEnrolled) {
+    return (
+      <Badge
+        variant="outline"
+        className="bg-gray-400/20 text-gray-800 border-gray-300/60"
+      >
+        Not Reported
+      </Badge>
+    )
+  }
 
   if (status === ParticipantStatus.Enrolled && !codeLetter) {
     return (
       <Badge
         variant="outline"
-        className="bg-gray-100 text-gray-800 border-gray-200"
+        className="bg-blue-400/20 text-blue-800 border-blue-300/60"
       >
         Reported
       </Badge>
@@ -161,7 +143,7 @@ export const getParticipantStatusBadgeV2 = ({
     return (
       <Badge
         variant="outline"
-        className="bg-blue-100 text-blue-800 border-blue-200"
+        className="bg-green-100 text-green-800 border-green-200"
       >
         Enrolled
       </Badge>

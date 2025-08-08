@@ -14,6 +14,8 @@ import {
   getParticipantStatusBadge,
 } from '@/lib/badge'
 import { Competition } from '../-hooks/useTeamCompetitions'
+import CompetitionStatus, { isAfterStatus } from '@/constants/CompetitionStatus'
+import ParticipantStatus from '@/constants/ParticipantStatus'
 
 export default function TeamCompetitionCard({ data }: { data: Competition }) {
   return (
@@ -25,7 +27,20 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
             {data.categoryName}
           </CardDescription>
         </div>
-        <div className="mt-1">{getCompetitionStatusBadge(data.status)}</div>
+        <div className="mt-1">
+          {getCompetitionStatusBadge(data.status as CompetitionStatus, {
+            role: 'teamManagement',
+            blink:
+              [
+                CompetitionStatus.Started,
+                CompetitionStatus.InProgress,
+              ].includes(data.status as CompetitionStatus) &&
+              data.participants.some(
+                (p) => p.status === ParticipantStatus.NotEnrolled,
+              ) &&
+              'Your team participants has reported yet',
+          })}
+        </div>
       </CardHeader>
       <CardContent className="flex flex-col h-full justify-between">
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
@@ -39,10 +54,10 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
               {dayjs(data.date).format('D MMM')}
             </div>
           )}
-          {formatTime(data.startTime) && formatTime(data.startTime) && (
+          {formatTime(data.startTime) && formatTime(data.endTime) && (
             <div className="flex gap-1 flex-nowrap">
               <LucideClock className="w-4 opacity-40  pb-[3px]" />
-              {formatTime(data.startTime)} - {formatTime(data.startTime)}
+              {formatTime(data.startTime)} - {formatTime(data.endTime)}
             </div>
           )}
         </div>
@@ -50,7 +65,7 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
           <div className="border-t mt-3 pt-3 space-y-2">
             {data.participants.map((participant) => (
               <div key={participant.chestNumber} className={cn('flex gap-1')}>
-                {participant.name}{' '}
+                {participant.name.trim()}&nbsp;
                 <span className="text-gray-500">
                   #{participant.chestNumber}
                 </span>
@@ -66,7 +81,10 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
                             : ''}
                     </div>
                   ) : (
-                    getParticipantStatusBadge(participant.status)
+                    isAfterStatus(
+                      data.status as CompetitionStatus,
+                      CompetitionStatus.Started,
+                    ) && getParticipantStatusBadge(participant)
                   )}
                 </div>
               </div>

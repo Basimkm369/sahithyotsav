@@ -10,6 +10,7 @@ import { LucideCalendar, LucideClock, LucideGavel } from 'lucide-react'
 import dayjs from 'dayjs'
 import { formatTime } from '@/lib/datetime'
 import { getCompetitionStatusBadge } from '@/lib/badge'
+import CompetitionStatus from '@/constants/CompetitionStatus'
 
 export default function StageCompetitionCard({
   data,
@@ -27,7 +28,16 @@ export default function StageCompetitionCard({
             {data.categoryName}
           </CardDescription>
         </div>
-        <div className="mt-1">{getCompetitionStatusBadge(data.status)}</div>
+        <div className="mt-1">
+          {getCompetitionStatusBadge(data.status as CompetitionStatus, {
+            role: 'stageManagement',
+            blink: [
+              CompetitionStatus.Started,
+              CompetitionStatus.InProgress,
+              CompetitionStatus.Completed,
+            ].includes(data.status as CompetitionStatus),
+          })}
+        </div>
       </CardHeader>
       <CardContent className="flex flex-col h-full justify-end">
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
@@ -37,10 +47,10 @@ export default function StageCompetitionCard({
               {dayjs(data.date).format('D MMM')}
             </div>
           )}
-          {formatTime(data.startTime) && formatTime(data.startTime) && (
+          {formatTime(data.startTime) && formatTime(data.endTime) && (
             <div className="flex gap-1 flex-nowrap">
               <LucideClock className="w-4 opacity-40 pb-[3px]" />
-              {formatTime(data.startTime)} - {formatTime(data.startTime)}
+              {formatTime(data.startTime)} - {formatTime(data.endTime)}
             </div>
           )}
           {(data.judge1Name.trim() ||

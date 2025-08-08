@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
-// import LoadingSpinner from '@/components/LoadingSpinner'
-// import useStageManagementSummary from '@/routes/stage-management/-hooks/useStageManagementSummary'
-// import StageCompetitions from './-components/StageCompetitions'
+import useOffstageManagementSummary from './-hooks/useOffstageManagementSummary'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import OffstageCompetitions from './-components/OffstageCompetitions'
 
-export const Route = createFileRoute('/offstage-valuation/')({
+export const Route = createFileRoute('/offstage-management/')({
   component: OffstageValuationPage,
   validateSearch: (
     search: Record<string, unknown>,
@@ -16,17 +16,17 @@ export const Route = createFileRoute('/offstage-valuation/')({
 })
 
 function OffstageValuationPage() {
-  // const { eventId, stageId } = Route.useSearch()
-  // const { data, isLoading } = useStageManagementSummary({ eventId, stageId })
+  const { eventId } = Route.useSearch()
+  const { data, isLoading } = useOffstageManagementSummary({ eventId })
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="h-screen">
-  //       <LoadingSpinner />
-  //     </div>
-  //   )
-  // }
-  // if (!data) return 'No data found'
+  if (isLoading) {
+    return (
+      <div className="h-screen">
+        <LoadingSpinner />
+      </div>
+    )
+  }
+  if (!data) return 'No data found'
 
   return (
     <div className="space-y-4 px-4 pb-4">
@@ -50,7 +50,10 @@ function OffstageValuationPage() {
         </div>
       </div>
       <div className="bg-muted rounded-3xl p-4">
-        {/* <StageCompetitions categories={data.categories} /> */}
+        <OffstageCompetitions
+          categories={data.categories}
+          stages={data.stages}
+        />
       </div>
     </div>
   )

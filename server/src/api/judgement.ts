@@ -38,6 +38,7 @@ router.get('/', async (req, res, next) => {
       im.itemname as itemName,
       ca.categoryname as categoryName,
       jd.judgename as judgeName,
+      cp.judge${judgeId}submittedyn as judgeSubmitted,
       (
         SELECT
           ai.codeletter as codeLetter,
@@ -50,6 +51,7 @@ router.get('/', async (req, res, next) => {
             and tme.chestno = ai.chestno
             and tme.codeletter = ai.codeletter
             and tme.eventid = @eventId
+            and tme.sino = @judgeId
         WHERE
           ai.itemcode = cp.itemcode
           and ai.eventid = @eventId
@@ -65,11 +67,12 @@ router.get('/', async (req, res, next) => {
       where cp.eventid = @eventId
         and cp.itemcode = @itemId`;
 
-    const data = await executeQuery(query, { eventId, itemId });
+    const data = await executeQuery(query, { eventId, itemId, judgeId });
 
     const parsedData = data.map((row: any) => ({
       ...row,
       notes: row.scores ? JSON.parse(row.scores)?.[0]?.notes ?? '' : '',
+      judgeSubmitted: row.judgeSubmitted === 'Y',
       scores: row.scores
         ? JSON.parse(row.scores).sort((a: any, b: any) =>
             a.codeLetter.localeCompare(b.codeLetter),
@@ -130,9 +133,10 @@ router.post(
 
       const assignRes = await executeQuery(
         `SELECT id FROM OFM_AssignItem
-         WHERE itemcode = ${itemId}
-          AND eventid = ${eventId}
-          AND codeletter = '${codeLetter}'`,
+         WHERE itemcode = @itemId
+          AND eventid = @eventId
+          AND codeletter = @codeLetter`,
+        { itemId, eventId, codeLetter },
       );
       const pid = assignRes?.[0]?.id;
       if (!pid) throw new Error('Participant assignment not found');
@@ -169,7 +173,6 @@ router.post(
         eventId: eventIdEnc,
         judgeId: judgeIdEnc,
         itemId: itemIdEnc,
-        codeLetter,
         notes,
       } = req.body;
 
@@ -250,19 +253,17 @@ router.post(
         kvStore.set(`encId:${eventIdEnc}`, eventId);
       }
 
-      // await executeQuery(
-      //   `UPDATE ofm_tempmarkentry
-      //     SET notes = @notes
-      //     WHERE eventid = @eventId
-      //       AND itemcode = @itemId
-      //       AND sino = @judgeId`,
-      //   {
-      //     eventId,
-      //     itemId,
-      //     judgeId,
-      //     notes,
-      //   },
-      // );
+      await executeQuery(
+        `UPDATE ofm_competitions
+          SET judge${judgeId}submittedyn = 'Y'
+          WHERE eventid = @eventId
+            AND itemcode = @itemId`,
+        {
+          eventId,
+          itemId,
+          judgeId,
+        },
+      );
 
       return next(new AppResponse('Saved successfully'));
     } catch (err) {

@@ -33,6 +33,7 @@ import { Route } from '..'
 import useAdminParticipants from '../-hooks/useAdminParticipants'
 import { AdminSummary } from '../-hooks/useAdminSummary'
 import useUrlState from '@/hooks/useUrlState'
+import CompetitionStatus, { isAfterStatus } from '@/constants/CompetitionStatus'
 
 const ITEMS_PER_PAGE = 30
 export default function AdminParticipantsTab({
@@ -83,7 +84,7 @@ export default function AdminParticipantsTab({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`}>
+                <SelectItem value={`${category.number}`} className="uppercase">
                   {category.name}
                 </SelectItem>
               ))}
@@ -158,7 +159,7 @@ export default function AdminParticipantsTab({
                       onClick={() => setSelectedParticipant(participant)}
                     >
                       <TableCell>
-                        {participant.name}{' '}
+                        {participant.name.trim()}&nbsp;
                         <span className="text-gray-500">
                           #{participant.chestNumber}
                         </span>
@@ -176,7 +177,10 @@ export default function AdminParticipantsTab({
                           return Object.entries(statusCounts).map(
                             ([status, count]) => (
                               <span key={status} className="mr-1">
-                                {getCompetitionStatusBadge(status, count)}
+                                {getCompetitionStatusBadge(
+                                  status as CompetitionStatus,
+                                  { count },
+                                )}
                               </span>
                             ),
                           )
@@ -232,8 +236,13 @@ export default function AdminParticipantsTab({
                 >
                   <div className="font-medium flex gap-2">
                     {competition.itemName}
-                    {getCompetitionStatusBadge(competition.status)}
-                    {getParticipantStatusBadge(competition.participantStatus)}
+                    {getCompetitionStatusBadge(
+                      competition.status as CompetitionStatus,
+                    )}
+                    {isAfterStatus(
+                      competition.status as CompetitionStatus,
+                      CompetitionStatus.Started,
+                    ) && getParticipantStatusBadge(competition)}
                     {competition.rank === 1
                       ? '🥇'
                       : competition.rank === 2

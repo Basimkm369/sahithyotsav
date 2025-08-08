@@ -1,6 +1,6 @@
-import useAnnouncementCompetitions, {
+import {
   Competition,
-} from '../-hooks/useAnnouncementCompetitions'
+} from '../-hooks/useOffstageCompetitions'
 import {
   Select,
   SelectTrigger,
@@ -8,24 +8,36 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
-import AnnouncementCompetitionCard from './AnnouncementCompetitionCard'
-import AnnouncementCompetitionCardSkeleton from './AnnouncementCompetitionCardSkeleton'
 import PaginationControls from '@/components/PaginationControls'
 import { Route } from '..'
-import AnnouncementCompetitionModal from './AnnouncementCompetitionModal'
 import useUrlState from '@/hooks/useUrlState'
 import CompetitionStatus from '@/constants/CompetitionStatus'
+import { OffstageManagementSummary } from '../-hooks/useOffstageManagementSummary'
+import useOffstageCompetitions from '../-hooks/useOffstageCompetitions'
+import OffstageCompetitionModal from './OffstageCompetitionModal'
+import OffstageCompetitionCardSkeleton from './OffstageCompetitionCardSkeleton'
+import OffstageCompetitionCard from './OffstageCompetitionCard'
 
 const ITEMS_PER_PAGE = 24
 
-export default function AnnouncementCompetitions() {
+export default function OffstageCompetitions({
+  stages,
+  categories,
+}: {
+  stages: OffstageManagementSummary['stages']
+  categories: OffstageManagementSummary['categories']
+}) {
   const [status, setStatus] = useUrlState('status', 'all')
+  const [categoryId, setCategoryId] = useUrlState('categoryId', 'all')
+  const [stageId, setStageId] = useUrlState('stageId', 'all')
   const [page, setPage] = useUrlState('page', 1, (v) => (v ? parseInt(v) : 1))
 
   const { eventId } = Route.useSearch()
-  const { data, isLoading, error } = useAnnouncementCompetitions({
+  const { data, isLoading, error } = useOffstageCompetitions({
+    stageId,
     eventId,
     status,
+    categoryId,
     page,
     limit: ITEMS_PER_PAGE,
   })
@@ -49,6 +61,25 @@ export default function AnnouncementCompetitions() {
     <>
       <div className="grid gap-4 my-4">
         <div className="flex flex-wrap gap-4 justify-center items-center">
+          {/* Stage Filter */}
+          <Select
+            value={stageId}
+            onValueChange={(value) => {
+              setStageId(value)
+              setPage(1)
+            }}
+          >
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+              <SelectValue placeholder="Select stage" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Stages</SelectItem>
+              {stages.map((stage) => (
+                <SelectItem value={`${stage.number}`}>{stage.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
           {/* Status Filter */}
           <Select
             value={status}
@@ -61,7 +92,7 @@ export default function AnnouncementCompetitions() {
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value={CompetitionStatus.NotStarted}>
                 Not Started
               </SelectItem>
@@ -75,29 +106,38 @@ export default function AnnouncementCompetitions() {
               <SelectItem value={CompetitionStatus.MarkEntryClosed}>
                 Mark Entry Closed
               </SelectItem>
-              <SelectItem value={CompetitionStatus.Finalized}>
-                Finalized
-              </SelectItem>
-              <SelectItem value={CompetitionStatus.MediaCompleted}>
-                Media Completed
-              </SelectItem>
-              <SelectItem value={CompetitionStatus.Announced}>
-                Announced
-              </SelectItem>
-              <SelectItem value={CompetitionStatus.PrizeDistributed}>
-                Prize Distributed
-              </SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Category Filter */}
+          <Select
+            value={categoryId}
+            onValueChange={(value) => {
+              setCategoryId(value)
+              setPage(1)
+            }}
+          >
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+              <SelectValue placeholder="Select category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {categories.map((category) => (
+                <SelectItem value={`${category.number}`} className="uppercase">
+                  {category.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {isLoading
-            ? Array.from({ length: 24 }).map((_, i) => (
-                <AnnouncementCompetitionCardSkeleton key={i} />
+            ? Array.from({ length: 24 }, () => 0).map((_, i) => (
+                <OffstageCompetitionCardSkeleton key={i} />
               ))
             : data?.map((comp) => (
-                <AnnouncementCompetitionCard
+                <OffstageCompetitionCard
                   data={comp}
                   key={comp.itemCode}
                   onClick={() => setSelectedCompetition(comp)}
@@ -114,8 +154,7 @@ export default function AnnouncementCompetitions() {
           />
         </div>
       </div>
-
-      <AnnouncementCompetitionModal
+      <OffstageCompetitionModal
         data={selectedCompetition}
         open={!!selectedCompetition}
         onClose={() => setSelectedCompetition(undefined)}

@@ -8,7 +8,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { LucideMapPin, LucideCalendar, LucideClock } from 'lucide-react'
 
-export default function AnnouncementCompetitionCardSkeleton() {
+export default function AnnounceCompetitionCardSkeleton() {
   return (
     <Card className="gap-3 py-4 pt-5 animate-pulse">
       <CardHeader className="flex flex-nowrap justify-between">
@@ -38,16 +38,6 @@ export default function AnnouncementCompetitionCardSkeleton() {
           <div className="flex gap-1 items-center flex-nowrap">
             <LucideClock className="w-4 opacity-40" />
             <Skeleton className="h-4 w-24" />
-          </div>
-        </div>
-
-        <div className="border-t mt-4 pt-3 space-y-2">
-          <div className="flex items-center gap-1 border-b last:border-b-0 pb-2 last:pb-0">
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-4 w-10 ml-2" />
-            <div className="ml-auto">
-              <Skeleton className="h-6 w-20 rounded-full" />
-            </div>
           </div>
         </div>
       </CardContent>

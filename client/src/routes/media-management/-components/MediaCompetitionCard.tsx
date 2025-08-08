@@ -10,6 +10,7 @@ import { LucideCalendar, LucideClock, LucideMapPin } from 'lucide-react'
 import dayjs from 'dayjs'
 import { formatTime } from '@/lib/datetime'
 import { getCompetitionStatusBadge } from '@/lib/badge'
+import CompetitionStatus from '@/constants/CompetitionStatus'
 
 export default function MediaCompetitionCard({
   data,
@@ -27,11 +28,15 @@ export default function MediaCompetitionCard({
             {data.categoryName}
           </CardDescription>
         </div>
-        <div className="mt-1">{getCompetitionStatusBadge(data.status)}</div>
+        <div className="mt-1">
+          {getCompetitionStatusBadge(data.status as CompetitionStatus, {
+            role: 'mediaMangement',
+          })}
+        </div>
       </CardHeader>
       <CardContent className="flex flex-col h-full justify-end">
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-        <div className="flex gap-1 flex-nowrap">
+          <div className="flex gap-1 flex-nowrap">
             <LucideMapPin className="w-4 opacity-40  pb-[3px]" />
             {data.stageName}
           </div>
@@ -41,13 +46,12 @@ export default function MediaCompetitionCard({
               {dayjs(data.date).format('D MMM')}
             </div>
           )}
-          {formatTime(data.startTime) && formatTime(data.startTime) && (
+          {formatTime(data.startTime) && formatTime(data.endTime) && (
             <div className="flex gap-1 flex-nowrap">
-              <LucideClock className="w-4 opacity-40  pb-[3px]" />
-              {formatTime(data.startTime)} - {formatTime(data.startTime)}
+              <LucideClock className="w-4 opacity-40 pb-[3px]" />
+              {formatTime(data.startTime)} - {formatTime(data.endTime)}
             </div>
           )}
-          
         </div>
       </CardContent>
     </Card>

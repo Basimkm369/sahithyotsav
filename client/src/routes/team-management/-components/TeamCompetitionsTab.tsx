@@ -85,12 +85,22 @@ export default function TeamCompetitionsTab({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value={CompetitionStatus.NotStarted}>Not Started</SelectItem>
+              <SelectItem value={CompetitionStatus.NotStarted}>
+                Not Started
+              </SelectItem>
               <SelectItem value={CompetitionStatus.Started}>Started</SelectItem>
-              <SelectItem value={CompetitionStatus.InProgress}>In Progress</SelectItem>
-              <SelectItem value={CompetitionStatus.Completed}>Completed</SelectItem>
-              <SelectItem value={CompetitionStatus.Announced}>Announced</SelectItem>
-              <SelectItem value={CompetitionStatus.PrizeDistributed}>Prize Distributed</SelectItem>
+              <SelectItem value={CompetitionStatus.InProgress}>
+                In Progress
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Completed}>
+                Completed
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Announced}>
+                Announced
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.PrizeDistributed}>
+                Prize Distributed
+              </SelectItem>
             </SelectContent>
           </Select>
 
@@ -108,7 +118,11 @@ export default function TeamCompetitionsTab({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem key={category.number} value={`${category.number}`} className='uppercase'>
+                <SelectItem
+                  key={category.number}
+                  value={`${category.number}`}
+                  className="uppercase"
+                >
                   {category.name}
                 </SelectItem>
               ))}

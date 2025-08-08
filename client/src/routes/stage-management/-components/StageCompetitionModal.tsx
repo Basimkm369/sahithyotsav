@@ -19,10 +19,13 @@ import { getCompetitionStatusBadge } from '@/lib/badge'
 import CompetitionStatus from '@/constants/CompetitionStatus'
 import useConfirmation from '@/components/Confirmation'
 import { api } from '@/lib/api'
-import { AiOutlineQrcode } from 'react-icons/ai'
 import QRScanDialog from './QRScanDialog'
 import useCompetitionParticipantMutation from '../-hooks/useCompetitionParticipantMutation'
 import queryClient from '@/lib/queryClient'
+import { Skeleton } from '@/components/ui/skeleton'
+import { LuCircleCheckBig, LuCircleX, LuQrCode } from 'react-icons/lu'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
 export default function StageCompetitionModal({
   data: competition,
@@ -80,12 +83,28 @@ export default function StageCompetitionModal({
               <DialogTitle>
                 {competition.name} - {competition.categoryName}
               </DialogTitle>
-              {getCompetitionStatusBadge(competition.status)}
+              {getCompetitionStatusBadge(
+                competition.status as CompetitionStatus,
+                {
+                  role: 'stageManagement',
+                  blink: [
+                    CompetitionStatus.Started,
+                    CompetitionStatus.InProgress,
+                    CompetitionStatus.Completed,
+                  ].includes(competition.status as CompetitionStatus),
+                },
+              )}
             </DialogHeader>
             <ScrollArea className="max-h-[calc(100vh-200px)] overflow-y-auto -mr-4 pr-4">
               <div className="mt-4 pr-2 space-y-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                {([
+                  CompetitionStatus.NotStarted,
+                  CompetitionStatus.Started,
+                  CompetitionStatus.InProgress,
+                ].includes(competition.status as CompetitionStatus) ||
+                  (competition.stageType === 'Stage' &&
+                    competition.status === CompetitionStatus.Completed)) && (
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                     {competition.status === CompetitionStatus.NotStarted && (
                       <Button
                         onClick={() =>
@@ -113,32 +132,107 @@ export default function StageCompetitionModal({
                         End Program
                       </Button>
                     )}
-                    {competition.status === CompetitionStatus.Completed && (
-                      <Button
-                        onClick={() =>
-                          promptComfirmation(CompetitionStatus.MarkEntryClosed)
-                        }
-                      >
-                        Close Mark Entry
-                      </Button>
-                    )}
+                    {competition.stageType === 'Stage' &&
+                      competition.status === CompetitionStatus.Completed && (
+                        <div>
+                          <div className="flex gap-2 mb-2">
+                            <Badge
+                              className={cn(
+                                'pl-1.5',
+                                competition.judge1Submitted
+                                  ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                                  : 'bg-red-400/20 border-red-300/60 text-red-900',
+                              )}
+                            >
+                              {competition.judge1Submitted ? (
+                                <LuCircleCheckBig />
+                              ) : (
+                                <LuCircleX />
+                              )}
+                              {competition.judge1Name}
+                            </Badge>
+                            <Badge
+                              className={cn(
+                                'pl-1.5',
+                                competition.judge2Submitted
+                                  ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                                  : 'bg-red-400/20 border-red-300/60 text-red-900',
+                              )}
+                            >
+                              {competition.judge2Submitted ? (
+                                <LuCircleCheckBig />
+                              ) : (
+                                <LuCircleX />
+                              )}
+                              {competition.judge2Name}
+                            </Badge>
+                            <Badge
+                              className={cn(
+                                'pl-1.5',
+                                competition.judge3Submitted
+                                  ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                                  : 'bg-red-400/20 border-red-300/60 text-red-900',
+                              )}
+                            >
+                              {competition.judge3Submitted ? (
+                                <LuCircleCheckBig />
+                              ) : (
+                                <LuCircleX />
+                              )}
+                              {competition.judge3Name}
+                            </Badge>
+                          </div>
+                          <Button
+                            disabled={
+                              !(
+                                competition.judge1Submitted &&
+                                competition.judge2Submitted &&
+                                competition.judge3Submitted
+                              )
+                            }
+                            onClick={() => {
+                              if (
+                                !(
+                                  competition.judge1Submitted &&
+                                  competition.judge2Submitted &&
+                                  competition.judge3Submitted
+                                )
+                              ) {
+                                return
+                              }
+                              promptComfirmation(
+                                CompetitionStatus.MarkEntryClosed,
+                              )
+                            }}
+                          >
+                            Close Mark Entry
+                          </Button>
+                        </div>
+                      )}
+                    {[
+                      CompetitionStatus.Started,
+                      CompetitionStatus.InProgress,
+                    ].includes(competition.status as CompetitionStatus) &&
+                      data?.participants.length && (
+                        <>
+                          <Button
+                            variant="outline"
+                            className="ml-auto"
+                            onClick={() => setShowQRDialog(true)}
+                          >
+                            <LuQrCode className="mr-1 h-4 w-4" />
+                            Scan QR
+                          </Button>
+                          <QRScanDialog
+                            open={showQRDialog}
+                            onClose={() => setShowQRDialog(false)}
+                            participants={data.participants}
+                            onValidScan={handleValidScan}
+                          />
+                        </>
+                      )}
                   </div>
-
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowQRDialog(true)}
-                  >
-                    <AiOutlineQrcode className="mr-2 h-4 w-4" />
-                    Scan QR
-                  </Button>
-
-                  <QRScanDialog
-                    open={showQRDialog}
-                    onClose={() => setShowQRDialog(false)}
-                    participants={data?.participants || []}
-                    onValidScan={handleValidScan}
-                  />
-                </div>
+                )}
 
                 <div>
                   {isLoading
@@ -148,17 +242,17 @@ export default function StageCompetitionModal({
                           className="border-b last:border-b-0 pb-3 mb-3 animate-pulse grid grid-cols-10 items-center gap-2"
                         >
                           <div className="col-span-7 flex gap-4">
-                            <div className="rounded bg-gray-200 h-10 w-10" />
+                            <Skeleton className="rounded bg-gray-200 h-10 w-10" />
                             <div className="w-full">
-                              <div className="h-4 bg-gray-200 rounded w-1/3 mb-2" />
-                              <div className="h-3 bg-gray-100 rounded w-1/4" />
+                              <Skeleton className="h-4 bg-gray-200 rounded w-1/3 mb-2" />
+                              <Skeleton className="h-3 bg-gray-100 rounded w-1/4" />
                             </div>
                           </div>
                           <div className="col-span-1">
-                            <div className="h-6 w-16 bg-gray-200 rounded" />
+                            <Skeleton className="h-6 w-16 bg-gray-200 rounded" />
                           </div>
                           <div className="col-span-2 flex justify-end">
-                            <div className="h-8 w-24 bg-gray-100 rounded" />
+                            <Skeleton className="h-8 w-24 bg-gray-200 rounded" />
                           </div>
                         </div>
                       ))

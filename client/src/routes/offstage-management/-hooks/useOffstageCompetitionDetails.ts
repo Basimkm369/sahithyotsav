@@ -7,15 +7,11 @@ export type CompetitionDetails = {
     name: string
     teamName: string
     codeLetter: string
-    categoryName: string
-    mark: string
-    grade: string
-    prize: string
     status: string
   }[]
 }
 
-export default function useMediaCompetitionDetails({
+export default function useOffstageCompetitionDetails({
   itemId,
   eventId,
 }: {
@@ -23,13 +19,13 @@ export default function useMediaCompetitionDetails({
   eventId: string
 }) {
   return useQuery({
-    queryKey: ['mediaControl', 'competitions', { itemId, eventId }],
+    queryKey: ['offstageManagement', 'competitions', { itemId, eventId }],
     queryFn: async () => {
       const params: Record<string, any> = {}
       if (eventId) params.eventId = eventId
 
       const res = await api.get<{ data: CompetitionDetails }>(
-        `/mediaControl/competitions/${itemId}`,
+        `/offstageManagement/competitions/${itemId}`,
         { params },
       )
       return res.data?.data ?? null

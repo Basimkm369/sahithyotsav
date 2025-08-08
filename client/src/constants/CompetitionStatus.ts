@@ -34,4 +34,18 @@ export const statusOrder = [
   CompetitionStatus.PrizeDistributed,
 ]
 
+export function isBeforeStatus(
+  statusA: CompetitionStatus,
+  statusB: CompetitionStatus,
+): boolean {
+  return statusOrder.indexOf(statusA) < statusOrder.indexOf(statusB)
+}
+
+export function isAfterStatus(
+  statusA: CompetitionStatus,
+  statusB: CompetitionStatus,
+): boolean {
+  return statusOrder.indexOf(statusA) > statusOrder.indexOf(statusB)
+}
+
 export default CompetitionStatus

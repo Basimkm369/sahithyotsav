@@ -3,7 +3,6 @@ import { api } from '@/lib/api'
 
 export type Competition = {
   itemCode: number
-  stageName: string
   name: string
   categoryName: string
   status: string
@@ -11,34 +10,46 @@ export type Competition = {
   date: string
   startTime: string
   endTime: string
+  judge1Name: string
+  judge2Name: string
+  judge3Name: string
+  judge1Submitted: boolean
+  judge2Submitted: boolean
+  judge3Submitted: boolean
 }
 
-export default function useMediaCompetitions({
+export default function useOffstageCompetitions({
   eventId,
+  stageId,
   status,
+  categoryId,
   page,
   limit = 24,
 }: {
   eventId: string
-  status: FunctionStringCallback
+  stageId: string
+  status: string
+  categoryId: string
   page: number
   limit?: number
 }) {
   return useQuery({
     queryKey: [
-      'mediaControl',
+      'offstageManagement',
       'competitions',
-      { status, page, limit, eventId },
+      { status, categoryId, page, limit, eventId, stageId },
     ],
     queryFn: async () => {
       const params: Record<string, any> = {}
       if (status !== 'all') params.status = status
+      if (categoryId !== 'all') params.categoryId = categoryId
+      if (stageId !== 'all') params.stageId = stageId
       if (eventId) params.eventId = eventId
       params.page = page
       params.limit = limit
 
       const res = await api.get<{ data: Competition[] }>(
-        '/mediaControl/competitions',
+        '/offstageManagement/competitions',
         { params },
       )
       return res.data?.data ?? null

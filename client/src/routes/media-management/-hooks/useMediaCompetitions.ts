@@ -2,36 +2,25 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 
 export type Competition = {
-  id: number
-  name: string
+  itemCode: number
   stageName: string
+  name: string
   categoryName: string
   status: string
-  participants: {
-    name: string
-    chestNumber: string
-    codeLetter: string
-    status: string
-    rank: number
-  }[]
   totalCount: number
   date: string
   startTime: string
   endTime: string
 }
 
-export default function useTeamCompetitions({
+export default function useMediaCompetitions({
   eventId,
-  teamId,
-  status,
   stageId,
   categoryId,
   page,
   limit = 24,
 }: {
   eventId: string
-  teamId: string
-  status: string
   stageId: string
   categoryId: string
   page: number
@@ -39,21 +28,20 @@ export default function useTeamCompetitions({
 }) {
   return useQuery({
     queryKey: [
-      'teamManagement/competitions',
-      { status, stageId, categoryId, page, limit, eventId, teamId },
+      'mediaManagement',
+      'competitions',
+      { page, limit, eventId, stageId, categoryId },
     ],
     queryFn: async () => {
       const params: Record<string, any> = {}
-      if (status !== 'all') params.status = status
+      if (eventId) params.eventId = eventId
       if (stageId !== 'all') params.stageId = stageId
       if (categoryId !== 'all') params.categoryId = categoryId
-      if (eventId) params.eventId = eventId
-      if (teamId) params.teamId = teamId
       params.page = page
       params.limit = limit
 
       const res = await api.get<{ data: Competition[] }>(
-        '/teamManagement/competitions',
+        '/mediaManagement/competitions',
         { params },
       )
       return res.data?.data ?? null

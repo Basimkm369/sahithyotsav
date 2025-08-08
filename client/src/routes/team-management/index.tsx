@@ -4,7 +4,6 @@ import useTeamManagementSummary from '@/routes/team-management/-hooks/useTeamMan
 import TeamCompetitionsTab from './-components/TeamCompetitionsTab'
 import TeamParticipantsTab from './-components/TeamParticipantsTab'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { useState } from 'react'
 import useUrlState from '@/hooks/useUrlState'
 import TeamFoodTab from './-components/TeamFoodTab'
 

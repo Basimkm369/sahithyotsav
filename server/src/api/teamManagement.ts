@@ -96,6 +96,7 @@ router.get('/competitions', async (req, res, next) => {
           pa.participant as name,
           pa.chestno as chestNumber,
           ai.status,
+          ai.codeletter as codeLetter,
           ai.rank
         FROM
           ofm_assignitem AS ai
@@ -191,6 +192,7 @@ router.get('/participants', async (req, res, next) => {
             it.itemname as itemName,
             ai.status as participantStatus,
             ai.rank as rank,
+            ai.codeletter as codeLetter,
             ca.status as status
           FROM
             ofm_assignitem AS ai
