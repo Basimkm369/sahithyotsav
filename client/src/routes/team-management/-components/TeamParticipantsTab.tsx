@@ -66,7 +66,7 @@ export default function TeamParticipantsTab({
   return (
     <>
       <div className="grid gap-4">
-        <div className="flex flex-wrap gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch">
           {/* Category Filter */}
           <Select
             value={categoryId}
@@ -75,13 +75,17 @@ export default function TeamParticipantsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`} className="uppercase">
+                <SelectItem
+                  key={category.number}
+                  value={`${category.number}`}
+                  className="uppercase"
+                >
                   {category.name}
                 </SelectItem>
               ))}
@@ -90,92 +94,186 @@ export default function TeamParticipantsTab({
         </div>
 
         <Card className="py-0 overflow-hidden">
-          <Table>
-            <TableHeader className="bg-white">
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Competitions</TableHead>
-                <TableHead>Awards</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading
-                ? Array.from({ length: 30 }).map((_, idx) => (
-                    <TableRow key={idx}>
-                      <TableCell>
-                        <div className="flex gap-2 items-center">
-                          <Skeleton className="h-4 w-32" />
-                          <Skeleton className="h-4 w-10" />
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-24" />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2 flex-wrap">
-                          <Skeleton className="h-6 w-16 rounded-full" />
-                          <Skeleton className="h-6 w-16 rounded-full" />
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-xl flex gap-1">
-                          <Skeleton className="h-6 w-6 rounded-full" />
-                          <Skeleton className="h-6 w-6 rounded-full" />
-                          <Skeleton className="h-6 w-6 rounded-full" />
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                : data?.map((participant) => (
-                    <TableRow
-                      key={participant.chestNumber}
-                      onClick={() => setSelectedParticipant(participant)}
-                    >
-                      <TableCell>
-                        {participant.name.trim()}&nbsp;
-                        <span className="text-gray-500">
-                          #{participant.chestNumber}
-                        </span>
-                      </TableCell>
-                      <TableCell>{participant.categoryName}</TableCell>
-                      <TableCell>
-                        {(() => {
-                          const statusCounts: Record<string, number> = {}
-                          participant.competitions.forEach((c) => {
-                            statusCounts[c.status] =
-                              (statusCounts[c.status] || 0) + 1
-                          })
+          <div className="hidden sm:block">
+            <Table>
+              <TableHeader className="bg-white">
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Competitions</TableHead>
+                  <TableHead>Awards</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading
+                  ? Array.from({ length: 30 }).map((_, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell>
+                          <div className="flex gap-2 items-center">
+                            <Skeleton className="h-4 w-32" />
+                            <Skeleton className="h-4 w-10" />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton className="h-4 w-24" />
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2 flex-wrap">
+                            <Skeleton className="h-6 w-16 rounded-full" />
+                            <Skeleton className="h-6 w-16 rounded-full" />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-xl flex gap-1">
+                            <Skeleton className="h-6 w-6 rounded-full" />
+                            <Skeleton className="h-6 w-6 rounded-full" />
+                            <Skeleton className="h-6 w-6 rounded-full" />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  : data?.map((participant) => (
+                      <TableRow
+                        key={participant.chestNumber}
+                        onClick={() => setSelectedParticipant(participant)}
+                      >
+                        <TableCell>
+                          {participant.name.trim()}&nbsp;
+                          <span className="text-gray-500">
+                            #{participant.chestNumber}
+                          </span>
+                        </TableCell>
+                        <TableCell>{participant.categoryName}</TableCell>
+                        <TableCell>
+                          {(() => {
+                            const statusCounts: Record<string, number> = {}
+                            participant.competitions.forEach((c) => {
+                              statusCounts[c.status] =
+                                (statusCounts[c.status] || 0) + 1
+                            })
 
-                          return Object.entries(statusCounts).map(
-                            ([status, count]) => (
-                              <span key={status} className="mr-1">
-                                {getCompetitionStatusBadge(
-                                  status as CompetitionStatus,
-                                  { count, role: 'teamManagement' },
-                                )}
+                            return Object.entries(statusCounts).map(
+                              ([status, count]) => (
+                                <span key={status} className="mr-1">
+                                  {getCompetitionStatusBadge(
+                                    status as CompetitionStatus,
+                                    { count, role: 'teamManagement' },
+                                  )}
+                                </span>
+                              ),
+                            )
+                          })()}
+                        </TableCell>
+                        <TableCell className="text-xl">
+                          {participant.competitions
+                            .sort((a, b) => a.rank - b.rank)
+                            .map((c) =>
+                              c.rank === 1
+                                ? '🥇'
+                                : c.rank === 2
+                                  ? '🥈'
+                                  : c.rank === 3
+                                    ? '🥉'
+                                    : '',
+                            )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+              </TableBody>
+            </Table>
+          </div>
+          <div className="block sm:hidden">
+            <Table>
+              <TableHeader className="bg-white">
+                <TableRow>
+                  <TableHead>Participant</TableHead>
+                  <TableHead>Competitions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading
+                  ? Array.from({ length: 10 }).map((_, idx) => (
+                      <TableRow key={idx}>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <div className="flex gap-2 items-center">
+                              <Skeleton className="h-4 w-32" />
+                              <Skeleton className="h-4 w-10" />
+                            </div>
+                            <Skeleton className="h-3 w-24 mt-1" />
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col gap-1">
+                            <div className="flex flex-wrap gap-1">
+                              <Skeleton className="h-6 w-16 rounded-full" />
+                              <Skeleton className="h-6 w-16 rounded-full" />
+                            </div>
+                            <div className="flex gap-1 text-xl mt-1">
+                              <Skeleton className="h-6 w-6 rounded-full" />
+                              <Skeleton className="h-6 w-6 rounded-full" />
+                            </div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  : data?.map((participant) => (
+                      <TableRow
+                        key={participant.chestNumber}
+                        onClick={() => setSelectedParticipant(participant)}
+                      >
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <div>
+                              {participant.name}{' '}
+                              <span className="text-gray-500">
+                                #{participant.chestNumber}
                               </span>
-                            ),
-                          )
-                        })()}
-                      </TableCell>
-                      <TableCell className="text-xl">
-                        {participant.competitions
-                          .sort((a, b) => a.rank - b.rank)
-                          .map((c) =>
-                            c.rank === 1
-                              ? '🥇'
-                              : c.rank === 2
-                                ? '🥈'
-                                : c.rank === 3
-                                  ? '🥉'
-                                  : '',
-                          )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-            </TableBody>
-          </Table>
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {participant.categoryName}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col gap-1">
+                            <div className="flex flex-wrap gap-1">
+                              {(() => {
+                                const statusCounts: Record<string, number> = {}
+                                participant.competitions.forEach((c) => {
+                                  statusCounts[c.status] =
+                                    (statusCounts[c.status] || 0) + 1
+                                })
+
+                                return Object.entries(statusCounts).map(
+                                  ([status, count]) => (
+                                    <span key={status}>
+                                      {getCompetitionStatusBadge(status, count)}
+                                    </span>
+                                  ),
+                                )
+                              })()}
+                            </div>
+                            <div className="text-sm">
+                              {participant.competitions
+                                .sort((a, b) => a.rank - b.rank)
+                                .map((c) =>
+                                  c.rank === 1
+                                    ? '🥇'
+                                    : c.rank === 2
+                                      ? '🥈'
+                                      : c.rank === 3
+                                        ? '🥉'
+                                        : '',
+                                )}
+                            </div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
         <div className="w-full flex justify-center">
           {/* Pagination */}
@@ -207,7 +305,7 @@ export default function TeamParticipantsTab({
                       'border-b border-gray-200',
                   )}
                 >
-                  <div className="font-medium flex gap-2">
+                  <div className="font-medium flex flex-wrap gap-2 items-center">
                     {competition.itemName}
                     {getCompetitionStatusBadge(
                       competition.status as CompetitionStatus,

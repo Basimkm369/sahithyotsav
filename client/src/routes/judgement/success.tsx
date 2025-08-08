@@ -8,12 +8,12 @@ function JudgeDashboardPage() {
   return (
     <div className="space-y-4 px-4 pb-4">
       <div
-        className="flex flex-col gap-4 justify-center items-center pt-12 -mx-4"
+        className="flex flex-col gap-4 justify-center items-center pt-8 md:pt-12 -mx-4"
         style={{
           background: 'linear-gradient(to bottom, #f8ebc8 0%, #fff 100%)',
         }}
       >
-        <div className="h-30">
+        <div className="w-full max-w-200 px-6">
           <img
             src="/sahityotsav-banner.png"
             alt=""

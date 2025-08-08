@@ -12,9 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TeamManagementIndexRouteImport } from './routes/team-management/index'
 import { Route as StageManagementIndexRouteImport } from './routes/stage-management/index'
+import { Route as PrizeManagementIndexRouteImport } from './routes/prize-management/index'
 import { Route as OffstageManagementIndexRouteImport } from './routes/offstage-management/index'
 import { Route as MediaManagementIndexRouteImport } from './routes/media-management/index'
 import { Route as JudgementIndexRouteImport } from './routes/judgement/index'
+import { Route as FoodCourtControlIndexRouteImport } from './routes/food-court-control/index'
 import { Route as AnnounceManagementIndexRouteImport } from './routes/announce-management/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as JudgementSuccessRouteImport } from './routes/judgement/success'
@@ -34,6 +36,11 @@ const StageManagementIndexRoute = StageManagementIndexRouteImport.update({
   path: '/stage-management/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrizeManagementIndexRoute = PrizeManagementIndexRouteImport.update({
+  id: '/prize-management/',
+  path: '/prize-management/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OffstageManagementIndexRoute = OffstageManagementIndexRouteImport.update({
   id: '/offstage-management/',
   path: '/offstage-management/',
@@ -47,6 +54,11 @@ const MediaManagementIndexRoute = MediaManagementIndexRouteImport.update({
 const JudgementIndexRoute = JudgementIndexRouteImport.update({
   id: '/judgement/',
   path: '/judgement/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FoodCourtControlIndexRoute = FoodCourtControlIndexRouteImport.update({
+  id: '/food-court-control/',
+  path: '/food-court-control/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnnounceManagementIndexRoute = AnnounceManagementIndexRouteImport.update({
@@ -70,9 +82,11 @@ export interface FileRoutesByFullPath {
   '/judgement/success': typeof JudgementSuccessRoute
   '/admin': typeof AdminIndexRoute
   '/announce-management': typeof AnnounceManagementIndexRoute
+  '/food-court-control': typeof FoodCourtControlIndexRoute
   '/judgement': typeof JudgementIndexRoute
   '/media-management': typeof MediaManagementIndexRoute
   '/offstage-management': typeof OffstageManagementIndexRoute
+  '/prize-management': typeof PrizeManagementIndexRoute
   '/stage-management': typeof StageManagementIndexRoute
   '/team-management': typeof TeamManagementIndexRoute
 }
@@ -81,9 +95,11 @@ export interface FileRoutesByTo {
   '/judgement/success': typeof JudgementSuccessRoute
   '/admin': typeof AdminIndexRoute
   '/announce-management': typeof AnnounceManagementIndexRoute
+  '/food-court-control': typeof FoodCourtControlIndexRoute
   '/judgement': typeof JudgementIndexRoute
   '/media-management': typeof MediaManagementIndexRoute
   '/offstage-management': typeof OffstageManagementIndexRoute
+  '/prize-management': typeof PrizeManagementIndexRoute
   '/stage-management': typeof StageManagementIndexRoute
   '/team-management': typeof TeamManagementIndexRoute
 }
@@ -93,9 +109,11 @@ export interface FileRoutesById {
   '/judgement/success': typeof JudgementSuccessRoute
   '/admin/': typeof AdminIndexRoute
   '/announce-management/': typeof AnnounceManagementIndexRoute
+  '/food-court-control/': typeof FoodCourtControlIndexRoute
   '/judgement/': typeof JudgementIndexRoute
   '/media-management/': typeof MediaManagementIndexRoute
   '/offstage-management/': typeof OffstageManagementIndexRoute
+  '/prize-management/': typeof PrizeManagementIndexRoute
   '/stage-management/': typeof StageManagementIndexRoute
   '/team-management/': typeof TeamManagementIndexRoute
 }
@@ -106,9 +124,11 @@ export interface FileRouteTypes {
     | '/judgement/success'
     | '/admin'
     | '/announce-management'
+    | '/food-court-control'
     | '/judgement'
     | '/media-management'
     | '/offstage-management'
+    | '/prize-management'
     | '/stage-management'
     | '/team-management'
   fileRoutesByTo: FileRoutesByTo
@@ -117,9 +137,11 @@ export interface FileRouteTypes {
     | '/judgement/success'
     | '/admin'
     | '/announce-management'
+    | '/food-court-control'
     | '/judgement'
     | '/media-management'
     | '/offstage-management'
+    | '/prize-management'
     | '/stage-management'
     | '/team-management'
   id:
@@ -128,9 +150,11 @@ export interface FileRouteTypes {
     | '/judgement/success'
     | '/admin/'
     | '/announce-management/'
+    | '/food-court-control/'
     | '/judgement/'
     | '/media-management/'
     | '/offstage-management/'
+    | '/prize-management/'
     | '/stage-management/'
     | '/team-management/'
   fileRoutesById: FileRoutesById
@@ -140,9 +164,11 @@ export interface RootRouteChildren {
   JudgementSuccessRoute: typeof JudgementSuccessRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AnnounceManagementIndexRoute: typeof AnnounceManagementIndexRoute
+  FoodCourtControlIndexRoute: typeof FoodCourtControlIndexRoute
   JudgementIndexRoute: typeof JudgementIndexRoute
   MediaManagementIndexRoute: typeof MediaManagementIndexRoute
   OffstageManagementIndexRoute: typeof OffstageManagementIndexRoute
+  PrizeManagementIndexRoute: typeof PrizeManagementIndexRoute
   StageManagementIndexRoute: typeof StageManagementIndexRoute
   TeamManagementIndexRoute: typeof TeamManagementIndexRoute
 }
@@ -170,6 +196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StageManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prize-management/': {
+      id: '/prize-management/'
+      path: '/prize-management'
+      fullPath: '/prize-management'
+      preLoaderRoute: typeof PrizeManagementIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/offstage-management/': {
       id: '/offstage-management/'
       path: '/offstage-management'
@@ -189,6 +222,13 @@ declare module '@tanstack/react-router' {
       path: '/judgement'
       fullPath: '/judgement'
       preLoaderRoute: typeof JudgementIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/food-court-control/': {
+      id: '/food-court-control/'
+      path: '/food-court-control'
+      fullPath: '/food-court-control'
+      preLoaderRoute: typeof FoodCourtControlIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/announce-management/': {
@@ -220,9 +260,11 @@ const rootRouteChildren: RootRouteChildren = {
   JudgementSuccessRoute: JudgementSuccessRoute,
   AdminIndexRoute: AdminIndexRoute,
   AnnounceManagementIndexRoute: AnnounceManagementIndexRoute,
+  FoodCourtControlIndexRoute: FoodCourtControlIndexRoute,
   JudgementIndexRoute: JudgementIndexRoute,
   MediaManagementIndexRoute: MediaManagementIndexRoute,
   OffstageManagementIndexRoute: OffstageManagementIndexRoute,
+  PrizeManagementIndexRoute: PrizeManagementIndexRoute,
   StageManagementIndexRoute: StageManagementIndexRoute,
   TeamManagementIndexRoute: TeamManagementIndexRoute,
 }

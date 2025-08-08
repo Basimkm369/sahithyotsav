@@ -71,52 +71,66 @@ export default function OffstageCompetitionModal({
               <div className="mt-4 pr-2 space-y-8">
                 {competition.status === CompetitionStatus.Completed && (
                   <div>
-                    <div className="flex gap-2 mb-2">
-                      <Badge
-                        className={cn(
-                          'pl-1.5',
-                          competition.judge1Submitted
-                            ? 'bg-green-400/20 border-green-300/60 text-green-900'
-                            : 'bg-red-400/20 border-red-300/60 text-red-900',
-                        )}
-                      >
-                        {competition.judge1Submitted ? (
-                          <LuCircleCheckBig />
-                        ) : (
-                          <LuCircleX />
-                        )}
-                        {competition.judge1Name}
-                      </Badge>
-                      <Badge
-                        className={cn(
-                          'pl-1.5',
-                          competition.judge2Submitted
-                            ? 'bg-green-400/20 border-green-300/60 text-green-900'
-                            : 'bg-red-400/20 border-red-300/60 text-red-900',
-                        )}
-                      >
-                        {competition.judge2Submitted ? (
-                          <LuCircleCheckBig />
-                        ) : (
-                          <LuCircleX />
-                        )}
-                        {competition.judge2Name}
-                      </Badge>
-                      <Badge
-                        className={cn(
-                          'pl-1.5',
-                          competition.judge3Submitted
-                            ? 'bg-green-400/20 border-green-300/60 text-green-900'
-                            : 'bg-red-400/20 border-red-300/60 text-red-900',
-                        )}
-                      >
-                        {competition.judge3Submitted ? (
-                          <LuCircleCheckBig />
-                        ) : (
-                          <LuCircleX />
-                        )}
-                        {competition.judge3Name}
-                      </Badge>
+                    <div className="flex gap-2 mb-2 flex-wrap">
+                      {!!competition.judge1Name && (
+                        <Badge
+                          className={cn(
+                            'pl-1.5',
+                            competition.judge1Submitted
+                              ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                              : 'bg-red-400/20 border-red-300/60 text-red-900',
+                          )}
+                        >
+                          {competition.judge1Submitted ? (
+                            <LuCircleCheckBig />
+                          ) : (
+                            <LuCircleX />
+                          )}
+                          {competition.judge1Name}
+                        </Badge>
+                      )}
+                      {!!competition.judge2Name && (
+                        <Badge
+                          className={cn(
+                            'pl-1.5',
+                            competition.judge2Submitted
+                              ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                              : 'bg-red-400/20 border-red-300/60 text-red-900',
+                          )}
+                        >
+                          {competition.judge2Submitted ? (
+                            <LuCircleCheckBig />
+                          ) : (
+                            <LuCircleX />
+                          )}
+                          {competition.judge2Name}
+                        </Badge>
+                      )}
+                      {!!competition.judge3Name && (
+                        <Badge
+                          className={cn(
+                            'pl-1.5',
+                            competition.judge3Submitted
+                              ? 'bg-green-400/20 border-green-300/60 text-green-900'
+                              : 'bg-red-400/20 border-red-300/60 text-red-900',
+                          )}
+                        >
+                          {competition.judge3Submitted ? (
+                            <LuCircleCheckBig />
+                          ) : (
+                            <LuCircleX />
+                          )}
+                          {competition.judge3Name}
+                        </Badge>
+                      )}
+                      {(!competition.judge1Name ||
+                        !competition.judge2Name ||
+                        !competition.judge3Name) && (
+                        <div className="text-sm">
+                          All judges need to assigned to continue. Contact
+                          control center.
+                        </div>
+                      )}
                     </div>
                     <Button
                       disabled={

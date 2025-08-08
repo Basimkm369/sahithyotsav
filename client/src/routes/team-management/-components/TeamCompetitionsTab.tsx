@@ -50,7 +50,7 @@ export default function TeamCompetitionsTab({
   return (
     <>
       <div className="grid gap-4">
-        <div className="flex flex-wrap gap-4 justify-center items-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch">
           {/* Stage Filter */}
           <Select
             value={stageId}
@@ -59,13 +59,15 @@ export default function TeamCompetitionsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Select stage" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Stages</SelectItem>
               {stages.map((stage) => (
-                <SelectItem value={`${stage.number}`}>{stage.name}</SelectItem>
+                <SelectItem key={stage.number} value={`${stage.number}`}>
+                  {stage.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -78,7 +80,7 @@ export default function TeamCompetitionsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
@@ -110,13 +112,17 @@ export default function TeamCompetitionsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`} className='uppercase'>
+                <SelectItem
+                  key={category.number}
+                  value={`${category.number}`}
+                  className="uppercase"
+                >
                   {category.name}
                 </SelectItem>
               ))}
