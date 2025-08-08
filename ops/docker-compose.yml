@@ -22,6 +22,7 @@ services:
       - TG_CHANNEL_ID=$TG_CHANNEL_ID
     networks:
       - nginx-proxy
+      - mysql
 
   client:
     pull_policy: build
@@ -39,4 +40,6 @@ volumes:
 
 networks:
   nginx-proxy:
+    external: true
+  mysql:
     external: true
