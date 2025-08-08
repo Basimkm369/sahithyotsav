@@ -3,7 +3,7 @@ import { body, validationResult } from 'express-validator';
 import AppError from 'src/models/AppError';
 import AppResponse from 'src/models/AppResponse';
 import { decryptId } from 'src/utils/db';
-import { runSelectQuery, runWriteQuery } from 'src/utils/local_db';
+import { runSelectQuery, runWriteQuery } from 'src/utils/mysqlDb';
 import kvStore from 'src/utils/kvStore';
 
 const router = express.Router();
