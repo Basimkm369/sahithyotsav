@@ -105,15 +105,24 @@ export default function StageCompetitionModal({
                   (competition.stageType === 'Stage' &&
                     competition.status === CompetitionStatus.Completed)) && (
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    {competition.status === CompetitionStatus.NotStarted && (
-                      <Button
-                        onClick={() =>
-                          promptComfirmation(CompetitionStatus.Started)
-                        }
-                      >
-                        Start Reporting
-                      </Button>
-                    )}
+                    {competition.status === CompetitionStatus.NotStarted &&
+                      (competition.stageType === 'Non Stage' ||
+                      (competition.judge1Name.trim() &&
+                        competition.judge2Name.trim() &&
+                        competition.judge3Name.trim()) ? (
+                        <Button
+                          onClick={() =>
+                            promptComfirmation(CompetitionStatus.Started)
+                          }
+                        >
+                          Start Reporting
+                        </Button>
+                      ) : (
+                        <div className="text-sm">
+                          All judges need to assigned to start competition.
+                          Contact control center.
+                        </div>
+                      ))}
                     {competition.status === CompetitionStatus.Started && (
                       <Button
                         onClick={() =>

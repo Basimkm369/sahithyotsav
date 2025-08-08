@@ -53,16 +53,17 @@ export default function StageCompetitionCard({
               {formatTime(data.startTime)} - {formatTime(data.endTime)}
             </div>
           )}
-          {(data.judge1Name.trim() ||
-            data.judge2Name.trim() ||
-            data.judge3Name.trim()) && (
-            <div className="flex gap-1 flex-nowrap">
-              <LucideGavel className="w-4 opacity-40 pb-[3px]" />
-              {[data.judge1Name, data.judge2Name, data.judge3Name]
-                .filter(Boolean)
-                .join(', ')}
-            </div>
-          )}
+          {data.stageType === 'Stage' &&
+            (data.judge1Name.trim() ||
+              data.judge2Name.trim() ||
+              data.judge3Name.trim()) && (
+              <div className="flex gap-1 flex-nowrap">
+                <LucideGavel className="w-4 opacity-40 pb-[3px]" />
+                {[data.judge1Name, data.judge2Name, data.judge3Name]
+                  .filter(Boolean)
+                  .join(', ')}
+              </div>
+            )}
         </div>
       </CardContent>
     </Card>

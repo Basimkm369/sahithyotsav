@@ -56,6 +56,7 @@ export const getCompetitionStatusBadge = (
     <Badge
       variant="outline"
       className={cn(
+        'flex items-center',
         status === CompetitionStatus.NotStarted &&
           'bg-gray-400/20 text-gray-900 border-gray-300/60',
         status === CompetitionStatus.Started &&
