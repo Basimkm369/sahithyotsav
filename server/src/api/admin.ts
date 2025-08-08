@@ -191,7 +191,18 @@ router.get('/judges', async (req, res, next) => {
     }
 
     const data = await executeQuery(
-      `SELECT pid AS id, judgename AS name FROM ofm_judges where entityxid = '10' and entitytype = 'N'`,
+      `
+        SELECT 
+          j.pid AS id,
+          j.judgename AS name
+        FROM 
+          ofm_judges j
+        JOIN 
+          ofm_eventmaster e ON e.eventid = @eventId
+        WHERE 
+          j.entityxid = e.entityxid AND
+          j.entitytype = 'N'
+      `,{eventId}
     );
     return next(new AppResponse('', data));
   } catch (err) {
