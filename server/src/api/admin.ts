@@ -191,7 +191,7 @@ router.get('/judges', async (req, res, next) => {
     }
 
     const data = await executeQuery(
-      `SELECT pid AS id, judgename AS name FROM ofm_judges where entityxid = '10' and entitytype = 'N'`,
+      `SELECT pid AS id, judgename AS name FROM ofm_judges where entityxid = '1' and entitytype = 'G'`,
     );
     return next(new AppResponse('', data));
   } catch (err) {
