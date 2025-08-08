@@ -95,35 +95,33 @@ router.get('/competitions', async (req, res, next) => {
         SELECT
           pa.participant as name,
           pa.chestno as chestNumber,
-          ai.status,
+          ISNULL(ai.status, '') as status,
           ai.codeletter as codeLetter,
           ai.rank
         FROM
           ofm_assignitem AS ai
-          INNER JOIN ofm_participant AS pa ON pa.chestno = ai.chestno
+          INNER JOIN ofm_participant AS pa ON pa.chestno = ai.chestno and pa.eventid = @eventId
         WHERE
           ai.itemcode = cp.itemcode
-          and ai.teamnumber = ${teamId}
-          and pa.teamno = ${teamId}
-          and pa.eventid = ${eventId}
-          and ai.eventid = ${eventId}
+          and ai.teamnumber = @teamId
+          and pa.teamno = @teamId
+          and ai.eventid = @eventId
         FOR JSON PATH
       ) AS participants
     from
       ofm_competitions as cp
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
-      inner join ofm_stages as st on st.pid = cp.stageno
-    where cp.eventid = ${eventId}
-    `;
+      inner join ofm_stages as st on st.pid = cp.stageno and st.eventid = @eventId
+    where cp.eventid = @eventId`;
 
-    if (stageId) query += ` and cp.stageno = '${stageId}'`;
+    if (stageId) query += ` and cp.stageno = @stageId`;
     if (status === 'C') {
       query += ` and cp.status in ('C', 'M', 'O', 'F')`;
     } else if (status) {
-      query += ` and cp.status = '${status}'`;
+      query += ` and cp.status = @status`;
     }
-    if (categoryId) query += ` and im.categoryno = '${categoryId}'`;
+    if (categoryId) query += ` and im.categoryno = @categoryId`;
 
     query += ` group by
       im.itemname,
@@ -137,10 +135,18 @@ router.get('/competitions', async (req, res, next) => {
       cp.scheduledend
     order by
       im.itemname, ca.categoryname, st.stage
-    offset (${page} - 1) * ${limit} rows
-    fetch next ${limit} rows only;`;
+    offset (@page - 1) * @limit rows
+    fetch next @limit rows only;`;
 
-    const data = await executeQuery(query);
+    const data = await executeQuery(query, {
+      eventId,
+      page: +page,
+      limit: +limit,
+      teamId,
+      stageId,
+      status,
+      categoryId,
+    });
 
     const parsedData = data.map((row: any) => ({
       ...row,
@@ -190,32 +196,38 @@ router.get('/participants', async (req, res, next) => {
         (
           SELECT
             it.itemname as itemName,
-            ai.status as participantStatus,
+            ISNULL(ai.status, '') as participantStatus,
             ai.rank as rank,
             ai.codeletter as codeLetter,
             ca.status as status
           FROM
             ofm_assignitem AS ai
-            LEFT JOIN ofm_competitions AS ca ON ca.itemcode = ai.itemcode
+            LEFT JOIN ofm_competitions AS ca ON ca.itemcode = ai.itemcode and ca.eventid = @eventId
             left join ofm_itemmaster as it on it.itemcode = ca.itemcode
           WHERE
             ai.chestno = pa.chestno
-            and ai.teamnumber = ${teamId}
-            and ca.eventid = ${eventId}
+            and ai.teamnumber = @teamId
+            and ai.eventid = @eventId
           FOR JSON PATH
         ) AS competitions
         from ofm_participant pa
         inner join ofm_category ca on ca.categoryno = pa.categoryno
-        where pa.teamno = ${teamId} and pa.eventid = ${eventId}
+        where pa.teamno = @teamId and pa.eventid = @eventId
       `;
 
-    if (categoryId) query += ` and pa.categoryno = '${categoryId}'`;
+    if (categoryId) query += ` and pa.categoryno = @categoryId`;
 
     query += ` order by pa.chestno, ca.categoryname, pa.participant
-      offset (${page} - 1) * ${limit} rows
-      fetch next ${limit} rows only;`;
+      offset (@page - 1) * @limit rows
+      fetch next @limit rows only;`;
 
-    const data = await executeQuery(query);
+    const data = await executeQuery(query, {
+      eventId,
+      page: +page,
+      limit: +limit,
+      teamId,
+      categoryId,
+    });
 
     const parsedData = data.map((row: any) => ({
       ...row,
