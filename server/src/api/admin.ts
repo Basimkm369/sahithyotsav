@@ -201,6 +201,7 @@ router.get('/judges', async (req, res, next) => {
           ofm_eventmaster e ON e.eventid = @eventId
         WHERE 
           j.entityxid = e.entityxid
+        ORDER BY j.JudgeName
       `,{eventId}
     );
     return next(new AppResponse('', data));
