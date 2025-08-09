@@ -82,11 +82,7 @@ router.get('/competitions', async (req, res, next) => {
 
     if (categoryId) query += ` and im.categoryno = @categoryId`;
     if (stageId) query += ` and cp.stageno = @stageId`;
-    if (status === 'O') {
-      query += ` and cp.status in ('O', 'A', 'D')`;
-    } else if (status) {
-      query += ` and cp.status = '${CompetitionStatus.Finalized}'`;
-    }
+    if (status) query += ` and cp.status = @status`;
 
     query += ` group by
       im.itemname,
@@ -106,6 +102,7 @@ router.get('/competitions', async (req, res, next) => {
       eventId,
       categoryId,
       stageId,
+      status,
     });
 
     return next(new AppResponse('', data));
