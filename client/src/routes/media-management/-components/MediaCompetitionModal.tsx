@@ -96,7 +96,8 @@ export default function MediaCompetitionModal({
           <DialogContent className="!max-w-4xl w-full">
             <DialogHeader className="flex-row gap-2 items-center">
               <DialogTitle>
-                {competition.name} - {competition.categoryName}
+                #{competition.resultNumber} {competition.name} -{' '}
+                {competition.categoryName}
               </DialogTitle>
               {getCompetitionStatusBadge(
                 competition.status as CompetitionStatus,
@@ -132,6 +133,7 @@ export default function MediaCompetitionModal({
                       <TableHead>Name</TableHead>
                       <TableHead>Prize</TableHead>
                       <TableHead>Grade</TableHead>
+                      <TableHead>Point</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -146,6 +148,9 @@ export default function MediaCompetitionModal({
                                   <Skeleton className="h-3 bg-gray-100 rounded w-2/4" />
                                 </div>
                               </div>
+                            </TableCell>
+                            <TableCell>
+                              <Skeleton className="h-6 w-16 bg-gray-200 rounded" />
                             </TableCell>
                             <TableCell>
                               <Skeleton className="h-6 w-16 bg-gray-200 rounded" />
@@ -170,7 +175,8 @@ export default function MediaCompetitionModal({
                                 <div>
                                   <div>
                                     <span className="font-semibold">
-                                      {participant.name.trim()}&nbsp;
+                                      {participant.name.trim().toUpperCase()}
+                                      &nbsp;
                                     </span>
                                     <span className="text-gray-500">
                                       #{participant.chestNumber}
@@ -192,6 +198,7 @@ export default function MediaCompetitionModal({
                                     : ''}
                             </TableCell>
                             <TableCell>{participant.grade}</TableCell>
+                            <TableCell>{participant.totalPoint || ""}</TableCell>
                           </TableRow>
                         ))}
                   </TableBody>

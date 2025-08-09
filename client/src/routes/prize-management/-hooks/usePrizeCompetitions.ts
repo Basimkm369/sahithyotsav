@@ -20,7 +20,7 @@ export default function usePrizeCompetitions({
   limit = 24,
 }: {
   eventId: string
-  status: FunctionStringCallback
+  status: string
   page: number
   limit?: number
 }) {

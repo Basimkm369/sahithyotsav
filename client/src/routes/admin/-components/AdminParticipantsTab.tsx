@@ -78,7 +78,7 @@ export default function AdminParticipantsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
@@ -99,7 +99,7 @@ export default function AdminParticipantsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>

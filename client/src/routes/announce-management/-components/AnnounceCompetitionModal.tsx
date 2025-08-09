@@ -64,7 +64,8 @@ export default function AnnounceCompetitionModal({
           <DialogContent className="!max-w-4xl w-full">
             <DialogHeader className="flex-row gap-2 items-center">
               <DialogTitle>
-                {competition.name} - {competition.categoryName}
+                #{competition.resultNumber} {competition.name} -{' '}
+                {competition.categoryName}
               </DialogTitle>
               {getCompetitionStatusBadge(
                 competition.status as CompetitionStatus,
@@ -88,6 +89,7 @@ export default function AnnounceCompetitionModal({
                       <TableHead>Name</TableHead>
                       <TableHead>Prize</TableHead>
                       <TableHead>Grade</TableHead>
+                      <TableHead>Point</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -102,6 +104,9 @@ export default function AnnounceCompetitionModal({
                                   <Skeleton className="h-3 bg-gray-100 rounded w-2/4" />
                                 </div>
                               </div>
+                            </TableCell>
+                            <TableCell>
+                              <Skeleton className="h-6 w-16 bg-gray-200 rounded" />
                             </TableCell>
                             <TableCell>
                               <Skeleton className="h-6 w-16 bg-gray-200 rounded" />
@@ -148,6 +153,7 @@ export default function AnnounceCompetitionModal({
                                     : ''}
                             </TableCell>
                             <TableCell>{participant.grade}</TableCell>
+                            <TableCell>{participant.totalPoint || ""}</TableCell>
                           </TableRow>
                         ))}
                   </TableBody>

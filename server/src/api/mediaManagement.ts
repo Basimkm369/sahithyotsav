@@ -50,6 +50,7 @@ router.get('/competitions', async (req, res, next) => {
     const {
       stageId,
       categoryId,
+      status,
       eventId: eventIdEnc,
       limit = 10,
       page = 1,
@@ -68,6 +69,7 @@ router.get('/competitions', async (req, res, next) => {
       ca.categoryname as categoryName,
       st.stage as stageName,
       cp.status,
+      cp.resultnum as resultNumber,
       cp.programdate as date,
       cp.scheduledstart as startTime,
       cp.scheduledend as endTime
@@ -75,12 +77,16 @@ router.get('/competitions', async (req, res, next) => {
       ofm_competitions as cp
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
-      inner join ofm_stages as st on st.pid = cp.stageno
-    where cp.eventid = @eventId
-      and cp.status = '${CompetitionStatus.Finalized}'`;
+      left join ofm_stages as st on st.pid = cp.stageno and st.eventid = @eventId
+    where cp.eventid = @eventId`;
 
     if (categoryId) query += ` and im.categoryno = @categoryId`;
     if (stageId) query += ` and cp.stageno = @stageId`;
+    if (status === 'O') {
+      query += ` and cp.status in ('O', 'A', 'D')`;
+    } else if (status) {
+      query += ` and cp.status = '${CompetitionStatus.Finalized}'`;
+    }
 
     query += ` group by
       im.itemname,
@@ -88,11 +94,12 @@ router.get('/competitions', async (req, res, next) => {
       st.stage,
       cp.status,
       cp.itemcode,
+      cp.resultnum,
       cp.programdate,
       cp.scheduledstart,
       cp.scheduledend
     order by
-      im.itemname, ca.categoryname, st.stage
+      cp.resultnum
     offset (${page} - 1) * ${limit} rows
     fetch next ${limit} rows only;`;
 
@@ -123,6 +130,7 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
     te.teamname as teamName,
     ai.codeletter as codeLetter,
     ai.rank,
+    ai.totalpoint as totalPoint,
     ai.grade
     from ofm_participant pa
     inner join ofm_assignitem ai on ai.chestno = pa.chestno and ai.eventid = @eventId
@@ -130,8 +138,7 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
     inner join ofm_team te on te.teamno = pa.teamno and te.eventid = @eventId
     where ai.codeletter IS NOT NULL and ai.codeletter <> ''
       and ai.itemcode = @itemCode
-      and pa.eventid = @eventId
-      and co.status = '${CompetitionStatus.Finalized}'`;
+      and pa.eventid = @eventId`;
 
   const data = await executeQuery(query, { eventId, itemCode });
 

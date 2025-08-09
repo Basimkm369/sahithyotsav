@@ -10,6 +10,7 @@ export type CompetitionDetails = {
     categoryName: string
     grade: string
     rank: number
+    totalPoint: number
   }[]
 }
 

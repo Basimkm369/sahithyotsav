@@ -72,7 +72,7 @@ export default function AdminCompetitionsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Select stage" />
             </SelectTrigger>
             <SelectContent>
@@ -91,7 +91,7 @@ export default function AdminCompetitionsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
@@ -105,6 +105,15 @@ export default function AdminCompetitionsTab({
               </SelectItem>
               <SelectItem value={CompetitionStatus.Completed}>
                 Completed
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.MarkEntryClosed}>
+                Mark Entry Closed
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Finalized}>
+                Finalized
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.MediaCompleted}>
+                Media Completed
               </SelectItem>
               <SelectItem value={CompetitionStatus.Announced}>
                 Announced
@@ -123,13 +132,13 @@ export default function AdminCompetitionsTab({
               setPage(1)
             }}
           >
-            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+            <SelectTrigger className="w-full sm:w-[200px] bg-white">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`} className='uppercase'>
+                <SelectItem value={`${category.number}`} className="uppercase">
                   {category.name}
                 </SelectItem>
               ))}

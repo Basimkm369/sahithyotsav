@@ -116,7 +116,7 @@ router.get('/competitions', async (req, res, next) => {
       ofm_competitions as cp
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
-      inner join ofm_stages as st on st.pid = cp.stageno
+      left join ofm_stages as st on st.pid = cp.stageno and st.eventid = @eventId
       left join ofm_judges as jd1 on jd1.pid = cp.judgeid1
       left join ofm_judges as jd2 on jd2.pid = cp.judgeid2
       left join ofm_judges as jd3 on jd3.pid = cp.judgeid3
@@ -124,11 +124,7 @@ router.get('/competitions', async (req, res, next) => {
     `;
 
     if (stageId) query += ` and cp.stageno = @stageId`;
-    if (status === 'C') {
-      query += ` and cp.status in ('C', 'M', 'O', 'F')`;
-    } else if (status) {
-      query += ` and cp.status = @status`;
-    }
+    if (status) query += ` and cp.status = @status`;
     if (categoryId) query += ` and im.categoryno = @categoryId`;
 
     query += ` group by
@@ -191,7 +187,19 @@ router.get('/judges', async (req, res, next) => {
     }
 
     const data = await executeQuery(
-      `SELECT pid AS id, judgename AS name FROM ofm_judges where entityxid = '10' and entitytype = 'N'`,
+      `
+        SELECT 
+          j.pid AS id,
+          j.judgename AS name
+        FROM 
+          ofm_judges j
+        JOIN 
+          ofm_eventmaster e ON e.eventid = @eventId
+        WHERE 
+          j.entityxid = e.entityxid
+        ORDER BY j.JudgeName
+      `,
+      { eventId },
     );
     return next(new AppResponse('', data));
   } catch (err) {

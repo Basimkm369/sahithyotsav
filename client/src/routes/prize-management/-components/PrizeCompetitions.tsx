@@ -19,7 +19,7 @@ import CompetitionStatus from '@/constants/CompetitionStatus'
 const ITEMS_PER_PAGE = 24
 
 export default function PrizeCompetitions() {
-  const [status, setStatus] = useUrlState('status', 'all')
+  const [status, setStatus] = useUrlState('status', CompetitionStatus.Announced)
   const [page, setPage] = useUrlState('page', 1, (v) => (v ? parseInt(v) : 1))
 
   const { eventId } = Route.useSearch()
@@ -53,7 +53,7 @@ export default function PrizeCompetitions() {
           <Select
             value={status}
             onValueChange={(value) => {
-              setStatus(value)
+              setStatus(value as CompetitionStatus)
               setPage(1)
             }}
           >
@@ -61,7 +61,6 @@ export default function PrizeCompetitions() {
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value={CompetitionStatus.Announced}>
                 Announced
               </SelectItem>

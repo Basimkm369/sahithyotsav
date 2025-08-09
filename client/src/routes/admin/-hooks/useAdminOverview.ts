@@ -21,6 +21,6 @@ export default function useAdminOverview({ eventId }: { eventId: string }) {
       })
       return res.data?.data ?? null
     },
-    staleTime: 60 * 1000,
+    refetchInterval: 5 * 1000,
   })
 }

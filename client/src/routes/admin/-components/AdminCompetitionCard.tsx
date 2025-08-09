@@ -25,7 +25,7 @@ export default function AdminCompetitionCard({
   onClick: () => void
 }) {
   return (
-    <Card className="gap-3 py-4 pt-5" onClick={onClick}>
+    <Card className="gap-3 py-4 pt-5">
       <CardHeader className="flex flex-nowrap justify-between">
         <div>
           <CardTitle className="text-lg uppercase">{data.name}</CardTitle>
@@ -45,10 +45,12 @@ export default function AdminCompetitionCard({
       </CardHeader>
       <CardContent className="flex flex-col h-full justify-end">
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-          <div className="flex gap-1 flex-nowrap">
-            <LucideMapPin className="w-4 opacity-40 pb-[3px]" />
-            {data.stageName}
-          </div>
+          {!!data.stageName && (
+            <div className="flex gap-1 flex-nowrap">
+              <LucideMapPin className="w-4 opacity-40 pb-[3px]" />
+              {data.stageName}
+            </div>
+          )}
           {dayjs(data.date).isValid() && (
             <div className="flex gap-1 flex-nowrap">
               <LucideCalendar className="w-4 opacity-40 pb-[3px]" />
