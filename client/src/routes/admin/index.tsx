@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import AdminCompetitionsTab from './-components/AdminCompetitionsTab'
 import AdminParticipantsTab from './-components/AdminParticipantsTab'
 import AdminOverview from './-components/AdminOverviewTab'
-import AdminFoodOverView from './-components/AdminFoodOverViewTab'
+import AdminFoodOverView from './-components/AdminFoodOverviewTab'
 
 export const Route = createFileRoute('/admin/')({
   component: StageManagementPage,
@@ -59,7 +59,7 @@ function StageManagementPage() {
       </div>
       <Tabs value={tab}>
         <div className="flex justify-center mb-4">
-          <TabsList>
+          <TabsList className='flex-wrap'>
             <TabsTrigger value="overview" onClick={() => setTab('overview')}>
               Overview
             </TabsTrigger>

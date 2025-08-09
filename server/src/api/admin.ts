@@ -363,8 +363,8 @@ router.get(
                 DATE_ADD(CONVERT_TZ(created_at, '+00:00', '+05:30'), INTERVAL 1 HOUR),
                 '%l %p'
             )
-          ) AS hour_slot_label,
-          COUNT(*) AS total
+          ) as hourSlot,
+          COUNT(*) AS count
           FROM 
               food_checkins
           WHERE 
@@ -372,7 +372,7 @@ router.get(
               and type = ?
           GROUP BY 
               type,
-              hour_slot_label
+              hourSlot
           ORDER BY 
               MIN(CONVERT_TZ(created_at, '+00:00', '+05:30')), type;
         `,

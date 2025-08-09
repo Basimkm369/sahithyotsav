@@ -28,14 +28,14 @@ const foodCourtData = [
   {
     date: '09-08-2025',
     types: [
-      // 'Break Fast',
+      // 'Breakfast',
       // 'Lunch',
       'Dinner'
     ],
   },
   // {
   //   date: '10-08-2025',
-  //   types: ['Break Fast', 'Lunch'],
+  //   types: ['Breakfast', 'Lunch'],
   // },
 ]
 
