@@ -46,9 +46,9 @@ router.get('/competitions', async (req, res, next) => {
       cp.scheduledend AS endTime
     FROM
       ofm_competitions AS cp
-      INNER JOIN ofm_itemmaster AS im ON im.itemcode = cp.itemcode
-      INNER JOIN ofm_category AS ca ON ca.categoryno = im.categoryno
-      INNER JOIN ofm_stages AS st ON st.pid = cp.stageno
+      inner join ofm_itemmaster AS im ON im.itemcode = cp.itemcode
+      inner join ofm_category AS ca ON ca.categoryno = im.categoryno
+      left join ofm_stages AS st ON st.pid = cp.stageno
     WHERE
       cp.eventid = @eventId
     ORDER BY
