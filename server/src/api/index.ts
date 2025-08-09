@@ -9,6 +9,7 @@ import announceManagement from './announceManagement';
 import offstageManagement from './offstageManagement';
 import prizeManagement from './prizeManagement';
 import judgeLinks from './judgeLinks';
+import external from './external';
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.use('/admin', admin);
 router.use('/foodManagement', foodManagement);
 router.use('/prizeManagement', prizeManagement);
 router.use('/judgeLinks', judgeLinks);
+router.use('/external', external);
 
 export default router;
