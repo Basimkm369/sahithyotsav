@@ -15,6 +15,7 @@ import { Route } from '..'
 import AnnounceCompetitionModal from './AnnounceCompetitionModal'
 import useUrlState from '@/hooks/useUrlState'
 import { AnnounceManagementSummary } from '../-hooks/useAnnounceManagementSummary'
+import CompetitionStatus from '@/constants/CompetitionStatus'
 
 const ITEMS_PER_PAGE = 24
 
@@ -25,6 +26,10 @@ export default function AnnounceCompetitionsTab({
   categories: AnnounceManagementSummary['categories']
   stages: AnnounceManagementSummary['stages']
 }) {
+  const [status, setStatus] = useUrlState(
+    'status',
+    CompetitionStatus.MediaCompleted,
+  )
   const [stageId, setStageId] = useUrlState('stageId', 'all')
   const [categoryId, setCategoryId] = useUrlState('categoryId', 'all')
   const [page, setPage] = useUrlState('page', 1, (v) => (v ? parseInt(v) : 1))
@@ -34,6 +39,7 @@ export default function AnnounceCompetitionsTab({
     eventId,
     stageId,
     categoryId,
+    status,
     page,
     limit: ITEMS_PER_PAGE,
   })
@@ -90,10 +96,31 @@ export default function AnnounceCompetitionsTab({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`} className='uppercase'>
+                <SelectItem value={`${category.number}`} className="uppercase">
                   {category.name}
                 </SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+
+          {/* Status Filter */}
+          <Select
+            value={status}
+            onValueChange={(value) => {
+              setStatus(value as CompetitionStatus)
+              setPage(1)
+            }}
+          >
+            <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={CompetitionStatus.MediaCompleted}>
+                Media Completed
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Announced}>
+                Announced
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>

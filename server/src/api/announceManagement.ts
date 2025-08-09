@@ -49,6 +49,7 @@ router.get('/competitions', async (req, res, next) => {
     const {
       stageId,
       categoryId,
+      status,
       eventId: eventIdEnc,
       limit = 10,
       page = 1,
@@ -75,12 +76,16 @@ router.get('/competitions', async (req, res, next) => {
       ofm_competitions as cp
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
-      inner join ofm_stages as st on st.pid = cp.stageno
-    where cp.eventid = @eventId
-      and cp.status = '${CompetitionStatus.MediaCompleted}'`;
+      left join ofm_stages as st on st.pid = cp.stageno
+    where cp.eventid = @eventId`;
 
     if (categoryId) query += ` and im.categoryno = @categoryId`;
     if (stageId) query += ` and cp.stageno = @stageId`;
+    if (status === 'A') {
+      query += ` and cp.status in ('A', 'D')`;
+    } else if (status) {
+      query += ` and cp.status = '${CompetitionStatus.MediaCompleted}'`;
+    }
 
     query += ` group by
       im.itemname,
@@ -124,6 +129,7 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
     te.teamname as teamName,
     ai.codeletter as codeLetter,
     ai.rank,
+    ai.totalpoint as totalPoint,
     ai.grade
     from ofm_participant pa
     inner join ofm_assignitem ai on ai.chestno = pa.chestno and ai.eventid = @eventId
