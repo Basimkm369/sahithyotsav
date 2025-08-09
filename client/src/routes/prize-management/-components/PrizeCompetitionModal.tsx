@@ -151,7 +151,7 @@ export default function PrizeCompetitionModal({
 
                             <TableCell>
                               <div className="space-y-2">
-                                <div className="flex items-center space-x-2">
+                                {/* <div className="flex items-center space-x-2">
                                   <Checkbox
                                     id={`momento-${participant.chestNumber}`}
                                     onCheckedChange={(checked) =>
@@ -186,7 +186,7 @@ export default function PrizeCompetitionModal({
                                   >
                                     Cash Prize
                                   </label>
-                                </div>
+                                </div> */}
                               </div>
                             </TableCell>
                           </TableRow>

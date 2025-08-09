@@ -137,14 +137,14 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
 
   const data = await executeQuery(query, { eventId, itemCode });
 
-  const formDataQuery = `select * from prize_distributions
-    where item_id = ? and chest_number IN ?`;
-  const formData = await runSelectQuery(formDataQuery, [
-    itemCode,
-    data.map((d) => d.chestNumber),
-  ]);
+  // const formDataQuery = `select * from prize_distributions
+  //   where item_id = ? and chest_number IN ?`;
+  // const formData = await runSelectQuery(formDataQuery, [
+  //   itemCode,
+  //   data.map((d) => d.chestNumber),
+  // ]);
 
-  console.log(formData);
+  // console.log(formData);
 
   return next(
     new AppResponse('', {
