@@ -166,6 +166,12 @@ export default function TeamParticipantsTab({
                         </TableCell>
                         <TableCell className="text-xl">
                           {participant.competitions
+                            .filter((c) =>
+                              isAfterStatus(
+                                c.status as CompetitionStatus,
+                                CompetitionStatus.Announced,
+                              ),
+                            )
                             .sort((a, b) => a.rank - b.rank)
                             .map((c) =>
                               c.rank === 1
@@ -248,7 +254,10 @@ export default function TeamParticipantsTab({
                                 return Object.entries(statusCounts).map(
                                   ([status, count]) => (
                                     <span key={status}>
-                                      {getCompetitionStatusBadge(status, count)}
+                                      {getCompetitionStatusBadge(
+                                        status as CompetitionStatus,
+                                        count,
+                                      )}
                                     </span>
                                   ),
                                 )
@@ -256,6 +265,12 @@ export default function TeamParticipantsTab({
                             </div>
                             <div className="text-sm">
                               {participant.competitions
+                                .filter((c) =>
+                                  isAfterStatus(
+                                    c.status as CompetitionStatus,
+                                    CompetitionStatus.Announced,
+                                  ),
+                                )
                                 .sort((a, b) => a.rank - b.rank)
                                 .map((c) =>
                                   c.rank === 1
@@ -329,13 +344,17 @@ export default function TeamParticipantsTab({
                         codeLetter: competition.codeLetter,
                         status: competition.participantStatus,
                       })}
-                    {competition.rank === 1
-                      ? '🥇'
-                      : competition.rank === 2
-                        ? '🥈'
-                        : competition.rank === 3
-                          ? '🥉'
-                          : ''}
+                    {isAfterStatus(
+                      competition.status as CompetitionStatus,
+                      CompetitionStatus.Announced,
+                    ) &&
+                      (competition.rank === 1
+                        ? '🥇'
+                        : competition.rank === 2
+                          ? '🥈'
+                          : competition.rank === 3
+                            ? '🥉'
+                            : '')}
                   </div>
                 </div>
               ))}

@@ -8,6 +8,7 @@ export type Competition = {
   categoryName: string
   status: string
   totalCount: number
+  resultNumber: number
   date: string
   startTime: string
   endTime: string
@@ -17,12 +18,14 @@ export default function useAnnounceCompetitions({
   eventId,
   stageId,
   categoryId,
+  status,
   page,
   limit = 24,
 }: {
   eventId: string
   stageId: string
   categoryId: string
+  status: string
   page: number
   limit?: number
 }) {
@@ -30,13 +33,14 @@ export default function useAnnounceCompetitions({
     queryKey: [
       'announceManagement',
       'competitions',
-      { page, limit, eventId, stageId, categoryId },
+      { page, limit, eventId, stageId, categoryId, status },
     ],
     queryFn: async () => {
       const params: Record<string, any> = {}
       if (eventId) params.eventId = eventId
       if (stageId !== 'all') params.stageId = stageId
       if (categoryId !== 'all') params.categoryId = categoryId
+      if (status !== 'all') params.status = status
       params.page = page
       params.limit = limit
 
