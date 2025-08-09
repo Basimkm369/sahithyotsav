@@ -1,15 +1,15 @@
-import express, { NextFunction, Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
-import CompetitionStatus from 'src/constants/CompetitionStatus';
-import AppError from 'src/models/AppError';
-import AppResponse from 'src/models/AppResponse';
-import { decryptId, executeQuery, executeStoredProcedure } from 'src/utils/db';
-import kvStore from 'src/utils/kvStore';
-import { runSelectQuery } from 'src/utils/mysqlDb';
+import express, { NextFunction, Request, Response } from "express";
+import { body, validationResult } from "express-validator";
+import CompetitionStatus from "src/constants/CompetitionStatus";
+import AppError from "src/models/AppError";
+import AppResponse from "src/models/AppResponse";
+import { decryptId, executeQuery, executeStoredProcedure } from "src/utils/db";
+import kvStore from "src/utils/kvStore";
+import { runSelectQuery, runWriteQuery } from "src/utils/mysqlDb";
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   const { eventId: eventIdEnc } = req.query;
 
   let eventId = kvStore.get(`encId:${eventIdEnc}`);
@@ -27,26 +27,26 @@ router.get('/', async (req, res, next) => {
       on cp.stageno = st.pid
     where cp.eventid = @eventId
     group by st.stage, st.pid`,
-    { eventId },
+    { eventId }
   );
 
   let categories = kvStore.get(`categories`);
   if (!categories) {
     categories = await executeQuery(
-      `select categoryno as number, categoryname as name from ofm_category`,
+      `select categoryno as number, categoryname as name from ofm_category`
     );
-    kvStore.set('categories', categories);
+    kvStore.set("categories", categories);
   }
 
   return next(
-    new AppResponse('', {
+    new AppResponse("", {
       stages,
       categories,
-    }),
+    })
   );
 });
 
-router.get('/competitions', async (req, res, next) => {
+router.get("/competitions", async (req, res, next) => {
   try {
     const {
       stageId,
@@ -105,13 +105,13 @@ router.get('/competitions', async (req, res, next) => {
       status,
     });
 
-    return next(new AppResponse('', data));
+    return next(new AppResponse("", data));
   } catch (err) {
     return next(err);
   }
 });
 
-router.get('/competitions/:itemCode', async (req, res, next) => {
+router.get("/competitions/:itemCode", async (req, res, next) => {
   const { itemCode } = req.params;
   const { eventId: eventIdEnc } = req.query;
 
@@ -137,41 +137,57 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
 
   const data = await executeQuery(query, { eventId, itemCode });
 
-  // const formDataQuery = `select * from prize_distributions
-  //   where item_id = ? and chest_number IN ?`;
-  // const formData = await runSelectQuery(formDataQuery, [
-  //   itemCode,
-  //   data.map((d) => d.chestNumber),
-  // ]);
+  const chestNumbers = data.map((d) => d.chestNumber);
+  const placeholders = chestNumbers.map(() => "?").join(", ");
 
-  // console.log(formData);
+  const formDataQuery = `
+    SELECT * FROM prize_distributions
+    WHERE item_id = ? AND chest_number IN (${placeholders})
+  `;
+
+  const formData = await runSelectQuery(formDataQuery, [
+    itemCode,
+    ...chestNumbers,
+  ]);
+
+
+  const merged = data.map(d => {
+    const match = formData.find(f => String(f.chest_number) === String(d.chestNumber));
+    return {
+      ...d,
+      cashDistributed: match ? match.cash_given_at !== null : false,
+      momentoDistributed: match ? match.momento_given_at !== null : false
+    };
+  });
+
+
 
   return next(
-    new AppResponse('', {
-      participants: data.sort((a, b) => (a.rank || 1000) - (b.rank || 1000)),
-    }),
+    new AppResponse("", {
+      participants: merged.sort((a, b) => (a.rank || 1000) - (b.rank || 1000)),
+    })
   );
 });
 
 router.post(
-  '/updateCompetitionStatus',
+  "/updateCompetitionStatus",
   [
-    body('eventId').notEmpty(),
-    body('itemCode').notEmpty().isNumeric(),
-    body('status').notEmpty().isString().isLength({ max: 1 }),
+    body("eventId").notEmpty(),
+    body("itemCode").notEmpty().isNumeric(),
+    body("status").notEmpty().isString().isLength({ max: 1 }),
   ],
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw new AppError('Validation Error', 400, { errors: errors.array() });
+        throw new AppError("Validation Error", 400, { errors: errors.array() });
       }
 
       const { eventId: eventIdEnc, itemCode, status } = req.body;
 
       if (status !== CompetitionStatus.PrizeDistributed) {
         throw new AppError(
-          'You can only change the status to Prize Distributed',
+          "You can only change the status to Prize Distributed"
         );
       }
 
@@ -185,23 +201,123 @@ router.post(
         `SELECT id FROM OFM_Competitions
           WHERE itemcode = @itemCode
           AND eventid = @eventId`,
-        { eventId, itemCode },
+        { eventId, itemCode }
       );
       const programId = programRes?.[0]?.id;
-      if (!programId) throw new Error('Program ID not found');
+      if (!programId) throw new Error("Program ID not found");
 
-      await executeStoredProcedure('usp_StartProgram', {
+      await executeStoredProcedure("usp_StartProgram", {
         programId,
         Status: status,
         datetime: new Date(),
-        Notes: '',
+        Notes: "",
       });
 
-      return next(new AppResponse('Competition status updated successfully'));
+      return next(new AppResponse("Competition status updated successfully"));
     } catch (err) {
       return next(err);
     }
-  },
+  }
+);
+
+router.post(
+  "/updatePrizeDistribution",
+  [
+    body("eventId").notEmpty(),
+    body("itemCode").notEmpty().isNumeric(),
+    body("chestNumber").notEmpty().isNumeric(),
+    body("cashStatus").isBoolean().optional(),
+    body("momentoStatus").isBoolean().optional(),
+  ],
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        throw new AppError("Validation Error", 400, { errors: errors.array() });
+      }
+
+      const {
+        eventId: eventIdEnc,
+        itemCode,
+        chestNumber,
+        cashStatus,
+        momentoStatus,
+      } = req.body;
+
+      let eventId = kvStore.get(`encId:${eventIdEnc}`);
+      if (!eventId) {
+        eventId = await decryptId(eventIdEnc as string);
+        kvStore.set(`encId:${eventIdEnc}`, eventId);
+      }
+      if (eventId != 52) {
+        throw new AppError("Invalid eventId");
+      }
+
+      const selectQuery = `
+      SELECT * FROM prize_distributions
+      WHERE item_id = ? AND chest_number = ?
+      `;
+
+      const prizeRow = await runSelectQuery(selectQuery, [
+        itemCode,
+        chestNumber,
+      ]);
+
+      if (cashStatus === true || cashStatus === false) {
+        if (prizeRow.length === 0) {
+          const insertQuery = `
+          INSERT INTO prize_distributions
+            (item_id, chest_number, cash_given_at)
+          VALUES (?, ?, ?)
+        `;
+          await runWriteQuery(insertQuery, [
+            itemCode,
+            chestNumber,
+            cashStatus ? new Date() : null,
+          ]);
+        } else {
+          const idToUpdate = prizeRow[0].id;
+          const updateQuery = `
+            UPDATE prize_distributions
+            SET cash_given_at = ?
+            WHERE id = ?
+          `;
+          await runWriteQuery(updateQuery, [
+            cashStatus ? new Date() : null,
+            idToUpdate,
+          ]);
+        }
+      } else if (momentoStatus === true || momentoStatus === false) {
+        if (prizeRow.length === 0) {
+          const insertQuery = `
+          INSERT INTO prize_distributions
+            (item_id, chest_number, momento_given_at)
+          VALUES (?, ?, ?)
+        `;
+          await runWriteQuery(insertQuery, [
+            itemCode,
+            chestNumber,
+            momentoStatus ? new Date() : null,
+          ]);
+        } else {
+          const idToUpdate = prizeRow[0].id;
+          const updateQuery = `
+            UPDATE prize_distributions
+            SET momento_given_at = ?
+            WHERE id = ?
+          `;
+          await runWriteQuery(updateQuery, [
+            momentoStatus ? new Date() : null,
+            idToUpdate,
+          ]);
+        }
+      }
+
+      return next(new AppResponse("Competition status updated successfully"));
+    } catch (err) {
+      return next(err);
+    }
+  }
 );
 
 export default router;

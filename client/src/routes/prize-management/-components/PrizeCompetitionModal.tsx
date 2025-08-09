@@ -71,6 +71,7 @@ export default function PrizeCompetitionModal({
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                     {competition.status === CompetitionStatus.Announced && (
                       <Button
+                      disabled={!data?.participants.every(p=>p.rank >2|| (p.cashDistributed && p.momentoDistributed))}
                         onClick={() =>
                           promptComfirmation(CompetitionStatus.PrizeDistributed)
                         }
