@@ -108,13 +108,14 @@ const QRScanDialog: React.FC<QRScanDialogProps> = ({
     const loadCameras = async () => {
       try {
         const availableCameras = await QrScanner.listCameras(true)
-        setCameras(availableCameras)
-        if (availableCameras.length > 0) {
-          setSelectedCamera(availableCameras[0].id)
+        const reversed = [...availableCameras].reverse()
+        setCameras(reversed)
+        if (reversed.length > 0) {
+          setSelectedCamera(reversed[0].id)
         }
       } catch (error) {
         console.error('Error loading cameras:', error)
-      }
+      }      
     }
 
     if (open) {
