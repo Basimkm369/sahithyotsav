@@ -26,10 +26,10 @@ export const Route = createFileRoute('/food-court-control/')({
 const foodCourtData = [
   {
     date: '09-08-2025',
-    types: ['Lunch', 'Dinner'],
+    types: ['Break Fast','Lunch', 'Dinner'],
   },
   {
-    date: '19-08-2025',
+    date: '10-08-2025',
     types: ['Break Fast', 'Lunch'],
   },
 ];
