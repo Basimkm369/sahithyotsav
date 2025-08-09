@@ -170,7 +170,7 @@ export default function MediaCompetitionModal({
                                 <div>
                                   <div>
                                     <span className="font-semibold">
-                                      {participant.name.trim()}&nbsp;
+                                    {participant.name.trim().toUpperCase()}&nbsp;
                                     </span>
                                     <span className="text-gray-500">
                                       #{participant.chestNumber}
