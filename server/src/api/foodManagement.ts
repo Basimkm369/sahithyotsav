@@ -40,15 +40,53 @@ router.post(
       const formattedDate = convertDateFormat(date);
 
 
-      const checkExisting = await runSelectQuery(
-        `SELECT id FROM food_checkins 
-         WHERE event_id = ? AND chest_number = ? AND date = ? AND type = ?`,
-        [eventId, chestNumber, formattedDate, type]
-      );
+      const badgeCounts: Record<number, number> = {
+        9600: 30,
+        9601: 66,
+        9602: 20,
+        9603: 20,
+        9604: 49,
+        9605: 10,
+        9606: 30,
+        9607: 15,
+        9608: 20,
+        9609: 20,
+        9610: 20,
+        9611: 60,
+        9612: 30,
+        9613: 20,
+        9614: 70,
+        9615: 34,
+        9616: 20,
+        9617: 22,
+        9618: 60,
+        9619: 20
+      };
       
-      if (checkExisting.length > 0) {
-        return next(new AppError('Participant already checked in for this meal', 400));
-      }
+
+    const allowedCheckins = badgeCounts[chestNumber] || 1; 
+
+    // Count how many times this chestNumber has already checked in
+    const [existingCheckins] = await runSelectQuery(
+      `SELECT COUNT(*) as count FROM food_checkins 
+   WHERE event_id = ? AND chest_number = ? AND date = ? AND type = ?`,
+      [eventId, chestNumber, formattedDate, type]
+    );
+
+    if (existingCheckins.count >= allowedCheckins) {
+      return next(new AppError('Participant already checked in for this meal', 400));
+    }
+
+    
+      // const checkExisting = await runSelectQuery(
+      //   `SELECT id FROM food_checkins 
+      //    WHERE event_id = ? AND chest_number = ? AND date = ? AND type = ?`,
+      //   [eventId, chestNumber, formattedDate, type]
+      // );
+      
+      // if (checkExisting.length > 0) {
+      //   return next(new AppError('Participant already checked in for this meal', 400));
+      // }
       
       await runWriteQuery(
         `INSERT INTO food_checkins (event_id, chest_number, date, type)

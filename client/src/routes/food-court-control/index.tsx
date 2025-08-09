@@ -58,7 +58,19 @@ const FoodCourtControlPage = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [scannedResult, setScannedResult] = useState<string | null>();
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+ 
+  useEffect(() => {
+    if (availableDates.length > 0 && !selectedDate) {
+      setSelectedDate(availableDates[0]);
+    }
+  }, [availableDates, selectedDate, setSelectedDate]);
   
+  // Auto-select first type when availableTypes changes and a date is selected
+  useEffect(() => {
+    if (availableTypes.length > 0 && selectedDate && !selectedType) {
+      setSelectedType(availableTypes[0]);
+    }
+  }, [availableTypes, selectedDate, selectedType, setSelectedType]);
 
 
   // Get available cameras on component mount
@@ -95,11 +107,18 @@ const FoodCourtControlPage = () => {
     }
   }, [success]);
 
+  const badgeChestNumbers: number[] = [
+    9600, 9601, 9602, 9603, 9604, 9605, 9606, 9607, 9608, 9609,
+    9610, 9611, 9612, 9613, 9614, 9615, 9616, 9617, 9618, 9619
+  ];
+  
+
   // Scan success handler with cooldown logic
   const onScanSuccess = (result: QrScanner.ScanResult) => {
-  
-    setScannedResult(result.data);
+    const scannedCode = result.data.trim();
+    setScannedResult(scannedCode);
   };
+
 
   // Trigger API call when a QR code is scanned
   useEffect(() => {
@@ -137,6 +156,11 @@ const FoodCourtControlPage = () => {
         // setScannedResult(null); // Clear result to allow next scan
         setError(null);
         
+        if (badgeChestNumbers.includes(Number(scannedData))) {
+          setTimeout(() => {
+            window.location.reload();
+          }, 500); // small delay so toast can be seen
+        }
         // Update cooldown state after a successful API call
     
         
