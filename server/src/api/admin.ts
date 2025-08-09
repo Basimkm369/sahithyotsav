@@ -124,11 +124,7 @@ router.get('/competitions', async (req, res, next) => {
     `;
 
     if (stageId) query += ` and cp.stageno = @stageId`;
-    if (status === 'C') {
-      query += ` and cp.status in ('C', 'M', 'O', 'F')`;
-    } else if (status) {
-      query += ` and cp.status = @status`;
-    }
+    if (status) query += ` and cp.status = @status`;
     if (categoryId) query += ` and im.categoryno = @categoryId`;
 
     query += ` group by
@@ -202,7 +198,8 @@ router.get('/judges', async (req, res, next) => {
         WHERE 
           j.entityxid = e.entityxid
         ORDER BY j.JudgeName
-      `,{eventId}
+      `,
+      { eventId },
     );
     return next(new AppResponse('', data));
   } catch (err) {

@@ -7,6 +7,7 @@ export type Competition = {
   name: string
   categoryName: string
   status: string
+  resultNumber: number
   totalCount: number
   date: string
   startTime: string

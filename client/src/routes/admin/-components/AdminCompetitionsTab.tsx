@@ -106,6 +106,15 @@ export default function AdminCompetitionsTab({
               <SelectItem value={CompetitionStatus.Completed}>
                 Completed
               </SelectItem>
+              <SelectItem value={CompetitionStatus.MarkEntryClosed}>
+                Mark Entry Closed
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.Finalized}>
+                Finalized
+              </SelectItem>
+              <SelectItem value={CompetitionStatus.MediaCompleted}>
+                Media Completed
+              </SelectItem>
               <SelectItem value={CompetitionStatus.Announced}>
                 Announced
               </SelectItem>
@@ -129,7 +138,7 @@ export default function AdminCompetitionsTab({
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
-                <SelectItem value={`${category.number}`} className='uppercase'>
+                <SelectItem value={`${category.number}`} className="uppercase">
                   {category.name}
                 </SelectItem>
               ))}

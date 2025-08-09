@@ -6,29 +6,30 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import useUrlState from '@/hooks/useUrlState'
 import OffstageJudgesTab from './-components/OffstageJudgesTab'
 
-
 export const Route = createFileRoute('/offstage-management/')({
   component: OffstageValuationPage,
   validateSearch: (
     search: Record<string, unknown>,
-  ): { eventId: string; stageId: string } => {
+  ): { eventId: string; stageId: string; pin: string } => {
     return {
       eventId: search.eventId as string,
       stageId: search.stageId as string,
+      pin: search.pin as string,
     }
   },
 })
 
 function OffstageValuationPage() {
-  const { eventId,pin } = Route.useSearch()
+  const { eventId, pin } = Route.useSearch()
   const { data, isLoading } = useOffstageManagementSummary({ eventId })
 
-  const [tab, setTab] = useUrlState<
-    'overview' | 'competitions' | 'judges'
-  >('tab', 'overview')
+  const [tab, setTab] = useUrlState<'overview' | 'competitions' | 'judges'>(
+    'tab',
+    'overview',
+  )
 
-  if(pin !=  "07yqnKmkkdf3BpJx"){
-    return "";
+  if (pin != '07yqnKmkkdf3BpJx') {
+    return ''
   }
   if (isLoading) {
     return (
@@ -63,22 +64,18 @@ function OffstageValuationPage() {
       <Tabs value={tab}>
         <div className="flex justify-center mb-4">
           <TabsList>
-  
             <TabsTrigger
               value="competitions"
               onClick={() => setTab('competitions')}
             >
               Competitions
             </TabsTrigger>
-            <TabsTrigger
-              value="judges"
-              onClick={() => setTab('judges')}
-            >
+            <TabsTrigger value="judges" onClick={() => setTab('judges')}>
               Judges
             </TabsTrigger>
           </TabsList>
         </div>
-        
+
         <TabsContent value="competitions" className="bg-muted rounded-3xl p-4">
           <OffstageCompetitions
             categories={data.categories}
@@ -86,13 +83,12 @@ function OffstageValuationPage() {
           />
         </TabsContent>
         <TabsContent value="judges" className="bg-muted rounded-3xl p-4">
-        <OffstageJudgesTab
+          <OffstageJudgesTab
             categories={data.categories}
             stages={data.stages}
           />
         </TabsContent>
       </Tabs>
-      
     </div>
   )
 }
