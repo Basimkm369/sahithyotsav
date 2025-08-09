@@ -31,10 +31,12 @@ export default function PrizeCompetitionCard({
       </CardHeader>
       <CardContent className="flex flex-col h-full justify-end">
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-        <div className="flex gap-1 flex-nowrap">
-            <LucideMapPin className="w-4 opacity-40  pb-[3px]" />
-            {data.stageName}
-          </div>
+          {!!data.stageName && (
+            <div className="flex gap-1 flex-nowrap">
+              <LucideMapPin className="w-4 opacity-40  pb-[3px]" />
+              {data.stageName}
+            </div>
+          )}
           {dayjs(data.date).isValid() && (
             <div className="flex gap-1 flex-nowrap">
               <LucideCalendar className="w-4 opacity-40  pb-[3px]" />
@@ -47,7 +49,6 @@ export default function PrizeCompetitionCard({
               {formatTime(data.startTime)} - {formatTime(data.startTime)}
             </div>
           )}
-          
         </div>
       </CardContent>
     </Card>
