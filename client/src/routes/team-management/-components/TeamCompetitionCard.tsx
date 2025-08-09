@@ -36,7 +36,7 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
                 CompetitionStatus.InProgress,
               ].includes(data.status as CompetitionStatus) &&
               data.participants.some(
-                (p) => p.status === ParticipantStatus.NotEnrolled,
+                (p) => ![ParticipantStatus.Enrolled, ParticipantStatus.InProgress, ParticipantStatus.Completed].includes(p.status)
               ) &&
               'Your team participants has reported yet',
           })}

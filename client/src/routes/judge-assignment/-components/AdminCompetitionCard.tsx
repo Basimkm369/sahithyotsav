@@ -25,7 +25,7 @@ export default function AdminCompetitionCard({
   onClick: () => void
 }) {
   return (
-    <Card className="gap-3 py-4 pt-5">
+    <Card className="gap-3 py-4 pt-5" onClick={onClick}>
       <CardHeader className="flex flex-nowrap justify-between">
         <div>
           <CardTitle className="text-lg uppercase">{data.name}</CardTitle>

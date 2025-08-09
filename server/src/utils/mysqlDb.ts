@@ -1,19 +1,19 @@
 import mysql from 'mysql2/promise';
 import { RowDataPacket, OkPacket } from 'mysql2';
 import {
-  LOCAL_DB_HOST,
-  LOCAL_DB_PORT,
-  LOCAL_DB_NAME,
-  LOCAL_DB_PASSWORD,
-  LOCAL_DB_USER,
+  MYSQL_DB_HOST,
+  MYSQL_DB_PORT,
+  MYSQL_DB_NAME,
+  MYSQL_DB_PASSWORD,
+  MYSQL_DB_USER,
 } from 'src/config/env';
 
 const pool = mysql.createPool({
-  host: LOCAL_DB_HOST,
-  port: LOCAL_DB_PORT ? parseInt(LOCAL_DB_PORT, 10) : undefined,
-  user: LOCAL_DB_USER,
-  password: LOCAL_DB_PASSWORD,
-  database: LOCAL_DB_NAME,
+  host: MYSQL_DB_HOST,
+  port: MYSQL_DB_PORT ? parseInt(MYSQL_DB_PORT, 10) : undefined,
+  user: MYSQL_DB_USER,
+  password: MYSQL_DB_PASSWORD,
+  database: MYSQL_DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,

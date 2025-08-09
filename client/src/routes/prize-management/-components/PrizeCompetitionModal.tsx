@@ -24,6 +24,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Checkbox } from '@/components/ui/checkbox'
 
 
 export default function PrizeCompetitionModal({
@@ -53,6 +54,19 @@ export default function PrizeCompetitionModal({
       })
     },
   })
+  
+
+  const handlePrizeToggle = (
+    participantId: number,
+    type: "momento" | "cashPrize",
+    checked: boolean
+  ) => {
+    console.log(`Participant ${participantId} ${checked ? "checked" : "unchecked"} ${type}`);
+    
+    // Example: you can send this to API or update state
+    // updateParticipantPrize(participantId, type, checked);
+  };
+  
 
   return (
     <>
@@ -70,7 +84,7 @@ export default function PrizeCompetitionModal({
 
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                    {competition.status === CompetitionStatus.Finalized && (
+                    {competition.status === CompetitionStatus.Announced && (
                       <Button onClick={() => promptComfirmation(CompetitionStatus.PrizeDistributed)}>
                         Mark as Prize Distributed
                       </Button>
@@ -86,15 +100,11 @@ export default function PrizeCompetitionModal({
                 <Table>
                   <TableHeader className="bg-white">
                     <TableRow>
-                      <TableHead>Chest #</TableHead>
                       <TableHead>Name</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Team</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Code Letter</TableHead>
-                      <TableHead>Mark</TableHead>
+                    
                       <TableHead>Grade</TableHead>
                       <TableHead>Prize</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -125,25 +135,53 @@ export default function PrizeCompetitionModal({
                           </TableCell>
                         </TableRow>
                       ))
-                      : data?.map((participant) => (
-                        <TableRow
-                          key={participant.chestNumber}
-                        >
-                          <TableCell>
-                            {participant.chestNumber}
+                      : data?.participants?.map((participant) => (
+                        <TableRow key={participant.chestNumber}>
+                        <TableCell>
+                          {participant.name.trim()}&nbsp;
+                          <span className="text-gray-500">#{participant.chestNumber}</span>
+                          <div className="text-sm text-gray-500">{participant.teamName}</div>
+                        </TableCell>
+              
+                        <TableCell>{participant.grade}</TableCell>
+                        <TableCell>{
+                            participant.rank === 1
+                              ? '🥇'
+                              : participant.rank === 2
+                                ? '🥈'
+                                : participant.rank === 3
+                                  ? '🥉'
+                                  : ''
+                          }</TableCell>
 
-                          </TableCell>
-                          <TableCell>{participant.name}</TableCell>
-                          <TableCell>{participant.categoryName}</TableCell>
-                          <TableCell>{participant.teamName}</TableCell>
-                          <TableCell>{getParticipantStatusBadge(participant.status)}</TableCell>
-                          <TableCell>{participant.codeLetter}</TableCell>
-                          <TableCell>{participant.mark}</TableCell>
-                          <TableCell>{participant.grade}</TableCell>
-                          <TableCell>{participant.prize}</TableCell>
-
-
-                        </TableRow>
+              
+                        <TableCell>
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`momento-${participant.chestNumber}`}
+                                onCheckedChange={(checked) =>
+                                  handlePrizeToggle(participant.chestNumber, "momento", checked)
+                                }
+                              />
+                              <label htmlFor={`momento-${participant.chestNumber}`} className="text-sm">
+                                Momento
+                              </label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`cashPrize-${participant.chestNumber}`}
+                                onCheckedChange={(checked) =>
+                                  handlePrizeToggle(participant.chestNumber, "cashPrize", checked)
+                                }
+                              />
+                              <label htmlFor={`cashPrize-${participant.chestNumber}`} className="text-sm">
+                                Cash Prize
+                              </label>
+                            </div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
                       ))}
                   </TableBody>
                 </Table>

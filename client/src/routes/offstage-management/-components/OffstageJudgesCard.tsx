@@ -14,10 +14,10 @@ import {
 import dayjs from 'dayjs'
 import { formatTime } from '@/lib/datetime'
 import { getCompetitionStatusBadge } from '@/lib/badge'
-import { Competition } from '../-hooks/useAdminCompetitions'
+import { Competition } from '../-hooks/useOffstageJudges'
 import CompetitionStatus from '@/constants/CompetitionStatus'
 
-export default function AdminCompetitionCard({
+export default function OffstageJudgesCard({
   data,
   onClick,
 }: {
@@ -25,7 +25,7 @@ export default function AdminCompetitionCard({
   onClick: () => void
 }) {
   return (
-    <Card className="gap-3 py-4 pt-5">
+    <Card className="gap-3 py-4 pt-5" onClick={onClick}>
       <CardHeader className="flex flex-nowrap justify-between">
         <div>
           <CardTitle className="text-lg uppercase">{data.name}</CardTitle>

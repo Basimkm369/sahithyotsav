@@ -30,12 +30,7 @@ export const getCompetitionStatusBadge = (
     blink?: boolean | string
   } = {},
 ) => {
-  const label =
-    count !== undefined
-      ? `${count} ${competitionStatusLabels[status]}`
-      : competitionStatusLabels[status]
-
-  if (!label) return <></>
+ 
 
   if (
     ['stageManagement', 'offstageManagement'].includes(role) &&
@@ -44,14 +39,21 @@ export const getCompetitionStatusBadge = (
     status = CompetitionStatus.MarkEntryClosed
   }
 
+  
   if (
     role === 'teamManagement' &&
     isAfterStatus(status, CompetitionStatus.Completed) &&
     isBeforeStatus(status, CompetitionStatus.Announced)
   ) {
     status = CompetitionStatus.Completed
+    
   }
+  const label =
+  count !== undefined
+    ? `${count} ${competitionStatusLabels[status]}`
+    : competitionStatusLabels[status]
 
+if (!label) return <></>
   const badge = (
     <Badge
       variant="outline"
