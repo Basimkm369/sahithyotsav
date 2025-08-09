@@ -70,7 +70,10 @@ export default function TeamCompetitionCard({ data }: { data: Competition }) {
                   #{participant.chestNumber}
                 </span>
                 <div className="ml-auto relative">
-                  {participant.rank > 0 ? (
+                  {isAfterStatus(
+                    data.status as CompetitionStatus,
+                    CompetitionStatus.Announced,
+                  ) && participant.rank > 0 ? (
                     <div className="text-2xl absolute -top-1 right-0">
                       {participant.rank === 1
                         ? '🥇'
