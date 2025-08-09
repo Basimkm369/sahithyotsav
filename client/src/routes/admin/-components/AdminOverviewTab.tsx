@@ -38,11 +38,11 @@ export default function AdminOverview() {
   )
 
   return (
-    <div className="flex flex-wrap justify-center gap-6">
+    <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
       {statusOrder
         .filter((s) => statusCountMap[s])
         .map((status) => (
-          <Card key={status} className="gap-2 w-full max-w-50">
+          <Card key={status} className="gap-2">
             <CardHeader>
               <CardTitle className="capitalize">
                 {statusLabels[status] ?? status}
@@ -56,5 +56,6 @@ export default function AdminOverview() {
           </Card>
         ))}
     </div>
+
   )
 }
