@@ -23,7 +23,7 @@ export default function AnnounceCompetitionCard({
     <Card className="gap-3 py-4 pt-5 cursor-pointer" onClick={onClick}>
       <CardHeader className="flex flex-nowrap justify-between">
         <div>
-          <CardTitle className="text-lg uppercase">{data.name}</CardTitle>
+          <CardTitle className="text-lg uppercase">#{data.resultNumber} {data.name}</CardTitle>
           <CardDescription className="uppercase">
             {data.categoryName}
           </CardDescription>

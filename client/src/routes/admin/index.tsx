@@ -9,21 +9,24 @@ import AdminOverview from './-components/AdminOverviewTab'
 
 export const Route = createFileRoute('/admin/')({
   component: StageManagementPage,
-  validateSearch: (search: Record<string, unknown>): { eventId: string } => {
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { eventId: string; pin: string } => {
     return {
       eventId: search.eventId as string,
+      pin: search.pin as string,
     }
   },
 })
 
 function StageManagementPage() {
-  const { eventId,pin } = Route.useSearch()
+  const { eventId, pin } = Route.useSearch()
   const { data, isLoading } = useAdminSummary({ eventId })
   const [tab, setTab] = useUrlState<
     'overview' | 'competitions' | 'participants'
   >('tab', 'overview')
-  if(pin !=  "07yqnKmkk0KBpJx"){
-    return "";
+  if (pin != '07yqnKmkk0KBpJx') {
+    return ''
   }
   if (isLoading) {
     return (

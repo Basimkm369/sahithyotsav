@@ -68,6 +68,7 @@ router.get('/competitions', async (req, res, next) => {
       ca.categoryname as categoryName,
       st.stage as stageName,
       cp.status,
+      cp.resultnum as resultNumber,
       cp.programdate as date,
       cp.scheduledstart as startTime,
       cp.scheduledend as endTime
@@ -88,6 +89,7 @@ router.get('/competitions', async (req, res, next) => {
       st.stage,
       cp.status,
       cp.itemcode,
+      cp.resultnum,
       cp.programdate,
       cp.scheduledstart,
       cp.scheduledend

@@ -96,7 +96,7 @@ export default function MediaCompetitionModal({
           <DialogContent className="!max-w-4xl w-full">
             <DialogHeader className="flex-row gap-2 items-center">
               <DialogTitle>
-                {competition.name} - {competition.categoryName}
+                #{competition.resultNumber} {competition.name} - {competition.categoryName} 
               </DialogTitle>
               {getCompetitionStatusBadge(
                 competition.status as CompetitionStatus,
