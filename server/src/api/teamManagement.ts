@@ -2,6 +2,7 @@ import express from 'express';
 import AppResponse from 'src/models/AppResponse';
 import { decryptId, executeQuery, executeStoredProcedure } from 'src/utils/db';
 import kvStore from 'src/utils/kvStore';
+import { runSelectQuery } from 'src/utils/mysqlDb';
 
 const router = express.Router();
 
@@ -243,6 +244,117 @@ router.get('/participants', async (req, res, next) => {
     }));
 
     return next(new AppResponse('', parsedData));
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.get('/foodStats', async (req, res, next) => {
+  try {
+    const {
+      categoryId,
+      type,
+      date,
+      status,
+      eventId: eventIdEnc,
+      teamId: teamIdEnc,
+      limit = 10,
+      page = 1,
+    } = req.query;
+
+    let teamId = kvStore.get(`encId:${teamIdEnc}`);
+    if (!teamId) {
+      teamId = await decryptId(teamIdEnc as string);
+      kvStore.set(`encId:${teamIdEnc}`, teamId);
+    }
+
+    let eventId = kvStore.get(`encId:${eventIdEnc}`);
+    if (!eventId) {
+      eventId = await decryptId(eventIdEnc as string);
+      kvStore.set(`encId:${eventIdEnc}`, eventId);
+    }
+
+    const offset = (Number(page) - 1) * Number(limit);
+
+ 
+    let query = `
+      SELECT 
+        p.chest_number,
+        p.team_id,
+        p.team_name,
+        p.name,
+        p.category_id,
+        p.category_name,
+        fc.event_id,
+        fc.date,
+        fc.type,
+        CASE WHEN fc.chest_number IS NOT NULL THEN 1 ELSE 0 END AS status
+      FROM participants p
+      LEFT JOIN food_checkins fc 
+        ON fc.chest_number = p.chest_number
+        ${eventId ? 'AND fc.event_id = ?' : ''}
+        ${type ? 'AND fc.type = ?' : ''}
+        ${date ? 'AND fc.date = ?' : ''}
+      WHERE 1=1
+    `;
+
+    const params: any[] = [];
+    if (eventId) params.push(eventId);
+    if (type) params.push(type);
+    if (date) params.push(date);
+
+    if (categoryId) {
+      query += ` AND p.category_id = ?`;
+      params.push(categoryId);
+    }
+    if (teamId) {
+      query += ` AND p.team_id = ?`;
+      params.push(teamId);
+    }
+
+    // Status filter
+    if (status === '1') {
+      query += ` AND fc.chest_number IS NOT NULL`;
+    } else if (status === '0') {
+      query += ` AND fc.chest_number IS NULL`;
+    }
+
+    query += ` ORDER BY p.team_name, p.name LIMIT ? OFFSET ?`;
+    params.push(Number(limit), offset);
+
+    const results = await runSelectQuery(query, params);
+
+    let summaryQuery = `
+  SELECT 
+    SUM(CASE WHEN fc.chest_number IS NOT NULL THEN 1 ELSE 0 END) AS total_checkins,
+    SUM(CASE WHEN fc.chest_number IS NULL THEN 1 ELSE 0 END) AS total_pending
+  FROM participants p
+  LEFT JOIN food_checkins fc 
+    ON fc.chest_number = p.chest_number
+    ${eventId ? "AND fc.event_id = ?" : ""}
+    ${type ? "AND fc.type = ?" : ""}
+    ${date ? "AND fc.date = ?" : ""}
+  WHERE 1=1
+`;
+
+    const summaryParams: any[] = [];
+    if (eventId) summaryParams.push(eventId);
+    if (type) summaryParams.push(type);
+    if (date) summaryParams.push(date);
+    if (categoryId) {
+      summaryQuery += ` AND p.category_id = ?`;
+      summaryParams.push(categoryId);
+    }
+    if (teamId) {
+      summaryQuery += ` AND p.team_id = ?`;
+      summaryParams.push(teamId);
+    }
+
+    const summary = await runSelectQuery(summaryQuery, summaryParams);
+
+  
+
+    return next(new AppResponse('', {participants:results,summary}));
   } catch (err) {
     return next(err);
   }
