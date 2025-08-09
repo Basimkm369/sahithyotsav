@@ -20,12 +20,16 @@ export const Route = createFileRoute('/offstage-management/')({
 })
 
 function OffstageValuationPage() {
-  const { eventId } = Route.useSearch()
+  const { eventId,pin } = Route.useSearch()
   const { data, isLoading } = useOffstageManagementSummary({ eventId })
 
   const [tab, setTab] = useUrlState<
     'overview' | 'competitions' | 'judges'
   >('tab', 'overview')
+
+  if(pin !=  "07yqnKmkkdf3BpJx"){
+    return "";
+  }
   if (isLoading) {
     return (
       <div className="h-screen">

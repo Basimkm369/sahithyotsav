@@ -17,12 +17,14 @@ export const Route = createFileRoute('/admin/')({
 })
 
 function StageManagementPage() {
-  const { eventId } = Route.useSearch()
+  const { eventId,pin } = Route.useSearch()
   const { data, isLoading } = useAdminSummary({ eventId })
   const [tab, setTab] = useUrlState<
     'overview' | 'competitions' | 'participants'
   >('tab', 'overview')
-
+  if(pin !=  "07yqnKmkk0KBpJx"){
+    return "";
+  }
   if (isLoading) {
     return (
       <div className="h-screen">
