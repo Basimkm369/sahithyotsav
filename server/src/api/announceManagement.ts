@@ -137,8 +137,7 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
     inner join ofm_team te on te.teamno = pa.teamno and te.eventid = @eventId
     where ai.codeletter IS NOT NULL and ai.codeletter <> ''
       and ai.itemcode = @itemCode
-      and pa.eventid = @eventId
-      and co.status = '${CompetitionStatus.MediaCompleted}'`;
+      and pa.eventid = @eventId`;
 
   const data = await executeQuery(query, { eventId, itemCode });
 
