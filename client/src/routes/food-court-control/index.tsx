@@ -25,16 +25,22 @@ export const Route = createFileRoute('/food-court-control/')({
 
 const foodCourtData = [
   {
-    date: '07-08-2025',
+    date: '09-08-2025',
     types: ['Lunch', 'Dinner'],
   },
   {
-    date: '08-08-2025',
+    date: '19-08-2025',
     types: ['Break Fast', 'Lunch'],
   },
 ];
 
 const FoodCourtControlPage = () => {
+
+  const { pin } = Route.useSearch()
+
+  if(pin !=  "1A7KFk1IhCIAL5i"){
+    return "";
+  }
   const scanner = useRef<QrScanner | undefined>();
   const videoEl = useRef<HTMLVideoElement>(null);
   const containerEl = useRef<HTMLDivElement>(null);
@@ -179,7 +185,7 @@ const FoodCourtControlPage = () => {
 
   return (
     <div className="p-4 space-y-4">
-      <Card className="p-4">
+      {/* <Card className="p-4"> */}
         <Select value={selectedCamera} onValueChange={setSelectedCamera}>
           <SelectTrigger>
             <SelectValue placeholder="Select camera" />
@@ -192,10 +198,10 @@ const FoodCourtControlPage = () => {
             ))}
           </SelectContent>
         </Select>
-      </Card>
+      {/* </Card> */}
 
       <div className="grid grid-cols-2 gap-4">
-        <Card className="p-4">
+        {/* <Card className="p-4"> */}
           <Select value={selectedDate} onValueChange={setSelectedDate}>
             <SelectTrigger>
               <SelectValue placeholder="Select date" />
@@ -208,9 +214,9 @@ const FoodCourtControlPage = () => {
               ))}
             </SelectContent>
           </Select>
-        </Card>
+        {/* </Card> */}
 
-        <Card className="p-4">
+        {/* <Card className="p-4"> */}
           <Select
             value={selectedType}
             onValueChange={setSelectedType}
@@ -227,10 +233,10 @@ const FoodCourtControlPage = () => {
               ))}
             </SelectContent>
           </Select>
-        </Card>
+        {/* </Card> */}
       </div>
 
-      <Card className='p-2 overflow-hidden'>
+      {/* <Card className='p-2 overflow-hidden'> */}
         <div ref={containerEl} className='relative w-full h-[400px] flex justify-center items-center'>
             <video
                 ref={videoEl}
@@ -239,7 +245,7 @@ const FoodCourtControlPage = () => {
                 muted
             />
         </div>
-      </Card>
+      {/* </Card> */}
 
       <div className="text-center flex flex-col items-center my-4">
         {isProcessing && <LoadingSpinner />}

@@ -76,12 +76,12 @@ function TeamManagementPage() {
             >
               Participants
             </TabsTrigger>
-            <TabsTrigger
+            {/* <TabsTrigger
               value="food"
               onClick={() => setTab('food')}
             >
               Food
-            </TabsTrigger>
+            </TabsTrigger> */}
           </TabsList>
         </div>
         <TabsContent value="competitions" className="bg-muted rounded-3xl p-4">
