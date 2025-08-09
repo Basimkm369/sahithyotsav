@@ -5,6 +5,7 @@ import AppError from 'src/models/AppError';
 import AppResponse from 'src/models/AppResponse';
 import { decryptId, executeQuery, executeStoredProcedure } from 'src/utils/db';
 import kvStore from 'src/utils/kvStore';
+import { runSelectQuery } from 'src/utils/mysqlDb';
 
 const router = express.Router();
 
@@ -50,6 +51,7 @@ router.get('/competitions', async (req, res, next) => {
     const {
       stageId,
       categoryId,
+      status,
       eventId: eventIdEnc,
       limit = 10,
       page = 1,
@@ -75,12 +77,16 @@ router.get('/competitions', async (req, res, next) => {
       ofm_competitions as cp
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
-      left join ofm_stages as st on st.pid = cp.stageno
-    where cp.eventid = @eventId
-      and cp.status = '${CompetitionStatus.Announced}'`;
+      left join ofm_stages as st on st.pid = cp.stageno and st.eventid = @eventId
+    where cp.eventid = @eventId`;
 
     if (categoryId) query += ` and im.categoryno = @categoryId`;
     if (stageId) query += ` and cp.stageno = @stageId`;
+    if (status === 'O') {
+      query += ` and cp.status in ('O', 'A', 'D')`;
+    } else if (status) {
+      query += ` and cp.status = '${CompetitionStatus.Finalized}'`;
+    }
 
     query += ` group by
       im.itemname,
@@ -130,10 +136,18 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
     inner join ofm_team te on te.teamno = pa.teamno and te.eventid = @eventId
     where ai.codeletter IS NOT NULL and ai.codeletter <> ''
       and ai.itemcode = @itemCode
-      and pa.eventid = @eventId
-      and co.status = '${CompetitionStatus.Announced}'`;
+      and pa.eventid = @eventId`;
 
   const data = await executeQuery(query, { eventId, itemCode });
+
+  const formDataQuery = `select * from prize_distributions
+    where item_id = ? and chest_number IN ?`;
+  const formData = await runSelectQuery(formDataQuery, [
+    itemCode,
+    data.map((d) => d.chestNumber),
+  ]);
+
+  console.log(formData);
 
   return next(
     new AppResponse('', {
@@ -159,7 +173,9 @@ router.post(
       const { eventId: eventIdEnc, itemCode, status } = req.body;
 
       if (status !== CompetitionStatus.PrizeDistributed) {
-        throw new AppError('You can only change the status to Prize Distributed');
+        throw new AppError(
+          'You can only change the status to Prize Distributed',
+        );
       }
 
       let eventId = kvStore.get(`encId:${eventIdEnc}`);

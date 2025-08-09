@@ -77,7 +77,7 @@ router.get('/competitions', async (req, res, next) => {
       ofm_competitions as cp
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
-      left join ofm_stages as st on st.pid = cp.stageno
+      left join ofm_stages as st on st.pid = cp.stageno and st.eventid = @eventId
     where cp.eventid = @eventId`;
 
     if (categoryId) query += ` and im.categoryno = @categoryId`;

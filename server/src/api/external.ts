@@ -48,7 +48,7 @@ router.get('/competitions', async (req, res, next) => {
       ofm_competitions AS cp
       inner join ofm_itemmaster AS im ON im.itemcode = cp.itemcode
       inner join ofm_category AS ca ON ca.categoryno = im.categoryno
-      left join ofm_stages AS st ON st.pid = cp.stageno
+      left join ofm_stages AS st ON st.pid = cp.stageno and st.eventid = @eventId
     WHERE
       cp.eventid = @eventId
     ORDER BY

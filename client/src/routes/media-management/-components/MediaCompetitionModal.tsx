@@ -198,7 +198,7 @@ export default function MediaCompetitionModal({
                                     : ''}
                             </TableCell>
                             <TableCell>{participant.grade}</TableCell>
-                            <TableCell>{participant.totalPoint}</TableCell>
+                            <TableCell>{participant.totalPoint || ""}</TableCell>
                           </TableRow>
                         ))}
                   </TableBody>

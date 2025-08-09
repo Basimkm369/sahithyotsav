@@ -116,7 +116,7 @@ router.get('/competitions', async (req, res, next) => {
       ofm_competitions as cp
       inner join ofm_itemmaster as im on im.itemcode = cp.itemcode
       inner join ofm_category as ca on ca.categoryno = im.categoryno
-      left join ofm_stages as st on st.pid = cp.stageno
+      left join ofm_stages as st on st.pid = cp.stageno and st.eventid = @eventId
       left join ofm_judges as jd1 on jd1.pid = cp.judgeid1
       left join ofm_judges as jd2 on jd2.pid = cp.judgeid2
       left join ofm_judges as jd3 on jd3.pid = cp.judgeid3
