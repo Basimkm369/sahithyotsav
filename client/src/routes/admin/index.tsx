@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import AdminCompetitionsTab from './-components/AdminCompetitionsTab'
 import AdminParticipantsTab from './-components/AdminParticipantsTab'
 import AdminOverview from './-components/AdminOverviewTab'
+import AdminFoodOverView from './-components/AdminFoodOverViewTab'
 
 export const Route = createFileRoute('/admin/')({
   component: StageManagementPage,
@@ -23,7 +24,7 @@ function StageManagementPage() {
   const { eventId, pin } = Route.useSearch()
   const { data, isLoading } = useAdminSummary({ eventId })
   const [tab, setTab] = useUrlState<
-    'overview' | 'competitions' | 'participants'
+    'overview' | 'competitions' | 'participants' | 'food'
   >('tab', 'overview')
   if (pin != '07yqnKmkk0KBpJx') {
     return ''
@@ -74,6 +75,12 @@ function StageManagementPage() {
             >
               Participants
             </TabsTrigger>
+            <TabsTrigger
+              value="food"
+              onClick={() => setTab('food')}
+            >
+              Food
+            </TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="overview" className="bg-muted rounded-3xl p-4">
@@ -90,6 +97,9 @@ function StageManagementPage() {
             categories={data.categories}
             teams={data.teams}
           />
+        </TabsContent>
+        <TabsContent value="food" className="bg-muted rounded-3xl p-4">
+          <AdminFoodOverView/>
         </TabsContent>
       </Tabs>
     </div>
