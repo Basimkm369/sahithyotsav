@@ -48,7 +48,7 @@ export default function AdminOverview() {
                 {statusLabels[status] ?? status}
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className='mt-auto'>
               <div className="text-3xl font-bold text-primary font-heading">
                 {statusCountMap[status] ?? 0}
               </div>
