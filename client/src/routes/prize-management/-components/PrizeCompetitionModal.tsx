@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/table'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Checkbox } from '@/components/ui/checkbox'
+import PrizeParticipantAction from './PrizeParticipantActions'
 
 export default function PrizeCompetitionModal({
   data: competition,
@@ -50,15 +51,6 @@ export default function PrizeCompetitionModal({
       })
     },
   })
-
-  const handlePrizeToggle = (
-    participantId: number,
-    type: 'momento' | 'cashPrize',
-    checked: boolean,
-  ) => {
-    // Example: you can send this to API or update state
-    // updateParticipantPrize(participantId, type, checked);
-  }
 
   return (
     <>
@@ -118,10 +110,9 @@ export default function PrizeCompetitionModal({
                               </div>
                             </TableCell>
                             <TableCell>
-                              <div className="text-xl flex gap-1">
-                                <Skeleton className="h-6 w-6 rounded-full" />
-                                <Skeleton className="h-6 w-6 rounded-full" />
-                                <Skeleton className="h-6 w-6 rounded-full" />
+                              <div className="text-xl flex flex-row gap-1">
+                                <Skeleton className="h-6 w-15 rounded-full" />
+                                <Skeleton className="h-6 w-15 rounded-full" />
                               </div>
                             </TableCell>
                           </TableRow>
@@ -148,46 +139,17 @@ export default function PrizeCompetitionModal({
                                     ? '🥉'
                                     : ''}
                             </TableCell>
-
                             <TableCell>
-                              <div className="space-y-2">
-                                {/* <div className="flex items-center space-x-2">
-                                  <Checkbox
-                                    id={`momento-${participant.chestNumber}`}
-                                    onCheckedChange={(checked) =>
-                                      handlePrizeToggle(
-                                        participant.chestNumber,
-                                        'momento',
-                                        checked,
-                                      )
-                                    }
-                                  />
-                                  <label
-                                    htmlFor={`momento-${participant.chestNumber}`}
-                                    className="text-sm"
-                                  >
-                                    Momento
-                                  </label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  <Checkbox
-                                    id={`cashPrize-${participant.chestNumber}`}
-                                    onCheckedChange={(checked) =>
-                                      handlePrizeToggle(
-                                        participant.chestNumber,
-                                        'cashPrize',
-                                        checked,
-                                      )
-                                    }
-                                  />
-                                  <label
-                                    htmlFor={`cashPrize-${participant.chestNumber}`}
-                                    className="text-sm"
-                                  >
-                                    Cash Prize
-                                  </label>
-                                </div> */}
-                              </div>
+                              {participant.rank <= 2 && (
+                                <PrizeParticipantAction
+                                  itemCode={competition.itemCode}
+                                  chestNumber={participant.chestNumber}
+                                  cashDistributed={participant.cashDistributed}
+                                  momentoDistributed={
+                                    participant.momentoDistributed
+                                  }
+                                />
+                              )}
                             </TableCell>
                           </TableRow>
                         ))}

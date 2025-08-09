@@ -7,11 +7,10 @@ export type CompetitionDetails = {
     name: string
     teamName: string
     codeLetter: string
-    categoryName: string
-    mark: string
     grade: string
-    prize: string
-    status: string
+    rank: number
+    momentoDistributed: boolean
+    cashDistributed: boolean
   }[]
 }
 
