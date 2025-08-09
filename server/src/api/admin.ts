@@ -4,6 +4,7 @@ import AppError from 'src/models/AppError';
 import AppResponse from 'src/models/AppResponse';
 import { decryptId, executeQuery, executeStoredProcedure } from 'src/utils/db';
 import kvStore from 'src/utils/kvStore';
+import { runSelectQuery } from 'src/utils/mysqlDb';
 
 const router = express.Router();
 
@@ -326,5 +327,52 @@ router.get('/participants', async (req, res, next) => {
     return next(err);
   }
 });
+
+router.get(
+  '/food',
+  [body('date').notEmpty(), body('type').notEmpty()],
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(
+          new AppError('Validation Error', 400, { errors: errors.array() }),
+        );
+      }
+
+      const { date, type } = req.body;
+
+      const data = await runSelectQuery(
+        `SELECT 
+          type,
+          CONCAT(
+            DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+05:30'), '%l %p'),
+            ' - ',
+            DATE_FORMAT(
+                DATE_ADD(CONVERT_TZ(created_at, '+00:00', '+05:30'), INTERVAL 1 HOUR),
+                '%l %p'
+            )
+          ) AS hour_slot_label,
+          COUNT(*) AS total
+          FROM 
+              food_checkins
+          WHERE 
+              DATE(CONVERT_TZ(created_at, '+00:00', '+05:30')) = ?
+              and type = ?
+          GROUP BY 
+              type,
+              hour_slot_label
+          ORDER BY 
+              MIN(CONVERT_TZ(created_at, '+00:00', '+05:30')), type;
+        `,
+        [date, type],
+      );
+
+      return next(new AppResponse('', data));
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
 
 export default router;
