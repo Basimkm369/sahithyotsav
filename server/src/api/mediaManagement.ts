@@ -130,6 +130,7 @@ router.get('/competitions/:itemCode', async (req, res, next) => {
     te.teamname as teamName,
     ai.codeletter as codeLetter,
     ai.rank,
+    ai.totalpoint as totalPoint,
     ai.grade
     from ofm_participant pa
     inner join ofm_assignitem ai on ai.chestno = pa.chestno and ai.eventid = @eventId
