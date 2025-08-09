@@ -18,12 +18,14 @@ export default function useMediaCompetitions({
   eventId,
   stageId,
   categoryId,
+  status,
   page,
   limit = 24,
 }: {
   eventId: string
   stageId: string
   categoryId: string
+  status: string
   page: number
   limit?: number
 }) {
@@ -31,13 +33,14 @@ export default function useMediaCompetitions({
     queryKey: [
       'mediaManagement',
       'competitions',
-      { page, limit, eventId, stageId, categoryId },
+      { page, limit, eventId, stageId, categoryId, status },
     ],
     queryFn: async () => {
       const params: Record<string, any> = {}
       if (eventId) params.eventId = eventId
       if (stageId !== 'all') params.stageId = stageId
       if (categoryId !== 'all') params.categoryId = categoryId
+      if (status !== 'all') params.status = status
       params.page = page
       params.limit = limit
 

@@ -98,7 +98,7 @@ router.get('/competitions', async (req, res, next) => {
       cp.scheduledstart,
       cp.scheduledend
     order by
-      im.itemname, ca.categoryname, st.stage
+      cp.resultnum
     offset (${page} - 1) * ${limit} rows
     fetch next ${limit} rows only;`;
 
