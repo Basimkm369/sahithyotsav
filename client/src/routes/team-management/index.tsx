@@ -13,8 +13,10 @@ export const Route = createFileRoute('/team-management/')({
     search: Record<string, unknown>,
   ): { eventId: string; teamId: string } => {
     return {
-      eventId: search.eventId as string,
-      teamId: search.teamId as string,
+      eventId: typeof search.eventId === 'string' ? search.eventId : '',
+      teamId: typeof search.teamId === 'string' && search.teamId
+        ? search.teamId
+        : '1',
     }
   },
 })

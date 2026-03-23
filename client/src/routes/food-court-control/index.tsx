@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { api } from '@/lib/api'
+import { api, isMockApiEnabled } from '@/lib/api'
 
 export const Route = createFileRoute('/food-court-control/')({
   component: FoodCourtControlPage,
@@ -18,8 +18,8 @@ export const Route = createFileRoute('/food-court-control/')({
     search: Record<string, unknown>,
   ): { eventId: string; pin: string } => {
     return {
-      eventId: search.eventId as string,
-      pin: search.pin as string,
+      eventId: typeof search.eventId === 'string' ? search.eventId : '',
+      pin: typeof search.pin === 'string' ? search.pin : '',
     }
   },
 })
@@ -40,11 +40,10 @@ const foodCourtData = [
 ]
 
 function FoodCourtControlPage() {
-  const { pin } = Route.useSearch()
+  const { eventId, pin } = Route.useSearch()
 
-  if (pin != '1A7KFk1IhCIAL5i') {
-    return ''
-  }
+  const isUnlocked = isMockApiEnabled || pin === '1A7KFk1IhCIAL5i'
+
   const scanner = useRef<QrScanner | undefined>()
   const videoEl = useRef<HTMLVideoElement>(null)
   const containerEl = useRef<HTMLDivElement>(null)
@@ -56,8 +55,6 @@ function FoodCourtControlPage() {
   const availableDates = foodCourtData.map((item) => item.date)
   const availableTypes =
     foodCourtData.find((item) => item.date === selectedDate)?.types ?? []
-
-  const { eventId } = Route.useSearch()
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [scannedResult, setScannedResult] = useState<string | null>()
@@ -78,6 +75,7 @@ function FoodCourtControlPage() {
 
   // Get available cameras on component mount
   useEffect(() => {
+    if (!isUnlocked) return
     QrScanner.listCameras(true)
       .then((data) => {
         setCameras(data)
@@ -93,14 +91,15 @@ function FoodCourtControlPage() {
       .catch((err) => {
         setError('Failed to access camera. Please check permissions.')
       })
-  }, [])
+  }, [isUnlocked])
 
   // Handle camera selection
   useEffect(() => {
+    if (!isUnlocked) return
     if (selectedCamera && scanner.current) {
       scanner.current.setCamera(selectedCamera)
     }
-  }, [selectedCamera])
+  }, [isUnlocked, selectedCamera])
 
   // Handle success message timeout
   useEffect(() => {
@@ -179,6 +178,14 @@ function FoodCourtControlPage() {
 
   // Initialize and clean up QrScanner
   useEffect(() => {
+    if (!isUnlocked) {
+      if (scanner.current) {
+        scanner.current.stop()
+        scanner.current.destroy()
+        scanner.current = undefined
+      }
+      return
+    }
     if (videoEl?.current && !scanner.current) {
       scanner.current = new QrScanner(videoEl.current, onScanSuccess, {
         preferredCamera: selectedCamera ?? 'environment',
@@ -196,8 +203,8 @@ function FoodCourtControlPage() {
         })
         .catch((err) => {
           console.error('❌ Failed to start scanner:', err)
-          setError('Could not start camera. Please check permissions.')
-        })
+        setError('Could not start camera. Please check permissions.')
+      })
     }
 
     return () => {
@@ -207,7 +214,11 @@ function FoodCourtControlPage() {
         scanner.current = undefined
       }
     }
-  }, [videoEl, containerEl, selectedCamera])
+  }, [isUnlocked, videoEl, containerEl, selectedCamera, onScanSuccess])
+
+  if (!isUnlocked) {
+    return null
+  }
 
   return (
     <div className="p-4 space-y-4">

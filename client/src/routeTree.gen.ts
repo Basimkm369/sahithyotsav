@@ -92,17 +92,17 @@ const JudgementSuccessRoute = JudgementSuccessRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/judgement/success': typeof JudgementSuccessRoute
-  '/admin': typeof AdminIndexRoute
-  '/announce-management': typeof AnnounceManagementIndexRoute
-  '/food-court-control': typeof FoodCourtControlIndexRoute
-  '/j23dgdfge-linfh34': typeof J23dgdfgeLinfh34IndexRoute
-  '/judge-assignment': typeof JudgeAssignmentIndexRoute
-  '/judgement': typeof JudgementIndexRoute
-  '/media-management': typeof MediaManagementIndexRoute
-  '/offstage-management': typeof OffstageManagementIndexRoute
-  '/prize-management': typeof PrizeManagementIndexRoute
-  '/stage-management': typeof StageManagementIndexRoute
-  '/team-management': typeof TeamManagementIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/announce-management/': typeof AnnounceManagementIndexRoute
+  '/food-court-control/': typeof FoodCourtControlIndexRoute
+  '/j23dgdfge-linfh34/': typeof J23dgdfgeLinfh34IndexRoute
+  '/judge-assignment/': typeof JudgeAssignmentIndexRoute
+  '/judgement/': typeof JudgementIndexRoute
+  '/media-management/': typeof MediaManagementIndexRoute
+  '/offstage-management/': typeof OffstageManagementIndexRoute
+  '/prize-management/': typeof PrizeManagementIndexRoute
+  '/stage-management/': typeof StageManagementIndexRoute
+  '/team-management/': typeof TeamManagementIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -140,17 +140,17 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/judgement/success'
-    | '/admin'
-    | '/announce-management'
-    | '/food-court-control'
-    | '/j23dgdfge-linfh34'
-    | '/judge-assignment'
-    | '/judgement'
-    | '/media-management'
-    | '/offstage-management'
-    | '/prize-management'
-    | '/stage-management'
-    | '/team-management'
+    | '/admin/'
+    | '/announce-management/'
+    | '/food-court-control/'
+    | '/j23dgdfge-linfh34/'
+    | '/judge-assignment/'
+    | '/judgement/'
+    | '/media-management/'
+    | '/offstage-management/'
+    | '/prize-management/'
+    | '/stage-management/'
+    | '/team-management/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -211,77 +211,77 @@ declare module '@tanstack/react-router' {
     '/team-management/': {
       id: '/team-management/'
       path: '/team-management'
-      fullPath: '/team-management'
+      fullPath: '/team-management/'
       preLoaderRoute: typeof TeamManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/stage-management/': {
       id: '/stage-management/'
       path: '/stage-management'
-      fullPath: '/stage-management'
+      fullPath: '/stage-management/'
       preLoaderRoute: typeof StageManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prize-management/': {
       id: '/prize-management/'
       path: '/prize-management'
-      fullPath: '/prize-management'
+      fullPath: '/prize-management/'
       preLoaderRoute: typeof PrizeManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/offstage-management/': {
       id: '/offstage-management/'
       path: '/offstage-management'
-      fullPath: '/offstage-management'
+      fullPath: '/offstage-management/'
       preLoaderRoute: typeof OffstageManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/media-management/': {
       id: '/media-management/'
       path: '/media-management'
-      fullPath: '/media-management'
+      fullPath: '/media-management/'
       preLoaderRoute: typeof MediaManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/judgement/': {
       id: '/judgement/'
       path: '/judgement'
-      fullPath: '/judgement'
+      fullPath: '/judgement/'
       preLoaderRoute: typeof JudgementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/judge-assignment/': {
       id: '/judge-assignment/'
       path: '/judge-assignment'
-      fullPath: '/judge-assignment'
+      fullPath: '/judge-assignment/'
       preLoaderRoute: typeof JudgeAssignmentIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/j23dgdfge-linfh34/': {
       id: '/j23dgdfge-linfh34/'
       path: '/j23dgdfge-linfh34'
-      fullPath: '/j23dgdfge-linfh34'
+      fullPath: '/j23dgdfge-linfh34/'
       preLoaderRoute: typeof J23dgdfgeLinfh34IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/food-court-control/': {
       id: '/food-court-control/'
       path: '/food-court-control'
-      fullPath: '/food-court-control'
+      fullPath: '/food-court-control/'
       preLoaderRoute: typeof FoodCourtControlIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/announce-management/': {
       id: '/announce-management/'
       path: '/announce-management'
-      fullPath: '/announce-management'
+      fullPath: '/announce-management/'
       preLoaderRoute: typeof AnnounceManagementIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
-      fullPath: '/admin'
+      fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }

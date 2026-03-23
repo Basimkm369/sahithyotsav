@@ -7,6 +7,7 @@ import AdminCompetitionsTab from './-components/AdminCompetitionsTab'
 import AdminParticipantsTab from './-components/AdminParticipantsTab'
 import AdminOverview from './-components/AdminOverviewTab'
 import AdminFoodOverView from './-components/AdminFoodOverviewTab'
+import { isMockApiEnabled } from '@/lib/api'
 
 export const Route = createFileRoute('/admin/')({
   component: StageManagementPage,
@@ -14,8 +15,8 @@ export const Route = createFileRoute('/admin/')({
     search: Record<string, unknown>,
   ): { eventId: string; pin: string } => {
     return {
-      eventId: search.eventId as string,
-      pin: search.pin as string,
+      eventId: typeof search.eventId === 'string' ? search.eventId : '',
+      pin: typeof search.pin === 'string' ? search.pin : '',
     }
   },
 })
@@ -26,8 +27,10 @@ function StageManagementPage() {
   const [tab, setTab] = useUrlState<
     'overview' | 'competitions' | 'participants' | 'food'
   >('tab', 'overview')
-  if (pin != '07yqnKmkk0KBpJx') {
-    return ''
+
+  const isUnlocked = isMockApiEnabled || pin === '07yqnKmkk0KBpJx'
+  if (!isUnlocked) {
+    return null
   }
   if (isLoading) {
     return (

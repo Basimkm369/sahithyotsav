@@ -5,6 +5,7 @@ import OffstageCompetitions from './-components/OffstageCompetitions'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import useUrlState from '@/hooks/useUrlState'
 import OffstageJudgesTab from './-components/OffstageJudgesTab'
+import { isMockApiEnabled } from '@/lib/api'
 
 export const Route = createFileRoute('/offstage-management/')({
   component: OffstageValuationPage,
@@ -12,9 +13,9 @@ export const Route = createFileRoute('/offstage-management/')({
     search: Record<string, unknown>,
   ): { eventId: string; stageId: string; pin: string } => {
     return {
-      eventId: search.eventId as string,
-      stageId: search.stageId as string,
-      pin: search.pin as string,
+      eventId: typeof search.eventId === 'string' ? search.eventId : '',
+      stageId: typeof search.stageId === 'string' ? search.stageId : '',
+      pin: typeof search.pin === 'string' ? search.pin : '',
     }
   },
 })
@@ -28,8 +29,9 @@ function OffstageValuationPage() {
     'overview',
   )
 
-  if (pin != '07yqnKmkkdf3BpJx') {
-    return ''
+  const isUnlocked = isMockApiEnabled || pin === '07yqnKmkkdf3BpJx'
+  if (!isUnlocked) {
+    return null
   }
   if (isLoading) {
     return (

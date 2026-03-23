@@ -9,8 +9,10 @@ export const Route = createFileRoute('/stage-management/')({
     search: Record<string, unknown>,
   ): { eventId: string; stageId: string } => {
     return {
-      eventId: search.eventId as string,
-      stageId: search.stageId as string,
+      eventId: typeof search.eventId === 'string' ? search.eventId : '',
+      stageId: typeof search.stageId === 'string' && search.stageId
+        ? search.stageId
+        : '1',
     }
   },
 })

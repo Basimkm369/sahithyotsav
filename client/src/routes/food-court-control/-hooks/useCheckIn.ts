@@ -13,13 +13,13 @@ export const useCheckInMutation = ({ onSuccess, onError }: {
       date: string;
       type: string;
     }) => {
-      const { msg } = await api.post('/foodManagement/checkIn', {
+      const res = await api.post<{ msg: string }>('/foodManagement/checkIn', {
         eventId,
         chestNumber,
         date,
         type,
       });
-      return msg;
+      return res.data.msg;
     },
     onSuccess,
     onError: (err: any) => {
